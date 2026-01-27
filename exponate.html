@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsere Exponate - Heimat- und Kulturverein Vorchdorf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2c3e50;
+            --secondary-dark: #34495e;
+            --light-gray: #7f8c8d;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+            --warm-cream: #ecf0f1;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .site-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-gold);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%23795548" width="1200" height="400"/></svg>');
+            background-size: cover;
+            padding: 10rem 2rem 5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Content */
+        .content {
+            padding: 4rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .intro-text {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            margin-bottom: 4rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .intro-text h2 {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        /* Exponat Sections */
+        .exponat-section {
+            margin-bottom: 4rem;
+        }
+
+        .exponat-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            align-items: center;
+        }
+
+        .exponat-section:nth-child(even) .exponat-content {
+            direction: rtl;
+        }
+
+        .exponat-section:nth-child(even) .exponat-text {
+            direction: ltr;
+        }
+
+        .exponat-image {
+            height: 400px;
+            background: linear-gradient(135deg, var(--light-gray), var(--secondary-dark));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .exponat-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .exponat-image.portrait-image img {
+            object-fit: contain;
+            background: white;
+        }
+
+        .exponat-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .exponat-text h3 {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .exponat-text .subtitle {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .exponat-text p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background: var(--warm-cream);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .highlight-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* Gallery Grid for Multiple Images */
+        .mini-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .mini-gallery-item {
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, var(--light-gray), var(--secondary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .mini-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .mini-gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--text-light);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer p, .footer a {
+            color: var(--warm-cream);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--warm-cream);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--primary-dark);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                gap: 1rem;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .exponat-content {
+                grid-template-columns: 1fr;
+            }
+
+            .exponat-section:nth-child(even) .exponat-content {
+                direction: ltr;
+            }
+
+            .intro-text {
+                padding: 2rem;
+            }
+
+            .site-title {
+                font-size: 1rem;
+            }
+
+            .logo {
+                height: 40px;
+                width: auto;
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent-gold);
+            color: var(--text-dark);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.3s ease;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            background: var(--accent-red);
+            transform: translateY(-2px);
+        }
+
+        .link-gallery {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
+            <li><a href="audioguide.html">Audioguide</a></li>
+            <li><a href="exponate.html">Exponate</a></li>
+            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+            <li><a href="timeline.html">Zeitlinie</a></li>
+            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Unsere Exponate</h1>
+        <p>Tauchen Sie ein in die faszinierende Sammlung des Museums der Region Vorchdorf</p>
+    </header>
+
+    <!-- Content -->
+    <section class="content">
+        <div class="container">
+            <!-- Introduction -->
+            <div class="intro-text">
+                <h2>Schätze der Region Vorchdorf</h2>
+                <p>Das Museum der Region Vorchdorf beherbergt eine beeindruckende Sammlung von Exponaten, die die Geschichte und Kultur unserer Region lebendig werden lassen. Von prähistorischen Funden über kunsthandwerkliche Meisterwerke bis hin zu Zeugnissen der Industriegeschichte – jedes Objekt erzählt seine eigene Geschichte.</p>
+                <p>Als Heimat- und Kulturverein sind wir stolz darauf, diese wertvollen Schätze zu bewahren und einem breiten Publikum zugänglich zu machen. Unsere Sammlung wächst stetig und wird kontinuierlich in der MUKO-Datenbank erfasst und dokumentiert.</p>
+            </div>
+
+            <!-- Exponat 1: Krumhuber Uhren -->
+            <div class="exponat-section">
+                <div class="exponat-content">
+                    <div class="exponat-image portrait-image">
+                        <img src="Bilder/krumhuber_exponate.jpeg" alt="Krumhuber Spindeltaschenuhren">
+                    </div>
+                    <div class="exponat-text">
+                        <h3>Krumhuber Taschenuhren</h3>
+                        <div class="subtitle">18. und 19. Jahrhundert</div>
+                        <p>Die Uhrmacherfamilie Krumhuber aus Vorchdorf erlangte im 18. und 19. Jahrhundert europaweit Berühmtheit für ihre präzisen und kunstvoll gefertigten Spindeltaschenuhren. Diese Meisterwerke der Uhrmacherkunst wurden nach ganz Europa verhandelt und sind heute bei Sammlern weltweit hochbegehrt.</p>
+                        <p>Unsere Sammlung umfasst zahlreiche wunderschöne Exemplare dieser historischen Zeitmesser, die nicht nur technische Präzision, sondern auch höchstes handwerkliches Können demonstrieren.</p>
+                        <div class="highlight-box">
+                            <strong>Besonderheit:</strong> Die Krumhuber-Uhren gelten als wichtiger Teil der österreichischen Uhrmachergeschichte und repräsentieren die hohe handwerkliche Tradition Vorchdorfs.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exponat 2: Tabakpfeifen -->
+            <div class="exponat-section">
+                <div class="exponat-content">
+                    <div class="exponat-image">
+                        <img src="Bilder/Pfeifen_Exponate.jpeg" alt="Historische Tabakpfeifen">
+                    </div>
+                    <div class="exponat-text">
+                        <h3>Pfeifensammlung</h3>
+                        <div class="subtitle">Landesweit einzigartige Kollektion</div>
+                        <p>Eine der Hauptattraktionen unseres Museums ist die außergewöhnliche und landesweit einzigartige Sammlung historischer Tabakpfeifen. Diese umfangreiche Kollektion zeigt die Entwicklung der Pfeifenkultur über mehrere Jahrhunderte hinweg.</p>
+                        <p>Von einfachen Tonpfeifen bis hin zu kunstvoll verzierten Meisterstücken aus Porzellan und Meerschaum – jede Pfeife ist ein Kunstwerk für sich und spiegelt die gesellschaftlichen und kulturellen Entwicklungen ihrer Zeit wider.</p>
+                        <div class="highlight-box">
+                            <strong>Wussten Sie schon?</strong> Die Sammlung umfasst Exemplare aus verschiedenen Epochen und Regionen und ist in dieser Zusammenstellung einmalig in Oberösterreich.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exponat 3: Archäologie -->
+            <div class="exponat-section">
+                <div class="exponat-content">
+                    <div class="exponat-image">
+                        <img src="Bilder/Frühgeschichte_Exponate.jpeg" alt="Archäologische Funde">
+                    </div>
+                    <div class="exponat-text">
+                        <h3>Vor- und Frühgeschichte</h3>
+                        <div class="subtitle">Archäologische Schätze der Region</div>
+                        <p>Tauchen Sie ein in die faszinierende Vor- und Frühgeschichte der Region Vorchdorf. Unsere archäologische Sammlung umfasst bedeutende Funde aus verschiedenen Epochen, die Zeugnis ablegen von der frühen Besiedlung unserer Heimat.</p>
+                        <p>Von steinzeitlichen Werkzeugen über bronzezeitliche Artefakte bis hin zu römischen Funden – diese Exponate erzählen die Geschichte der Menschen, die vor Jahrtausenden in dieser Region lebten und arbeiteten.</p>
+                        <div class="highlight-box">
+                            <strong>Zeitreise:</strong> Die ältesten Exponate unserer Sammlung sind mehrere tausend Jahre alt und bieten faszinierende Einblicke in das Leben unserer Vorfahren.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exponat 4: Industriegeschichte -->
+            <div class="exponat-section">
+                <div class="exponat-content">
+                    <div class="exponat-image">
+                        <img src="Bilder/Kitzmantel_Exponate.jpeg" alt="Schuhfabrik Werkzeuge">
+                    </div>
+                    <div class="exponat-text">
+                        <h3>Kitzmantelfabrik Geschichte</h3>
+                        <div class="subtitle">Industrielles Erbe 1870-1995</div>
+                        <p>Die Kitzmantelfabrik, in deren historischen Mauern unser Museum heute beheimatet ist, war über 125 Jahre lang ein bedeutender Wirtschaftsfaktor in Vorchdorf. Bis 1995 wurden hier hochwertige Lederschuhe produziert.</p>
+                        <p>Unsere Sammlung zur Industriegeschichte umfasst Originalwerkzeuge, Maschinen, Produktmuster und eine eindrucksvolle Medienwand mit Zeitzeugenvideos ehemaliger Arbeiter. Diese Exponate dokumentieren nicht nur die technische Entwicklung, sondern auch die sozialen und wirtschaftlichen Verhältnisse der Arbeiterschaft.</p>
+                        <div class="highlight-box">
+                            <strong>Zeitzeuge:</strong> Per Knopfdruck können Besucher an der Medienwand authentische Berichte damaliger Fabrikarbeiter abrufen und so Geschichte hautnah erleben.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exponat 5: Handwerk und Gewerbe -->
+            <div class="exponat-section">
+                <div class="exponat-content">
+                    <div class="exponat-image">
+                        <img src="Bilder/Handwerk_Exponate.jpeg" alt="Handwerkswerkzeuge">
+                    </div>
+                    <div class="exponat-text">
+                        <h3>Traditionelles Handwerk</h3>
+                        <div class="subtitle">Gewerbe und Alltagskultur</div>
+                        <p>Die Sammlung zum traditionellen Handwerk zeigt die vielfältigen Gewerbe, die das Leben in Vorchdorf über Jahrhunderte prägten. Von der Schmiedekunst über das Tischlerhandwerk bis zur Textilverarbeitung – jedes Exponat erzählt von der Meisterschaft und dem Fleiß unserer Vorfahren.</p>
+                        <p>Werkzeuge, Produkte und Dokumente illustrieren die Entwicklung der Arbeitswelt und vermitteln ein lebendiges Bild vom Alltag früherer Generationen in unserer Region.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exponat 6: Volkskultur und Religion -->
+            <div class="exponat-section">
+                <div class="exponat-content">
+                    <div class="exponat-image portrait-image">
+                        <img src="Bilder/20251112_175442-min.jpg" alt="Volkskultur und religiöse Tradition">
+                    </div>
+                    <div class="exponat-text">
+                        <h3>Volkskultur und Religion</h3>
+                        <div class="subtitle">Brauchtum und Glauben</div>
+                        <p>Diese Abteilung widmet sich dem religiösen und volkskulturellen Leben in Vorchdorf. Sakrale Kunstwerke, Votivgaben, Trachten und Objekte des Brauchtums zeigen die tief verwurzelten Traditionen unserer Region.</p>
+                        <p>Von festlichen Trachten über religiöse Devotionalien bis zu Gegenständen des bäuerlichen Jahreskreises – diese Exponate dokumentieren die kulturelle Identität und das spirituelle Leben der Vorchdorfer über die Jahrhunderte hinweg.</p>
+                        <div class="highlight-box">
+                            <strong>Lebendige Tradition:</strong> Viele der hier gezeigten Bräuche werden in Vorchdorf bis heute gepflegt und weitergegeben.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Gallery -->
+            <div class="intro-text">
+                <h2>Entdecken Sie mehr</h2>
+                <p>Erkunden Sie unsere umfangreiche Sammlung an Bildern und Videos, die die Geschichte und Kultur unserer Region dokumentieren.</p>
+                <div class="link-gallery">
+                    <a href="bilder.html" class="cta-button">Bildergalerie ansehen</a>
+                    <a href="videos.html" class="cta-button">Videogalerie ansehen</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>
+                   4655 Vorchdorf<br>
+                   Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

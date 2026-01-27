@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bildergalerie - Heimat- und Kulturverein Vorchdorf</title>
+
+    <!-- Fancybox CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2c3e50;
+            --secondary-dark: #34495e;
+            --light-gray: #7f8c8d;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+            --warm-cream: #ecf0f1;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .site-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-gold);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%23795548" width="1200" height="400"/></svg>');
+            background-size: cover;
+            padding: 10rem 2rem 5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Content */
+        .content {
+            padding: 4rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin: 3rem 0 2rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-gold);
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* Gallery Grid */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .gallery a {
+            display: block;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--light-gray), var(--secondary-dark));
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .gallery a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery a:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Play icon overlay for videos */
+        .play-overlay {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            opacity: 0.9;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .gallery a:hover .play-overlay {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--text-light);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer p, .footer a {
+            color: var(--warm-cream);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--warm-cream);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--primary-dark);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                gap: 1rem;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .gallery a {
+                height: 150px;
+            }
+
+            .site-title {
+                font-size: 1rem;
+            }
+
+            .logo {
+                height: 40px;
+            }
+
+            .play-overlay {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
+            <li><a href="audioguide.html">Audioguide</a></li>
+            <li><a href="exponate.html">Exponate</a></li>
+            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+            <li><a href="timeline.html">Zeitlinie</a></li>
+            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Bildergalerie</h1>
+        <p>Eindrücke aus unserem Museum und von unseren Veranstaltungen</p>
+    </header>
+
+    <!-- Content -->
+    <section class="content">
+        <div class="container">
+            <h2 class="section-title">Bildergalerie</h2>
+            <div id="image-gallery" class="gallery" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                <p>Bewahrer des kulturellen Erbes<br>
+                   der Region Vorchdorf seit Generationen</p>
+            </div>
+            <div>
+                <h4>Kontakt</h4>
+                <p>Bahnhofstraße 9<br>
+                   4655 Vorchdorf<br>
+                   E-Mail: dr.claudia@westreicher.at</p>
+            </div>
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>
+                   4655 Vorchdorf<br>
+                   Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <!-- Fancybox JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Helper: Convert Dropbox sharing link to raw/direct link
+        function toRawLink(url) {
+            if (!url) return url;
+            if (url.indexOf('?') === -1) return url + '?raw=1';
+            return url.replace(/([?&])dl=0/, '$1raw=1')
+                      .replace(/[?&]raw=0/, '?raw=1');
+        }
+
+        // Helper: Check if URL is a video
+        function isVideoLink(url) {
+            return /\.mp4(\?|$)|\.mov(\?|$)|\.webm(\?|$)/i.test(url);
+        }
+
+        // Helper: Get filename from URL
+        function basename(url) {
+            try {
+                const u = new URL(url);
+                return decodeURIComponent(u.pathname.split('/').pop());
+            } catch(e) {
+                const parts = url.split('/');
+                return decodeURIComponent(parts[parts.length-1].split('?')[0]);
+            }
+        }
+
+        // Helper: Generate video thumbnail SVG
+        function videoThumbDataURI() {
+            const svg = `
+                <svg xmlns='http://www.w3.org/2000/svg' width='400' height='280' viewBox='0 0 400 280'>
+                    <defs>
+                        <linearGradient id='g' x1='0' x2='0' y1='0' y2='1'>
+                            <stop offset='0' stop-color='#2c3e50' stop-opacity='0.9'/>
+                            <stop offset='1' stop-color='#34495e' stop-opacity='0.95'/>
+                        </linearGradient>
+                    </defs>
+                    <rect width='100%' height='100%' fill='url(#g)'/>
+                    <g transform='translate(160,100)'>
+                        <circle cx='40' cy='40' r='36' fill='rgba(212,175,55,0.9)'/>
+                        <polygon points='35,28 35,52 55,40' fill='#fff'/>
+                    </g>
+                </svg>
+            `;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        // All Dropbox links
+        const links = [
+            "https://www.dropbox.com/scl/fi/akcjb8qse3mqysbqvlzgb/20251113_164157.mp4?rlkey=d3ksejbgorp5zmjw0xxmigmc3&dl=0",
+            "https://www.dropbox.com/scl/fi/7homz02xzaokw4th2a9mm/20251113_164138.jpg?rlkey=6rvsv3gb5zmj2fdb90jffn9ky&dl=0",
+            "https://www.dropbox.com/scl/fi/7o57k0n84xapkyk6sin2s/20251113_164045.jpg?rlkey=t5uh1nlwa9n8st5iikhmuq81h&dl=0",
+            "https://www.dropbox.com/scl/fi/l4qg48lef52qxf22w2euf/20251113_164024.jpg?rlkey=r1eivo95miyepb70p3wg4d4e3&dl=0",
+            "https://www.dropbox.com/scl/fi/ezge4co0gvc1yiwvk9ew6/20251113_163946.jpg?rlkey=ap6enkuya0qoj3vi668w77vc9&dl=0",
+            "https://www.dropbox.com/scl/fi/b2xtfy2nmo49o6lqdrkw9/20251113_163905.jpg?rlkey=cek7x1w8tivlvcolm87mplh8z&dl=0",
+            "https://www.dropbox.com/scl/fi/b5qx2jk8oe07brj866gfd/20251113_163858.jpg?rlkey=toghgye8lj90ii9gdaz1n5xqr&dl=0",
+            "https://www.dropbox.com/scl/fi/9jsbgzwjyj6z5kh8lpmrn/20251113_163831.jpg?rlkey=ppn4qvk66broa32chid8vja5d&dl=0",
+            "https://www.dropbox.com/scl/fi/mfz8jl98alrg1nn3viy9n/20251113_163610.jpg?rlkey=n5m1p62oeq0o8v87ij9mll244&dl=0",
+            "https://www.dropbox.com/scl/fi/2ceppdoh88fb36g5nyb39/20251113_163540.jpg?rlkey=zc1mtvacz8kg1a283r9myve8h&dl=0",
+            "https://www.dropbox.com/scl/fi/ufnx450i63jy7l8n7d9vb/20251113_163525.jpg?rlkey=2wyoes8beq5njqoo6yq4q5aoj&dl=0",
+            "https://www.dropbox.com/scl/fi/smn3oxafsptsptdeeuyfc/20251112_175622.jpg?rlkey=sz3ivg68bi3h426w95mlfjqtb&dl=0",
+            "https://www.dropbox.com/scl/fi/ey5qlp6p83rlal76p8wmm/20251112_175442.jpg?rlkey=bntpiysyux4sg1gyehqrbkzko&dl=0",
+            "https://www.dropbox.com/scl/fi/0mocd2e9gvst1qvco2rh9/IMG_20181017_110826.jpg?rlkey=cl69qwfvl0tiywbik513wd3rl&dl=0",
+            "https://www.dropbox.com/scl/fi/7lvv31psu5i566rwucely/IMG_20181017_174122.jpg?rlkey=tfsr54mxldejfovu4rrxqd9ni&dl=0",
+            "https://www.dropbox.com/scl/fi/wjnau5yq0emnmbsm88t00/IMG_20181017_110803.jpg?rlkey=lp986hzegwmcvg88yoq64c2cg&dl=0",
+            "https://www.dropbox.com/scl/fi/lozvvlzhu66fw769y3qx2/IMG_20181017_174116.jpg?rlkey=bw5anfq8fq0f81xsp4x2e5kmo&dl=0",
+            "https://www.dropbox.com/scl/fi/nf54orechhk2dns9dxl53/IMG_20181017_110812.jpg?rlkey=mb07bxn3gbw1c2x53z859l670&dl=0",
+            "https://www.dropbox.com/scl/fi/qv16st46pp5p4x91e924t/kind.JPG?rlkey=1mz2z42ud2hvapl6pyzav374j&dl=0",
+            "https://www.dropbox.com/scl/fi/anago4oiawduvv0d11pfp/kind2.JPG?rlkey=5l93ddgzlz9jnbulcarncbet2&dl=0",
+            "https://www.dropbox.com/scl/fi/r0sbb7sde20c638vbw25x/IMG_20181019_135729.jpg?rlkey=blp0lg48nikhs7do5janojw7e&dl=0",
+            "https://www.dropbox.com/scl/fi/qilaqfhu4sja4cx4fi559/IMG_20181019_141635.jpg?rlkey=xa7y3jw6o06aw4qvx3t5s1nq7&dl=0",
+            "https://www.dropbox.com/scl/fi/sjq8giavzyjiim3xn49ou/IMG_20181019_141356.jpg?rlkey=z1ybjtlcdffw8ik664xesxbai&dl=0",
+            "https://www.dropbox.com/scl/fi/pfszgni9sl2z8boa99l2s/IMG_20181019_141339.jpg?rlkey=u6d8c69wjxjyxf5imekstkp35&dl=0",
+            "https://www.dropbox.com/scl/fi/2pt5iliv41xqf3bwsbw5o/IMG_20181019_141605.jpg?rlkey=34dxz0ifblt8ndo1nuzzacsxf&dl=0",
+            "https://www.dropbox.com/scl/fi/fgpght31tzeswuyueutlw/20240711_162250.jpg?rlkey=r1mafqre3n933bu8v9etgm71w&dl=0",
+            "https://www.dropbox.com/scl/fi/awoly7f0ogu57gcaz4gbj/IMG_20181109_141720.jpg?rlkey=d7jx4y38pqxsjiwar7udizrnd&dl=0",
+            "https://www.dropbox.com/scl/fi/2tipdj7ofykibaiqfpj6h/IMG_20181019_135756.jpg?rlkey=fdv362t5as4lscm21vysmih4l&dl=0",
+            "https://www.dropbox.com/scl/fi/yfp9cfd3v8z60rgbqvgff/20240628_111254.jpg?rlkey=yt9fkvxqluzno0s7a66fux5a9&dl=0",
+            "https://www.dropbox.com/scl/fi/fvalmgyf5limhhec4yluk/IMG_20231002_212028.jpg?rlkey=w3edd0q4lubzwfd0gpp6gdjys&dl=0",
+            "https://www.dropbox.com/scl/fi/6oplc9l5w0smy4i6a0x21/20240628_111235.jpg?rlkey=fwjypjmlxtbzwr643yg136l4s&dl=0",
+            "https://www.dropbox.com/scl/fi/4na40dnt24qgazusttu5s/IMG_20181019_141548.jpg?rlkey=521kg1efgs1oyi9ubyckp7dgt&dl=0",
+            "https://www.dropbox.com/scl/fi/kuo2axoudcrxpf48msjw3/20240711_162437.jpg?rlkey=o9ojy24mq4zgisvy24rujc67p&dl=0",
+            "https://www.dropbox.com/scl/fi/1bupfc6i3dunludclw9vo/IMG_20231002_210136.jpg?rlkey=qzbpt2jn4e95cy7fky0zigv12&dl=0",
+            "https://www.dropbox.com/scl/fi/mgde6pexv8vhq6vfvihsm/IMG_20231002_210403.jpg?rlkey=ku6kiipz39twy3xt1nheasx2g&dl=0",
+            "https://www.dropbox.com/scl/fi/lzv77zjrvhb7io3i3jhdp/20240704_101849.jpg?rlkey=fu14pqhann7axq4amn6lqsl3l&dl=0",
+            "https://www.dropbox.com/scl/fi/ggmrqa4o15r069srmv4bo/IMG_20231002_214525.jpg?rlkey=de3yk9y9ve4zof80wzzu4wa1x&dl=0",
+            "https://www.dropbox.com/scl/fi/hccdg2vc6y7tzhq1kbmq6/IMG_20181019_141514.jpg?rlkey=81hbtdkxjscksxd3jp7qbf6cq&dl=0",
+            "https://www.dropbox.com/scl/fi/e1t9zyu6tvcy4u88y77vq/20240628_111230.jpg?rlkey=959keccciusmeux27vue8dvs8&dl=0",
+            "https://www.dropbox.com/scl/fi/58zczlfbzz2swor8u6j0b/20240628_111304.jpg?rlkey=yrt94xn6epx0rkdj6rbpc6h2t&dl=0",
+            "https://www.dropbox.com/scl/fi/vb6ewmci94myudtarhxj7/20240711_162354.jpg?rlkey=xp6zdcrnggj5t0dwo9b4ipa6t&dl=0",
+            "https://www.dropbox.com/scl/fi/mj0pvu5aitr9a1uels6uz/IMG_20181019_141456.jpg?rlkey=m8hswys4kck00nzfgtqjdh7p8&dl=0",
+            "https://www.dropbox.com/scl/fi/xzve41402nbea697oohly/20240711_161752.jpg?rlkey=kyfg2fyfx9eh779znviqvmpkj&dl=0",
+            "https://www.dropbox.com/scl/fi/v1wfqoqa9smcbajkttqc0/20240711_161210.jpg?rlkey=45lnoft0ykbl3tjj7acglnngf&dl=0",
+            "https://www.dropbox.com/scl/fi/g1gdmn8qy5s79dpcd96hb/20240711_161250.jpg?rlkey=rtb5r9x3iwpvsyloy3v042asl&dl=0",
+            "https://www.dropbox.com/scl/fi/j0eaji9yq6l08vrvk17ww/IMG_20181019_141649.jpg?rlkey=rd2trrtad41nthzvrm36kkjdj&dl=0",
+            "https://www.dropbox.com/scl/fi/nl6jun62nkoa7s3pjjgxs/20240205_213330.jpg?rlkey=dmbd5syaxxpx5e6rbt1bzzlvl&dl=0",
+            "https://www.dropbox.com/scl/fi/4tjdeg2e5genxqgfxc6gv/20240205_214412.jpg?rlkey=zpbpvzs16ulcmggy9rnicon8m&dl=0",
+            "https://www.dropbox.com/scl/fi/lbjjwz8sv0nwno60lyqu7/20240205_213051.jpg?rlkey=5eio3xb1m04s0bcbfzqgwgje8&dl=0",
+            "https://www.dropbox.com/scl/fi/fra7ors01csiz6te76ez5/20240108_204535.jpg?rlkey=jak13pfim76wmd8ttgbun32rt&dl=0",
+            "https://www.dropbox.com/scl/fi/9jdph6bq8mmoc4dqd0zxd/20240205_201735.jpg?rlkey=n6gty3talpt3atqb9msfi3q6g&dl=0",
+            "https://www.dropbox.com/scl/fi/cjfgrbdpgzoqblt26kjmj/20240205_210850.jpg?rlkey=9z67qbu7o6oxm0n6bbf7kj3ky&dl=0",
+            "https://www.dropbox.com/scl/fi/0o5rhrxri6kys7suvzdre/20240205_211830.jpg?rlkey=7nagl2hqs62klbln1y7fh6jmy&dl=0",
+            "https://www.dropbox.com/scl/fi/zwk95iy6eckiy1gdxp33c/20240108_195755.jpg?rlkey=qlwl3re81hyjuew04q25helzq&dl=0",
+            "https://www.dropbox.com/scl/fi/58r7hb0ynt3csl533fdet/20240108_214054.jpg?rlkey=dbx5bw2wsbacwba6nz5vww6s5&dl=0",
+            "https://www.dropbox.com/scl/fi/2xez13h3btnl4dpvgxx1f/20240108_200730.jpg?rlkey=nlk6646qhqvrs07zh0zxf3w8e&dl=0",
+            "https://www.dropbox.com/scl/fi/rn4yik5vqeqebrzp0a6gf/20240205_211148.jpg?rlkey=iy69yb5olcfctuih57ptn1e8f&dl=0",
+            "https://www.dropbox.com/scl/fi/x55f6z3x0lnjz5ki8qu1r/DSC00406.JPG?rlkey=ip7xxcwj5u3m8jpndlxbggv0x&dl=0",
+            "https://www.dropbox.com/scl/fi/b70rlvwm540vhadv6jhq2/DSC00416.JPG?rlkey=qt6qqrm3ybov8a1cayaod3lyr&dl=0",
+            "https://www.dropbox.com/scl/fi/qd4bpkhj82jzglhvnvbl5/20240320_103002-enhanced-25p.mp4?rlkey=qsm69m7pi6omf07zxyu4hkpys&dl=0",
+            "https://www.dropbox.com/scl/fi/idt67e5camh77h96gveps/IMG_20190307_131336.jpg?rlkey=yadrf05vadcdon3tf3k2txgs6&dl=0",
+            "https://www.dropbox.com/scl/fi/j883spi6jrg5npbvirw4y/IMG_20190307_131036.jpg?rlkey=vl32g4vhdq8snsapto2f8n7fq&dl=0",
+            "https://www.dropbox.com/scl/fi/exnbw7c1c5dtfyarqxc68/IMG_20190307_131347.jpg?rlkey=x2dkoawe5r9g12e82jmqib1q9&dl=0",
+            "https://www.dropbox.com/scl/fi/ge3t5g1y63r7tnyjrfume/20240317_101149.mp4?rlkey=oni0n2dz32kwyw8peu9bd91dm&dl=0",
+            "https://www.dropbox.com/scl/fi/3r9y33umouaum6dfzc0yc/20240317_101019.jpg?rlkey=ju5g2xd57x5jnryracxvuj6q6&dl=0",
+            "https://www.dropbox.com/scl/fi/osjpimbnykvjpe4aj0417/20240317_101100.jpg?rlkey=7rvlfhxvki4ejd8obtjczda65&dl=0",
+            "https://www.dropbox.com/scl/fi/40y7wtpcltedaqaahmlde/20240317_101053.jpg?rlkey=osuzqp789358d5xif66qu6b9i&dl=0",
+            "https://www.dropbox.com/scl/fi/dis9qpce2qmz9qwtshoge/20240317_125424.jpg?rlkey=spmgqkir94pkyjh65t3532in4&dl=0",
+            "https://www.dropbox.com/scl/fi/5rb9xw54bfu420ej83eud/20240317_100709.jpg?rlkey=ed3egsn06hgon4b4hpqi44u03&dl=0",
+            "https://www.dropbox.com/scl/fi/ujz5byekwfp29sg1fqvqm/20240317_100519.jpg?rlkey=cmsmwlsmb3of99ke5o327i315&dl=0",
+            "https://www.dropbox.com/scl/fi/7h2xzvovz7joc48opl15q/20240317_100614.jpg?rlkey=j5f7q5ggjwp8iu4x60dzgehhx&dl=0",
+            "https://www.dropbox.com/scl/fi/9jejlxpg3xau8wpv3ac7q/20240317_100347.jpg?rlkey=0w721t4tdh8a7ds2v7w5irqqh&dl=0",
+            "https://www.dropbox.com/scl/fi/t0xk4dpg7r52trv5pdrep/20240317_100302.jpg?rlkey=t81buhuaxn4f1ino5bm3s64xb&dl=0",
+            "https://www.dropbox.com/scl/fi/3p94vy36uuz9ljlcsnzve/20240317_100051.jpg?rlkey=qdv67n4nzns6o8oz17gycl33q&dl=0",
+            "https://www.dropbox.com/scl/fi/byx8856klxqnx11q14cc7/20240605_151724.mp4?rlkey=eeug8gvz40tdjg35u2z9uqix7&dl=0",
+            "https://www.dropbox.com/scl/fi/xqivqsbx9u1m2eu1mt4nj/20240605_150807.mp4?rlkey=p8clu223hu5xu4346bq96jrtg&dl=0",
+            "https://www.dropbox.com/scl/fi/i8fziygrzcf6asjmcouj2/20240626_194159.jpg?rlkey=axbzg2jbqq8ol5q832fod8f6u&dl=0",
+            "https://www.dropbox.com/scl/fi/01vfaqg70vpebjukx94pi/20240626_193723.jpg?rlkey=6blumhfm6f4vt7gkf92ggxfho&dl=0",
+            "https://www.dropbox.com/scl/fi/1z2e4bkf24zh14a8kw8l6/20240605_152613.mp4?rlkey=mgbp2didjyuv7m7e0puvcng0m&dl=0",
+            "https://www.dropbox.com/scl/fi/f1c6hr2y8tj82s866dc49/20240626_193519.jpg?rlkey=l0ru6s3je55dxeprth7f4n44o&dl=0",
+            "https://www.dropbox.com/scl/fi/e9dg274z0v7fx6fdxuaif/20240626_184036.jpg?rlkey=wzc7hajcrk61regpf6ahe7g2i&dl=0",
+            "https://www.dropbox.com/scl/fi/7w5oajcco5ae0bj7yxmzu/20240605_160616.mp4?rlkey=28flcur8kc3l03unrf79haovx&dl=0",
+            "https://www.dropbox.com/scl/fi/3h189pgos1e95an04tayz/20240626_184030.jpg?rlkey=o1bp9v9fbqgakyiwrlofsl6o5&dl=0",
+            "https://www.dropbox.com/scl/fi/h3trb5n5yhgfztbfecgrp/20240605_155329.mp4?rlkey=23pv0p6qdshm3ny39nerrxpa4&dl=0",
+            "https://www.dropbox.com/scl/fi/g2l77pakzlaz1bndnskor/20240626_194006.jpg?rlkey=3s915nwj1di29nl31f2uxb0g1&dl=0",
+            "https://www.dropbox.com/scl/fi/im835k4m6kt3xvmz2tbdi/20240605_155830.mp4?rlkey=adf3m49xv0q6cguyhtnmo3exv&dl=0",
+            "https://www.dropbox.com/scl/fi/bqd7338o2vceqli9acxio/20240626_193938.jpg?rlkey=p9ythesi4uacyfk71afyurh0e&dl=0",
+            "https://www.dropbox.com/scl/fi/ljvat1zl7casnsb6g181m/20240626_194046.jpg?rlkey=8veee848wxtr2yx42gw4yoi1k&dl=0",
+            "https://www.dropbox.com/scl/fi/mbn1gycb1r9bwi1hm162j/20240626_193511.jpg?rlkey=6mh5mfjombtxfc7l7xupgx9c3&dl=0",
+            "https://www.dropbox.com/scl/fi/93u0e8nfsc43rhe5ne1sj/20240605_155009.mp4?rlkey=gc903n6k334uv0hs15pjnca2f&dl=0",
+            "https://www.dropbox.com/scl/fi/tjxmuko91z0dmbhv4ee8t/20240605_153220.mp4?rlkey=ozlitdzao5fohat3a4z6p9pts&dl=0",
+            "https://www.dropbox.com/scl/fi/igwbyoppkq4ereti9xbq6/20240605_151309.jpg?rlkey=ko92z0f1abfblik6on2ql2b80&dl=0",
+            "https://www.dropbox.com/scl/fi/pzk3tk2o3xz4144bgworw/20240605_154555.jpg?rlkey=fcef102hyxzdjtvru8hn8unye&dl=0",
+            "https://www.dropbox.com/scl/fi/3124wa9klbwo6orgj2fh4/20240605_150304.jpg?rlkey=cwvn9zal8unygxaothpbi6t7q&dl=0",
+            "https://www.dropbox.com/scl/fi/goi7w0f217xegjnbni3ho/20240605_150200.jpg?rlkey=hpz2wxsypbz9mi4d3oief9eir&dl=0"
+        ];
+
+        // Build galleries
+        function buildGalleries() {
+            const imgDiv = document.getElementById('image-gallery');
+
+            links.forEach(original => {
+                // Skip video files - they're now in videos.html
+                if (isVideoLink(original)) {
+                    return;
+                }
+
+                const raw = toRawLink(original);
+
+                // Image entry
+                const a = document.createElement('a');
+                a.setAttribute('data-fancybox', 'images');
+                a.setAttribute('href', raw);
+
+                const img = document.createElement('img');
+                img.src = raw;
+                img.alt = 'Bild';
+                img.loading = 'lazy';
+                a.appendChild(img);
+
+                imgDiv.appendChild(a);
+            });
+        }
+
+        // Initialize Fancybox
+        Fancybox.bind('[data-fancybox="images"]', {
+            Thumbs: {
+                type: "classic"
+            },
+            Toolbar: {
+                display: {
+                    left: [],
+                    middle: [],
+                    right: ["close"]
+                }
+            }
+        });
+
+        // Build galleries on page load
+        document.addEventListener('DOMContentLoaded', buildGalleries);
+    </script>
+</body>
+</html>

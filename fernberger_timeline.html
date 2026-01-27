@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Fernberger - Vorchdorfs Adelsgeschlecht</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #8B4513 0%, #CD853F 100%);
+            z-index: 9999;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.6);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a0f0a 0%, #2d1810 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139,69,19,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(205,133,63,0.1) 0%, transparent 40%);
+            animation: pulseGold 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGold {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            padding: 20px;
+        }
+
+        .castle-icon {
+            font-size: 8rem;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(139,69,19,0.6));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            margin-bottom: 20px;
+            color: #CD853F;
+            text-shadow: 0 0 40px rgba(205,133,63,0.5);
+            animation: fadeInDown 1.5s ease;
+            letter-spacing: 3px;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            opacity: 0.9;
+            color: #DEB887;
+            animation: fadeInUp 1.5s ease 0.3s backwards;
+            font-style: italic;
+        }
+
+        .hero .timespan {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            opacity: 0.8;
+            color: #CD853F;
+            margin-top: 15px;
+            animation: fadeInUp 1.5s ease 0.6s backwards;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            color: #CD853F;
+            font-size: 3em;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-20px); }
+            60% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Timeline Navigation */
+        .timeline-nav {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .timeline-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(139, 69, 19, 0.3);
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid rgba(139, 69, 19, 0.5);
+        }
+
+        .timeline-dot:hover {
+            background: rgba(139, 69, 19, 0.7);
+            transform: scale(1.3);
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.8);
+        }
+
+        .timeline-dot.active {
+            background: #8B4513;
+            box-shadow: 0 0 25px rgba(139, 69, 19, 0.9);
+            transform: scale(1.4);
+        }
+
+        .timeline-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-weight: bold;
+            color: #CD853F;
+            background: rgba(26, 15, 10, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+
+        .timeline-dot:hover::after,
+        .timeline-dot.active::after {
+            opacity: 1;
+        }
+
+        /* Story Sections */
+        .story-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 50px;
+            position: relative;
+        }
+
+        .story-content {
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .story-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-content.reverse {
+            direction: rtl;
+        }
+
+        .story-content.reverse > * {
+            direction: ltr;
+        }
+
+        .story-text h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            color: #CD853F;
+            text-shadow: 0 3px 20px rgba(205,133,63,0.4);
+        }
+
+        .story-text p {
+            font-size: 1.2rem;
+            line-height: 1.9;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            color: #e8e8e8;
+        }
+
+        .story-text .quote {
+            border-left: 4px solid #CD853F;
+            padding-left: 30px;
+            margin: 30px 0;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #DEB887;
+            opacity: 0.95;
+        }
+
+        .story-text .highlight {
+            color: #CD853F;
+            font-weight: bold;
+        }
+
+        /* Image Container */
+        .story-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(139, 69, 19, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .story-image:hover {
+            transform: scale(1.02);
+            border-color: rgba(139, 69, 19, 0.6);
+            box-shadow: 0 25px 80px rgba(139, 69, 19, 0.3);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .story-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, #2d1810 0%, #3d2520 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #CD853F;
+            border: 2px dashed rgba(139, 69, 19, 0.3);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .placeholder-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        /* Detailed Timeline Section */
+        .detailed-timeline {
+            min-height: 100vh;
+            padding: 100px 50px;
+            background: linear-gradient(135deg, #1a0f0a 0%, #0f0d0a 100%);
+        }
+
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .timeline-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: #CD853F;
+            margin-bottom: 20px;
+            text-shadow: 0 5px 30px rgba(205,133,63,0.4);
+        }
+
+        .timeline-header p {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            color: #DEB887;
+        }
+
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #8B4513 0%, #CD853F 100%);
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.5);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 120px;
+            padding-top: 40px;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-item:nth-child(even) {
+            transform: translateX(50px);
+        }
+
+        .timeline-item:nth-child(even).visible {
+            transform: translateX(0);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 0;
+            margin-right: calc(50% + 60px);
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: calc(50% + 60px);
+            margin-right: 0;
+        }
+
+        .timeline-content {
+            background: linear-gradient(135deg, rgba(45,24,16,0.9) 0%, rgba(26,15,10,0.9) 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: rgba(139, 69, 19, 0.6);
+            box-shadow: 0 15px 50px rgba(139, 69, 19, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .timeline-content h3 {
+            color: #CD853F;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: 50%;
+            top: -15px;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 25px rgba(139, 69, 19, 0.5);
+            border: 3px solid rgba(26, 15, 10, 0.8);
+            z-index: 10;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a0f0a 0%, #2d1810 100%);
+            text-align: center;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139,69,19,0.1) 0%, transparent 70%);
+            animation: ctaPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes ctaPulse {
+            0%, 100% { transform: scale(1) translate(-25%, -25%); }
+            50% { transform: scale(1.2) translate(-25%, -25%); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 30px;
+            color: #CD853F;
+            text-shadow: 0 5px 30px rgba(205,133,63,0.6);
+        }
+
+        .cta-content p {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 50px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #DEB887;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 25px 60px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 40px rgba(139, 69, 19, 0.4);
+            border: 3px solid rgba(26, 15, 10, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(139, 69, 19, 0.6);
+            background: linear-gradient(135deg, #A0522D 0%, #BC6C3F 100%);
+        }
+
+        /* Home quick button */
+        .home-button {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 20000;
+            background: #8B4513;
+            color: #DEB887;
+            padding: 8px 12px;
+            border-radius: 999px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+            background: #A0522D;
+        }
+
+        /* Sailboat Animation Container */
+        .sailboat-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .sailboat-container .portrait {
+            width: 70%;
+            max-width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .sailboat-container .portrait img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Animated Sailing Route */
+        .sailing-route {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(90deg, transparent, rgba(205,133,63,0.1), transparent);
+            border-top: 1px dashed rgba(139, 69, 19, 0.3);
+            border-bottom: 1px dashed rgba(139, 69, 19, 0.3);
+            border-radius: 15px;
+        }
+
+        .sailboat {
+            position: absolute;
+            font-size: 2rem;
+            animation: sailingPath 8s infinite linear;
+        }
+
+        .sailboat:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .sailboat:nth-child(2) {
+            animation-delay: 2.5s;
+            font-size: 1.8rem;
+            opacity: 0.7;
+        }
+
+        .sailboat:nth-child(3) {
+            animation-delay: 5s;
+            font-size: 1.6rem;
+            opacity: 0.5;
+        }
+
+        @keyframes sailingPath {
+            0% {
+                left: -50px;
+                transform: scaleX(1) translateY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% {
+                transform: scaleX(1) translateY(-15px);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                left: calc(100% + 50px);
+                transform: scaleX(1) translateY(0);
+                opacity: 0;
+            }
+        }
+
+        .sailboat.reverse {
+            animation: sailingPathReverse 8s infinite linear;
+            font-size: 2rem;
+        }
+
+        .sailboat.reverse:nth-child(2) {
+            animation: sailingPathReverse 8s infinite linear;
+            animation-delay: 2.5s;
+            font-size: 1.8rem;
+            opacity: 0.7;
+        }
+
+        .sailboat.reverse:nth-child(3) {
+            animation: sailingPathReverse 8s infinite linear;
+            animation-delay: 5s;
+            font-size: 1.6rem;
+            opacity: 0.5;
+        }
+
+        @keyframes sailingPathReverse {
+            0% {
+                right: -50px;
+                left: auto;
+                transform: scaleX(-1) translateY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% {
+                transform: scaleX(-1) translateY(-15px);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                right: calc(100% + 50px);
+                left: auto;
+                transform: scaleX(-1) translateY(0);
+                opacity: 0;
+            }
+        }
+
+        .sailboat-container .route-map {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .sailboat-container .route-map img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .story-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .story-content.reverse {
+                direction: ltr;
+            }
+
+            .timeline-nav {
+                display: none;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 60px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .timeline-line {
+                left: 20px;
+            }
+
+            .timeline-year {
+                left: 20px;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+    <!-- Home quick button -->
+    <a href="timeline.html" class="home-button" title="Zurück zur Zeitlinie">🧭 Zeitlinie</a>
+
+    <!-- Timeline Navigation -->
+    <div class="timeline-nav">
+        <div class="timeline-dot active" data-label="Start" data-target="hero"></div>
+        <div class="timeline-dot" data-label="Die Familie" data-target="intro"></div>
+        <div class="timeline-dot" data-label="Schloss Eggenberg" data-target="castle"></div>
+        <div class="timeline-dot" data-label="Weltreisende" data-target="travelers"></div>
+        <div class="timeline-dot" data-label="Zeitreise" data-target="timeline"></div>
+        <div class="timeline-dot" data-label="Museum" data-target="cta"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="castle-icon">🏰</div>
+            <h1>Die Fernberger</h1>
+            <p class="subtitle">Vorchdorfs bedeutendstes Adelsgeschlecht</p>
+            <p class="timespan">1527 — 1671</p>
+        </div>
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- Introduction: Die Familie -->
+    <section class="story-section" id="intro" style="background: linear-gradient(135deg, #1a0f0a 0%, #2d1810 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Die Fernberger Familie</h2>
+                <p>
+                    Zu den bekanntesten Familien in der Geschichte Vorchdorfs zählen die <span class="highlight">Fernberger</span>. Sie waren eine besonders interessante Familie, da sie hohe Beamte stellten, darunter auch einen <span class="highlight">Landeshauptmann</span>.
+                </p>
+                <p>
+                    Die Fernberger besaßen die <span class="highlight">Herrschaft Eggenberg</span> bei Vorchdorf, mit der die Familie <span class="highlight">1527</span> belehnt worden war. Als Stammsitz fungierte das Schloss Eggenberg, von dem aus sie ihre Ländereien verwalteten.
+                </p>
+                <p>
+                    Zwei Fernberger, die Verbindung zu Vorchdorf hatten, sind zudem als <span class="highlight">Weltreisende</span> bekannt geworden. Ihre Reiseberichte sind heute wertvolle historische Quellen.
+                </p>
+                <div class="quote">
+                    "Die Fernberger waren Grundherren, die das Land besaßen und an die Bauern verpachteten. Die Verwaltung erfolgte von den Schlössern aus."
+                </div>
+            </div>
+            <div class="story-image">
+                <img src="Fernberger/foto1.jpg" alt="Historische Darstellung von Schloss Eggenberg">
+            </div>
+        </div>
+    </section>
+
+    <!-- Schloss Eggenberg -->
+    <section class="story-section" id="castle" style="background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 100%);">
+        <div class="story-content reverse">
+            <div class="story-text">
+                <h2>Schloss Eggenberg</h2>
+                <p>
+                    <span class="highlight">Schloss Eggenberg</span> hat große Veränderungen durchgemacht. Es brannte im 19. Jahrhundert <span class="highlight">zweimal</span> ab – 1836 und 1877 – und heute ist nur noch ein karger Rest übrig.
+                </p>
+                <p>
+                    Vom ursprünglichen Bau sind hauptsächlich die <span class="highlight">Tortürme</span> erhalten geblieben. Der einst prachtvolle Wassergraben ist verschwunden, und das Gelände gehört heute zur Brauerei. Die Kapelle wurde nach dem Brand neu errichtet und existiert bis heute.
+                </p>
+                <p>
+                    Auf dem historischen Stich von <span class="highlight">Martin Fischer</span> kann man das Schloss noch in seiner ganzen Pracht sehen, zusammen mit der Kirche im gotischen Stil und der Ummauerung des Marktplatzes.
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="Fernberger/foto2.jpg" alt="Aktuelle Aufnahme der Schlossruine oder historisches Foto">
+            </div>
+        </div>
+    </section>
+
+    <!-- Georg Christoph Fernberger -->
+    <section class="story-section" id="travelers" style="background: linear-gradient(135deg, #1a0f0a 0%, #2d1810 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Georg Christoph Fernberger</h2>
+                <p class="highlight" style="font-size: 1.3rem;">Der erste "Fernreisende" (1557 - 1594)</p>
+                <p>
+                    Georg Christoph Fernberger war 1557 als Sohn des <span class="highlight">Vicedoms im Herzogtum Österreich ob der Enns</span> Ulrich Fernberger zur Welt gekommen. Als Stammsitz der Familie fungierte die Herrschaft Eggenberg bei Vorchdorf, mit der die Familie 1527 belehnt worden war.
+                </p>
+                <p>
+                    1588 brach er zusammen mit dem Niederösterreicher <span class="highlight">Hanns Christoph Teufel</span> von Istanbul aus zu einer Fernreise auf. Zuvor hatte er sich bereits <span class="highlight">mehr als drei Jahre</span> mit einer österreichischen Gesandtschaft am Hof des Sultans in Konstantinopel aufgehalten und dabei Kleinasien bereist.
+                </p>
+                <p>
+                    Fernberger und Teufel fuhren zuerst mit dem Schiff nach Ägypten: Nach einem Zwischenstopp in <span class="highlight">Rhodos</span> (wo sie die gewaltige Festung bewunderten und nach dem berühmten Koloss suchten) ging es über Alexandria nach Kairo und zu den <span class="highlight">Pyramiden</span>, die sie bestiegen und auch im Inneren zu ergründen versuchten.
+                </p>
+                <p>
+                    Nach einem Abstecher auf die Halbinsel <span class="highlight">Sinai</span> reisten sie über Aleppo ins Zweistromland. Sie besichtigten den <span class="highlight">Turm von Babel</span> (nahmen einen Ziegel als Souvenir mit!), dann Bagdad, das sie sehr enttäuschte.
+                </p>
+                <div class="quote">
+                    "Man zeigte ihm auch ein Erdölfeld, aus dem stinkend und brodelnd Pech und Schwefelwasser quoll: Die Sache ist wahrhaft der Besichtigung würdig!"
+                </div>
+                <p>
+                    Den <span class="highlight">Euphrat</span> hinunter fuhren sie in den Golf, nach <span class="highlight">Hormuz</span>, das schon damals aus dem Fernhandel den Ruf sagenhaften Reichtums genoss. In Hormuz trennten sich die Wege: Während Teufel zurück nach Europa reiste, wagte sich Fernberger allein per Schiff nach Indien weiter.
+                </p>
+                <p>
+                    Als <span class="highlight">erster Österreicher</span> hielt er sich in <span class="highlight">Goa</span> auf, wo ihn der Augsburger Ferdinand Cron, Agent der Fugger im Pfefferhandel, gastfreundlich aufnahm und unterstützte. Fernberger fuhr dann um den Subkontinent herum und gelangte in schrecklichen Stürmen bis ins <span class="highlight">Ganges-Delta</span> nach <span class="highlight">Bengalen</span>.
+                </p>
+                <p>
+                    Er erreichte als <span class="highlight">erster Österreicher</span> das sagenhafte Königreich <span class="highlight">Pegu</span> in Hinterindien mit den weißen Elefanten (das wenige Jahre nach seiner Anwesenheit unterging). Dort beobachtete er spektakuläre Elefantenjagden, sah Zimmer voll Gold und Silber und erlebte eine Mondfinsternis.
+                </p>
+                <p>
+                    Zurück reiste er über <span class="highlight">Malakka</span>, Ceylon und nochmals Goa, dann über Persien und das Heilige Land, wo er endlich sein ursprüngliches Ziel, <span class="highlight">Jerusalem</span>, erreichte. Am <span class="highlight">Van-See</span> in Armenien entdeckte er als erster Europäer der Neuzeit die Schriftfunktion der <span class="highlight">Keilschrift</span> und kopierte Inschriften. Statt nach Hause zog es ihn aber weiter nach <span class="highlight">Russland</span> und ins <span class="highlight">Baltikum</span>. Die Reisebeschreibung endet in Warschau und Krakau.
+                </p>
+                <p>
+                    1593 kehrte er nach Oberösterreich zurück und arbeitete an der Ausformulierung seiner Reiseerinnerungen, die er auf <span class="highlight">Latein</span> verfasste. Es hielt ihn aber nicht lange: Inzwischen war der so genannte „lange“ Türkenkrieg ausgebrochen.
+                </p>
+                <p>
+                    Er fuhr nach Ungarn und verstarb dort bereits ein Jahr nach seiner Rückkehr im Alter von <span class="highlight">34 Jahren</span> in einem Lazarett. Fernberger war von entdeckerischer Neugier getrieben. Beide, Fernberger und Teufel, führten ein Tagebuch. Teufel, der später eine große Karriere als <span class="highlight">kaiserlicher Botschafter</span> machte, hatte noch die Chance, es in Druck zu geben. Fernbergers Text blieb Manuskript. Ein Zeichner fertigte eine Reihe von Aquarellen an, die ein faszinierendes Bild Asiens in der Frühneuzeit vermitteln.
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="Fernberger/foto3.jpg" alt="Karte seiner Reiseroute oder historische Aquarelle von der Reise">
+            </div>
+        </div>
+    </section>
+
+    <!-- Christoph Carl Fernberger -->
+    <section class="story-section" style="background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 100%);">
+        <div class="story-content reverse">
+            <div class="story-text">
+                <h2>Christoph Carl Fernberger</h2>
+                <p class="highlight" style="font-size: 1.3rem;">Der erste Österreicher der die Welt umsegelte (kurz vor 1600 - 1653)</p>
+                <p>
+                    Christoph Carl Fernberger war der <span class="highlight">Großneffe</span> von Georg Christoph und wurde kurz vor 1600 geboren. Als zweiter Sohn eines nicht besonders begüterten österreichischen Adligen verließ er sein Vaterhaus mit nur fünf Dukaten in der Tasche und wurde der erste Österreicher, der die Welt umsegelte – mehr unfreiwillig als freiwillig.
+                </p>
+                <p>
+                    1620 schloss er sich als Protestant der spanischen Armee in den Niederlanden an, geriet in holländische Gefangenschaft und kaufte sich für 300 Gulden frei. Völlig abgebrannt heuerte er am <span class="highlight">18. Dezember 1620</span> als Küchengehilfe auf einem holländischen Kauffahrer an, der nach Venedig wollte – tatsächlich ging es nach <span class="highlight">Westafrika</span> zum Sklavenhandel.
+                </p>
+                <p>
+                    Bei <span class="highlight">Sierra Leone</span> erlitt das Schiff Schiffbruch. Ein Teil der Besatzung rettete sich auf eine kleine Felseninsel und litt furchtbar unter Hunger und Durst. Eine niederländische Flotte mit fünf Schiffen rettete die Überlebenden – doch nur die Hälfte war bereit, an der gefährlichen Weltumsegelung teilzunehmen.
+                </p>
+                <div class="quote">
+                    "Jedem war bewusst: Wann einer seinen theil aufgegössen hat, so hat sein zeit ein endt."
+                </div>
+                <p>
+                    Die Reise dauerte von <span class="highlight">1620 bis 1628</span> – über sieben Jahre! Von ursprünglich 1.300 Mann überlebten nur 318 die Strapazen. Allein auf Fernbergers Schiff starben innerhalb von 10 Tagen <span class="highlight">109 Mann an Skorbut</span>. Die Reise führte über Südamerika (wo sie spanische Niederlassungen plünderten), Kap Horn, 15 Monate durch den Pazifik bis Batavia.
+                </p>
+                <p>
+                    In Batavia kaufte er sich mit einem erbeuteten Edelstein aus dem Militärdienst frei und wurde <span class="highlight">Kaufmann</span>. Ein ehemaliger Schweizer Söldner half ihm, Fuß zu fassen. Er lernte die Landessprache und handelte mit Pfeffer, Gewürznelken und Stoffen.
+                </p>
+                <p>
+                    Anfang <span class="highlight">1624</span> half er der Sultanin von <span class="highlight">Patani</span> (Thailand) gegen eine siamesische Invasion. Mit nur 66 europäischen Musketieren und Pikenieren schlug er dank überlegener Waffen ein <span class="highlight">3.000 Mann starkes Heer</span> in die Flucht. Reich belohnt, verzichtete er darauf, als Berater zu bleiben.
+                </p>
+                <p>
+                    Er bereiste Persien (sogar Isfahan im Landesinneren), Macau, Taiwan und China. Im Oktober 1627 begann die Rückreise, die im Juni 1628 Seeland erreichte. Am <span class="highlight">19. August 1628</span> wurde er an den Kaiserhof geladen und überreichte der Kaiserin einen sprechenden Papagei – sein kostbarstes Reiseandenken.
+                </p>
+                <p>
+                    <span class="highlight">1642</span> erhielt er als Oberst ein Regiment im Dreißigjährigen Krieg. Er verstarb 1653 relativ jung in Maria Enzersdorf. Sein "Reißbüchlein" zeigt sein tiefes Interesse an fremden Kulturen – mehr als an materiellem Gewinn. Es wurde erst <span class="highlight">1968 im Palais Harrach in Wien</span> wiederentdeckt und ist für die Völkerkunde von unersetzlichem Wert.
+                </p>
+            </div>
+            <div class="story-image">
+                <div class="sailboat-container">
+                    <div class="portrait">
+                        <img src="Fernberger/fernberger.jpg" alt="Christoph Carl Fernberger">
+                    </div>
+                    <div class="sailing-route">
+                        <div class="sailboat">⛵</div>
+                        <div class="sailboat">⛵</div>
+                        <div class="sailboat">⛵</div>
+                    </div>
+                    <div class="route-map">
+                        <img src="Fernberger/foto4.jpg" alt="Weltumsegelung Reiseroute oder historische Abbildung">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Die Medaillen -->
+    <section class="story-section" style="background: linear-gradient(135deg, #1a0f0a 0%, #2d1810 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Fernberger Medaillen</h2>
+                <p>
+                    Die Medaillen der Fernberger sind von besonderem Interesse, da sie <span class="highlight">relativ selten</span> sind. Solche Medaillen wurden von den Herrschaften an Freunde, Gönner oder verdiente Untertanen verschenkt.
+                </p>
+                <p>
+                    Von einer ausgestellten <span class="highlight">goldenen Medaille</span> gibt es nur noch drei bekannte Exemplare. Die im Museum ausgestellten Medaillen sind jedoch Abgüsse – die Originale können größtenteils im <span class="highlight">Landesmuseum</span> besichtigt werden.
+                </p>
+                <p>
+                    Auch ein sogenannter <span class="highlight">Rechenpfennig</span> ist zu sehen. Er wurde auf Rechenbrettern zum Rechnen verwendet. Früher rechnete man nicht schriftlich, sondern legte Rechenpfennige oder Rechensteine auf Linien eines Brettes.
+                </p>
+                <p>
+                    Je nach Position auf der Linie standen die Steine für Werte wie 1, 5 oder 10. Diese Methode des Rechnens hielt sich bis ins <span class="highlight">18. Jahrhundert</span>.
+                </p>
+            </div>
+            <div class="story-image">
+                <div class="image-placeholder">
+                    <div class="placeholder-icon">🪙</div>
+                    <strong>FOTO BENÖTIGT:</strong><br>
+                    fernberger/medaillen.jpg<br><br>
+                    <em>Foto der Fernberger-Medaillen<br>
+                    und des Rechenpfennigs aus dem Museum</em>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Die große Urkunde -->
+    <section class="story-section" style="background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 100%);">
+        <div class="story-content reverse">
+            <div class="story-text">
+                <h2>Die kaiserliche Urkunde</h2>
+                <p>
+                    Eine Originalurkunde von <span class="highlight">Kaiser Ferdinand III.</span> ist für Vorchdorf von besonderem Interesse. Der Kaiser verlieh darin einem Vorchdorfer ein Privileg.
+                </p>
+                <p>
+                    <span class="highlight">Wolf Weichselbaumer</span>, der auf dem Gut Theuerwang lebte, hatte sich während des <span class="highlight">Bauernkriegs 1626</span> nicht den aufständischen Bauern angeschlossen, sondern blieb dem Kaiser treu.
+                </p>
+                <p>
+                    Er unterstützte die Kaiserlichen durch Kundschafterdienste, Nachschublieferungen und Verteidigungshilfe, was zum Sieg der Kaiserlichen führte.
+                </p>
+                <p>
+                    Als Dank erhielt Wolf Weichselbaumer das Privileg, auf seinem Gut <span class="highlight">jedes bürgerliche Gewerbe ausüben zu dürfen</span> – ein äußerst wertvolles Geschenk!
+                </p>
+                <div class="quote">
+                    "Das Privileg wurde später von Kaiser Josef I., Kaiser Josef II. und vermutlich auch von Maria Theresia bestätigt. Solche Privilegien sind nicht leicht zu löschen!"
+                </div>
+            </div>
+            <div class="story-image">
+                <div class="image-placeholder">
+                    <div class="placeholder-icon">📜</div>
+                    <strong>FOTO BENÖTIGT:</strong><br>
+                    fernberger/urkunde_ferdinand.jpg<br><br>
+                    <em>Die große Urkunde von Kaiser Ferdinand III.<br>
+                    aus dem Museumsarchiv</em>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Timeline -->
+    <section class="detailed-timeline" id="timeline">
+        <div class="timeline-header">
+            <h2>Zeitreise: Schloss Eggenberg</h2>
+            <p>Von den Anfängen bis heute</p>
+        </div>
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">1287</div>
+                <div class="timeline-content">
+                    <h3>Erste Erwähnung</h3>
+                    <p>Schloss Eggenberg wurde das erste Mal urkundlich erwähnt: Thiemo de Egenperge und seine Veste zu Egenberg. Die Familie de Egenperge begründet die Herrschaft.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1400</div>
+                <div class="timeline-content">
+                    <h3>Familie erlischt</h3>
+                    <p>Die Familie de Egenperge erlischt. Es folgen die Herren von Wallsee, die Eggenberg zeitweise an die Kirchberger verpfänden. Nach dem Aussterben der Wallseer fällt die Herrschaft an die Habsburger.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1527</div>
+                <div class="timeline-content">
+                    <h3>Die Fernberger kommen</h3>
+                    <p>König Ferdinand I. übergibt seinem Sekretär Johann Fernberger Eggenberg als Eigentum. Dies markiert den Beginn der Fernberger-Herrschaft in Vorchdorf.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1557</div>
+                <div class="timeline-content">
+                    <h3>Geburt von Georg Christoph</h3>
+                    <p>Georg Christoph Fernberger wird als Sohn des Vicedoms im Herzogtum Österreich ob der Enns Ulrich Fernberger geboren. Als Stammsitz der Familie fungiert die Herrschaft Eggenberg bei Vorchdorf. Er wird später als erster "Fernreisender" nach Asien Geschichte schreiben.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">bis 1588</div>
+                <div class="timeline-content">
+                    <h3>Drei Jahre in Konstantinopel</h3>
+                    <p>Georg Christoph hält sich mehr als drei Jahre mit einer österreichischen Gesandtschaft am Hof des Sultans in Konstantinopel auf und bereist dabei Kleinasien. Von dort aus startet er 1588 gemeinsam mit Hanns Christoph Teufel seine große Fernreise.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1588</div>
+                <div class="timeline-content">
+                    <h3>Ägypten und Mesopotamien</h3>
+                    <p>Von Istanbul aus reisen Fernberger und Teufel per Schiff nach Ägypten. Über Rhodos (wo sie nach dem berühmten Koloss suchen), Alexandria nach Kairo. Sie besteigen die Pyramiden und erforschen sie auch von innen. Nach einem Abstecher auf den Sinai geht es über Aleppo ins Zweistromland.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1588-1589</div>
+                <div class="timeline-content">
+                    <h3>Turm von Babel und Persischer Golf</h3>
+                    <p>Sie besichtigen den Turm von Babel (nehmen einen Ziegel als Souvenir mit!), dann Bagdad. Fernberger sieht ein Erdölfeld: "stinkend und brodelnd quoll Pech und Schwefelwasser - wahrhaft der Besichtigung würdig!" Den Euphrat hinunter erreichen sie Hormuz am Persischen Golf, das für sagenhaften Reichtum berühmt war.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1589-1591</div>
+                <div class="timeline-content">
+                    <h3>Erster Österreicher in Hinterindien</h3>
+                    <p>Von <span class="highlight">Hormuz</span> trennen sich die Wege: Teufel kehrt zurück, Fernberger segelt allein nach <span class="highlight">Indien</span>. In Goa wird er vom Augsburger <span class="highlight">Ferdinand Cron</span> (Agent der Fugger) gastfreundlich aufgenommen. Er umfährt den Subkontinent, gelangt in schrecklichen Stürmen ins Ganges-Delta nach <span class="highlight">Bengalen</span> und weiter zum Königreich <span class="highlight">Pegu</span> (heute Myanmar). Dort sieht er weiße Elefanten, spektakuläre Jagden und Zimmer voll Gold.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1591-1593</div>
+                <div class="timeline-content">
+                    <h3>Rückreise via Jerusalem und Keilschrift-Entdeckung</h3>
+                    <p>Über <span class="highlight">Malakka</span>, Ceylon, Goa und Hormuz kehrt er zurück. Durch <span class="highlight">Persien</span> (Lar, Shiraz, Isfahan, Kazwin, Täbriz) reist er nach Armenien. Am <span class="highlight">Van-See</span> entdeckt er als <span class="highlight">erster Europäer der Neuzeit die Schriftfunktion der Keilschrift</span> und kopiert urartäische Inschriften. In <span class="highlight">Jerusalem</span> erreicht er sein ursprüngliches Reiseziel. Die Reise führt noch durch Russland und Baltikum, bevor er 1593 nach Österreich zurückkehrt und an seinen lateinischen Erinnerungen arbeitet.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1594</div>
+                <div class="timeline-content">
+                    <h3>Tod im Lazarett</h3>
+                    <p>Georg Christoph Fernberger verstirbt im Alter von nur 34 Jahren in einem Lazarett in Ungarn während des "langen" Türkenkriegs – nur ein Jahr nach seiner Rückkehr. Sein Reisebegleiter Teufel macht später Karriere als kaiserlicher Botschafter und kann sein Tagebuch drucken lassen. Fernbergers lateinischer Text bleibt Manuskript. Die Aquarelle des mitgereisten Zeichners sind heute ein faszinierendes Zeitdokument.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">um 1600</div>
+                <div class="timeline-content">
+                    <h3>Geburt von Christoph Carl</h3>
+                    <p>Christoph Carl Fernberger wird kurz vor 1600 (wahrscheinlich auf Schloss Eggenberg) geboren. Als zweiter Sohn eines nicht besonders begüterten österreichischen Adligen hatte er zu Hause nicht viel zu erwarten. Er ist der Großneffe von Georg Christoph und wird später als erster Österreicher die Welt umsegeln.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1620</div>
+                <div class="timeline-content">
+                    <h3>Söldner in den Niederlanden</h3>
+                    <p>Wie viele seiner Standesgenossen beschließt Christoph Carl sein Glück als Söldner zu versuchen. Obwohl Protestant, schließt er sich 1620 der spanischen Armee in den Niederlanden an. Kurz darauf gerät er jedoch in holländische Gefangenschaft, kann sich aber für 300 Gulden freikaufen.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">18. Dezember 1620</div>
+                <div class="timeline-content">
+                    <h3>Beginn der großen Reise</h3>
+                    <p>Völlig abgebrannt heuert Christoph Carl als Küchengehilfe auf einem holländischen Kauffahrer an, der nach Venedig will. Die Reise beginnt in Amsterdam am 18. Dezember. Das Schiff erleidet Schiffbruch bei Sierra Leone, doch Fernberger kann sich auf eine Felseninsel retten.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1620-1628</div>
+                <div class="timeline-content">
+                    <h3>Weltumsegelung mit holländischer Flotte</h3>
+                    <p>Nach dem Schiffbruch rettet ihn eine niederländische Flotte mit fünf Schiffen auf Magellans Spuren. Von ursprünglich 1.300 Mann überleben nur 318 die strapaziöse Reise. Wochenlange Windstille, Skorbut (109 Tote in 10 Tagen auf einem Schiff), Hunger und Kämpfe prägen die Fahrt. Nach 15 Monaten auf See erreichen sie endlich Batavia – "eine solche Freude, die unaussprechlich war".</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1621-1623</div>
+                <div class="timeline-content">
+                    <h3>Kaufmann in Asien</h3>
+                    <p>Nach seiner Ankunft in Batavia kauft sich Christoph Carl mit einem erbeuteten Edelstein aus dem Militärdienst frei. Ein ehemaliger Schweizer Söldner hilft ihm, als Kaufmann Fuß zu fassen. Er lernt die Landessprache und beginnt mit Pfeffer, Gewürznelken und Stoffen zu handeln – bereist dabei China, Japan, Siam, Indien und Persien.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">Anfang 1624</div>
+                <div class="timeline-content">
+                    <h3>Militärischer Erfolg in Patani</h3>
+                    <p>In Patani (Thailand) fällt die siamesische Armee ein. Die Sultanin wendet sich an Fernberger, der mit 24 befreiten Niederländern und 42 Portugiesen eine Truppe von 66 Europäern aufstellt. Dank überlegener Waffen und Disziplin schlagen sie das 3.000 Mann starke siamesische Heer in die Flucht. Fernberger wird reich belohnt, verzichtet aber darauf, als Berater zu bleiben.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1624-1627</div>
+                <div class="timeline-content">
+                    <h3>Weitere Reisen durch Asien</h3>
+                    <p>Christoph Carl setzt seine ausgedehnten Handelsreisen fort und besucht Persien (sogar Isfahan im Landesinneren) und Macau. Die fremden Kulturen faszinieren ihn – er beherrscht Niederländisch, Portugiesisch und Malay. Seine Berichte fokussieren mehr auf Sitten, Tiere und Politik als auf Geschäfte.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1. Oktober 1627</div>
+                <div class="timeline-content">
+                    <h3>Rückreise nach Europa</h3>
+                    <p>Im Herbst 1627 verkauft Christoph Carl seinen Besitz und beginnt am 1. Oktober die lange Seereise zurück nach Europa. Wieder fordert der Skorbut zahlreiche Opfer unter den Seeleuten. Im Juni 1628 erreichen sie endlich Seeland. Von dort reist er über Amsterdam, Hamburg und Prag nach Wien.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">19. August 1628</div>
+                <div class="timeline-content">
+                    <h3>Audienz am Kaiserhof</h3>
+                    <p>Christoph Carl wird an den kaiserlichen Hof geladen und überreicht der Kaiserin am 19. August 1628 einen sprechenden Papagei als Geschenk. Der Vogel kann auf Malay sagen: "Wann ihr dem Vogel nit werdt zu essen geben, so wird er Hungers sterben!" – sein kostbarstes Reiseandenken. Er hatte die Welt mit nur fünf Dukaten in der Tasche verlassen.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1642</div>
+                <div class="timeline-content">
+                    <h3>Oberst im Dreißigjährigen Krieg</h3>
+                    <p>1642 erhält Christoph Carl als Oberst ein Regiment, das er im Dreißigjährigen Krieg führt. Der weitgereiste Abenteurer kehrt damit zu seinen militärischen Wurzeln zurück.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1651</div>
+                <div class="timeline-content">
+                    <h3>Gegenreformation</h3>
+                    <p>Die protestantischen Fernberger verlieren nach der Gegenreformation Eggenberg an Hans Ludwig von Kufstein, der damals Landeshauptmann von Oberösterreich war.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1653</div>
+                <div class="timeline-content">
+                    <h3>Tod des Weltreisenden</h3>
+                    <p>Christoph Carl Fernberger verstirbt 1653 relativ jung in Maria Enzersdorf. Sein "Reißbüchlein" zeigt sein tiefes Interesse an fremden Kulturen und exotischen Dingen – mehr als an materiellem Gewinn. Das Tagebuch gerät in Vergessenheit und wird über 300 Jahre lang nicht beachtet.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1968</div>
+                <div class="timeline-content">
+                    <h3>Sensationsfund!</h3>
+                    <p>Das Reisetagebuch von Christoph Carl Fernberger wird im Palais Harrach in Wien wiederentdeckt! Das 271 Seiten umfassende Manuskript ist ein kulturanthropologisches Dokument von unersetzlichem Wert für die Völkerkunde.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2008</div>
+                <div class="timeline-content">
+                    <h3>Landesausstellung</h3>
+                    <p>Die Oberösterreichische Landesausstellung würdigt beide Fernberger-Weltreisende auf Schloss Eggenberg. Ihre Geschichten werden einem breiten Publikum zugänglich gemacht und ihre Bedeutung für Oberösterreich gewürdigt.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1671</div>
+                <div class="timeline-content">
+                    <h3>Familie stirbt aus</h3>
+                    <p>Die Familie Fernberger stirbt aus. Damit endet eine Ära von 144 Jahren Fernberger-Herrschaft in Vorchdorf. Ihre Verbindung zu Eggenberg war bereits früher im 17. Jahrhundert durch Verkauf beendet worden.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1680</div>
+                <div class="timeline-content">
+                    <h3>Kremsmünster übernimmt</h3>
+                    <p>Die Erben Kufsteins verkaufen Eggenberg an das Stift Kremsmünster. Das Kloster wird zum neuen Besitzer der Herrschaft.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1803</div>
+                <div class="timeline-content">
+                    <h3>Neue Besitzer</h3>
+                    <p>Johann Georg Forstinger erwirbt Schloss und Brauerei. Besitznachfolger wird später die Familie Stöhr. Das Schloss geht in bürgerliche Hände über.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1836 & 1877</div>
+                <div class="timeline-content">
+                    <h3>Katastrophale Brände</h3>
+                    <p>Schwere Schadenfeuer zerstören große Teile des Schlosses. Ein umfassender Neubau folgt, doch von der ursprünglichen Pracht bleiben nur die Tortürme erhalten. Der Wassergraben verschwindet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="cta-content">
+            <h2>Erleben Sie die Geschichte</h2>
+            <p>Besuchen Sie das Museum Vorchdorf und entdecken Sie die Fernberger-Medaillen, die kaiserliche Urkunde und viele weitere Schätze aus der Zeit des Adels.</p>
+            <a href="index.html" class="cta-button">Museum besuchen</a>
+        </div>
+    </section>
+
+    <script>
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Intersection Observer
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.story-content, .timeline-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Timeline Navigation
+        const timelineDots = document.querySelectorAll('.timeline-dot');
+        const sections = document.querySelectorAll('section[id]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            timelineDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-target') === current) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+
+        timelineDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const target = dot.getAttribute('data-target');
+                const targetSection = document.getElementById(target);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Scroll indicator
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', () => {
+                document.querySelector('#intro').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    </script>
+</body>
+</html>

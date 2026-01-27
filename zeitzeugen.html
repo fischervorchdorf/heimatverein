@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeitzeugen & Geschichten - Heimatverein Vorchdorf</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2c3e50;
+            --secondary-dark: #34495e;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+            --warm-cream: #ecf0f1;
+            --light-gray: #7f8c8d;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* NAVIGATION (aus dem zweiten HTML übernommen – funktioniert korrekt!) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .site-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-gold);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        /* MOBILE NAV identisch wie im funktionierenden HTML */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--primary-dark);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                gap: 1rem;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+        .site-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+        .nav-menu li {
+            list-style: none;
+        }
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-gold);
+        }
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
+            padding: 8rem 2rem 3rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .page-header p {
+            font-size: 1.2rem;
+            color: var(--warm-cream);
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+            padding: 3rem 2rem;
+            margin-top: -3rem;
+        }
+        .zeitzeugen-form {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .zeitzeugen-form h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--warm-cream);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+        .form-group input[type="file"] {
+            padding: 0.3rem;
+            background: var(--warm-cream);
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, var(--accent-gold), #f39c12);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        .stories-list {
+            margin-top: 3rem;
+        }
+        .story {
+            background: var(--warm-cream);
+            border-left: 5px solid var(--accent-gold);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .story img {
+            max-width: 180px;
+            max-height: 180px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .story-content {
+            flex: 1;
+        }
+        .story-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+        .story-content p {
+            margin-bottom: 0.5rem;
+        }
+        .story-meta {
+            font-size: 0.95rem;
+            color: var(--light-gray);
+            margin-bottom: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .story {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .story img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+        .footer {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        .footer h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        .footer p, .footer a {
+            color: var(--warm-cream);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+        .footer a:hover {
+            color: var(--accent-gold);
+        }
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--warm-cream);
+        }
+        /* Hamburger & mobile nav (same behaviour as index.html) */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--primary-dark);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                gap: 1rem;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
+            <li><a href="audioguide.html">Audioguide</a></li>
+            <li><a href="exponate.html">Exponate</a></li>
+            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+            <li><a href="timeline.html">Zeitlinie</a></li>
+            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>🕰️ Zeitzeugen & Geschichten</h1>
+        <p>Teile deine Erinnerungen, Bilder und Geschichten aus der Region Vorchdorf!</p>
+    </header>
+
+    <div class="container">
+        <form class="zeitzeugen-form" method="POST" enctype="multipart/form-data" action="mailto:fischervorchdorf@gmx.at">
+            <h2>Deine Zeitzeugen-Geschichte einreichen</h2>
+            <div class="form-group">
+                <label for="bild">Bild hochladen (JPG, PNG, max. 10MB)</label>
+                <input type="file" id="bild" name="bild" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="titel">Titel der Geschichte *</label>
+                <input type="text" id="titel" name="titel" required placeholder="Z.B. 'Mein Vater beim Holzarbeiten'">
+            </div>
+            <div class="form-group">
+                <label for="geschichte">Geschichte / Beschreibung *</label>
+                <textarea id="geschichte" name="geschichte" required placeholder="Was ist auf dem Bild zu sehen? Wer ist abgebildet? Was ist die Geschichte dahinter?" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="kontakt">Deine Kontaktdaten (optional, für Rückfragen)</label>
+                <input type="text" id="kontakt" name="kontakt" placeholder="E-Mail oder Telefonnummer">
+            </div>
+            <button type="submit" class="submit-btn">Absenden</button>
+            <p style="font-size: 0.9rem; color: var(--light-gray); margin-top: 1rem;">Mit dem Absenden erklärst du dich einverstanden, dass wir dich ggf. kontaktieren dürfen und deine Geschichte nach Prüfung veröffentlichen.</p>
+        </form>
+
+        <div class="stories-list">
+            <h2 style="color: var(--primary-dark); margin-bottom: 2rem;">Freigegebene Zeitzeugen-Geschichten</h2>
+            <!-- Beispiel für eine veröffentlichte Geschichte -->
+            <div class="story">
+                <img src="Bilder/Beispielbild_Zeitzeuge.jpg" alt="Zeitzeugenbild Beispiel">
+                <div class="story-content">
+                    <h3>Mein Vater beim Holzarbeiten (ca. 1960)</h3>
+                    <div class="story-meta">Eingereicht von: Max Mustermann</div>
+                    <p>Auf diesem Bild sieht man meinen Vater, wie er mit einfachen Werkzeugen Holz für den Winter vorbereitet. Im Hintergrund erkennt man die alte Scheune, die heute nicht mehr steht. Links im Bild ist auch unser Nachbar Herr Huber zu sehen, der oft geholfen hat.</p>
+                </div>
+            </div>
+            <!-- Weitere Geschichten können hier als HTML ergänzt werden -->
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                <p>Bewahrer des kulturellen Erbes<br>der Region Vorchdorf seit Generationen</p>
+            </div>
+            <div>
+                <h4>Kontakt</h4>
+                <p>Bahnhofstraße 9<br>4655 Vorchdorf<br>E-Mail: dr.claudia@westreicher.at</p>
+            </div>
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>4655 Vorchdorf<br>Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+</body>
+</html>

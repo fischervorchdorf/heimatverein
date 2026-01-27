@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzerklärung - Heimat- und Kulturverein Vorchdorf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2c3e50;
+            --secondary-dark: #34495e;
+            --light-gray: #7f8c8d;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+            --warm-cream: #ecf0f1
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .site-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-gold);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
+            padding: 10rem 2rem 5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+        }
+
+        /* Content */
+        .content {
+            padding: 4rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .content h2 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            padding-top: 1rem;
+            border-top: 2px solid var(--warm-cream);
+        }
+
+        .content h2:first-child {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .content h3 {
+            color: var(--secondary-dark);
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .content ul {
+            margin: 1rem 0 1rem 2rem;
+            line-height: 1.8;
+        }
+
+        .content a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--text-light);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer p, .footer a {
+            color: var(--warm-cream);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--warm-cream);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--primary-dark);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                gap: 1rem;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                padding: 2rem;
+            }
+
+            .site-title {
+                font-size: 1rem;
+            }
+
+            .logo {
+                height: 40px;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
+            <li><a href="audioguide.html">Audioguide</a></li>
+            <li><a href="exponate.html">Exponate</a></li>
+            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+            <li><a href="timeline.html">Zeitlinie</a></li>
+            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Datenschutzerklärung</h1>
+    </header>
+
+    <!-- Content -->
+    <section class="content">
+        <div class="container">
+            <h2>Datenschutz</h2>
+            <p>
+                Wir haben diese Datenschutzerklärung verfasst, um Ihnen gemäß der Vorgaben der Datenschutz-Grundverordnung (EU) 2016/679 und dem Datenschutzgesetz (DSG) zu erklären, welche Informationen wir sammeln, wie wir Daten verwenden und welche Entscheidungsmöglichkeiten Sie als Besucher dieser Website haben.
+            </p>
+
+            <h2>Verantwortlicher</h2>
+            <p>
+                <strong>Heimat- und Kulturverein Vorchdorf</strong><br>
+                Bahnhofstraße 9<br>
+                4655 Vorchdorf<br>
+                Österreich
+            </p>
+            <p>
+                E-Mail: <a href="mailto:dr.claudia@westreicher.at">dr.claudia@westreicher.at</a><br>
+                Verantwortlich für Inhalt: Mag. Martin Fischer
+            </p>
+
+            <h2>Kontaktdaten des Datenschutzbeauftragten</h2>
+            <p>
+                Falls Sie Fragen zum Datenschutz haben, finden Sie nachfolgend die Kontaktdaten der verantwortlichen Person:
+            </p>
+            <p>
+                MR Dr. Claudia Westreicher<br>
+                E-Mail: <a href="mailto:dr.claudia@westreicher.at">dr.claudia@westreicher.at</a>
+            </p>
+
+            <h2>Speicherung persönlicher Daten</h2>
+            <p>
+                Persönliche Daten, die Sie uns auf dieser Website elektronisch übermitteln, wie zum Beispiel Name, E-Mail-Adresse, Adresse oder andere persönlichen Angaben im Rahmen der Übermittlung eines Formulars oder Kommentaren im Blog, werden von uns gemeinsam mit dem Zeitpunkt und der IP-Adresse nur zum jeweils angegebenen Zweck verwendet, sicher verwahrt und nicht an Dritte weitergegeben.
+            </p>
+            <p>
+                Wir nutzen Ihre persönlichen Daten somit nur für die Kommunikation mit jenen Besuchern, die Kontakt ausdrücklich wünschen und für die Abwicklung der auf dieser Website angebotenen Dienstleistungen und Produkte. Wir geben Ihre persönlichen Daten ohne Zustimmung nicht weiter, können jedoch nicht ausschließen, dass diese Daten beim Vorliegen von rechtswidrigem Verhalten eingesehen werden.
+            </p>
+
+            <h2>Ihre Rechte</h2>
+            <p>
+                Ihnen stehen grundsätzlich die Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit, Widerruf und Widerspruch zu. Wenn Sie glauben, dass die Verarbeitung Ihrer Daten gegen das Datenschutzrecht verstößt oder Ihre datenschutzrechtlichen Ansprüche sonst in einer Weise verletzt worden sind, können Sie sich bei der Aufsichtsbehörde beschweren. In Österreich ist dies die Datenschutzbehörde.
+            </p>
+
+            <h3>Recht auf Auskunft</h3>
+            <p>
+                Sie haben das Recht, jederzeit Auskunft über Ihre bei uns gespeicherten personenbezogenen Daten zu erhalten.
+            </p>
+
+            <h3>Recht auf Berichtigung</h3>
+            <p>
+                Sie haben das Recht, die Berichtigung unrichtiger oder die Vervollständigung Ihrer bei uns gespeicherten personenbezogenen Daten zu verlangen.
+            </p>
+
+            <h3>Recht auf Löschung</h3>
+            <p>
+                Sie haben das Recht, die Löschung Ihrer bei uns gespeicherten personenbezogenen Daten zu verlangen, soweit nicht die Verarbeitung zur Ausübung des Rechts auf freie Meinungsäußerung und Information, zur Erfüllung einer rechtlichen Verpflichtung, aus Gründen des öffentlichen Interesses oder zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen erforderlich ist.
+            </p>
+
+            <h3>Recht auf Einschränkung der Verarbeitung</h3>
+            <p>
+                Sie haben das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen, wenn die Richtigkeit der Daten von Ihnen bestritten wird, die Verarbeitung unrechtmäßig ist, Sie aber deren Löschung ablehnen, wir die Daten nicht mehr benötigen, Sie diese aber zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen benötigen oder Sie Widerspruch gegen die Verarbeitung eingelegt haben.
+            </p>
+
+            <h3>Recht auf Datenübertragbarkeit</h3>
+            <p>
+                Sie haben das Recht, die Sie betreffenden personenbezogenen Daten in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten und diese Daten einem anderen Verantwortlichen zu übermitteln.
+            </p>
+
+            <h3>Widerspruchsrecht</h3>
+            <p>
+                Sie haben das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit gegen die Verarbeitung Sie betreffender personenbezogener Daten Widerspruch einzulegen.
+            </p>
+
+            <h2>Kontaktdaten</h2>
+            <p>
+                Wenn Sie uns per Formular auf der Website oder per E-Mail Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.
+            </p>
+
+            <h2>Cookies</h2>
+            <p>
+                Diese Website verwendet keine Cookies. Sollten in Zukunft Cookies eingesetzt werden, werden Sie darüber informiert.
+            </p>
+
+            <h2>Web-Analytics</h2>
+            <p>
+                Diese Website verwendet derzeit keine Web-Analytics-Tools. Sollten in Zukunft solche Tools eingesetzt werden, werden Sie darüber informiert und können der Nutzung widersprechen.
+            </p>
+
+            <h2>Eingebettete Social-Media-Elemente</h2>
+            <p>
+                Wir betten auf unserer Website Elemente von Social-Media-Diensten ein, um Bilder, Videos und Texte anzuzeigen. Durch den Besuch von Seiten, die diese Elemente darstellen, werden Daten von Ihrem Browser zum jeweiligen Social-Media-Dienst übertragen. Wir haben keinen Einfluss auf den Umfang der Daten, die auf diese Weise erhoben werden.
+            </p>
+
+            <h2>Rechtsgrundlage</h2>
+            <p>
+                Die Verarbeitung Ihrer personenbezogenen Daten erfolgt auf Grundlage der gesetzlichen Bestimmungen:
+            </p>
+            <ul>
+                <li>Art. 6 Abs. 1 lit. a DSGVO (Einwilligung)</li>
+                <li>Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)</li>
+                <li>Art. 6 Abs. 1 lit. f DSGVO (Berechtigtes Interesse)</li>
+            </ul>
+
+            <h2>Datenweitergabe an Dritte</h2>
+            <p>
+                Eine Weitergabe Ihrer personenbezogenen Daten an Dritte erfolgt nur, wenn:
+            </p>
+            <ul>
+                <li>Sie Ihre ausdrückliche Einwilligung dazu erteilt haben (Art. 6 Abs. 1 S. 1 lit. a DSGVO)</li>
+                <li>die Weitergabe zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen erforderlich ist und kein Grund zur Annahme besteht, dass Sie ein überwiegendes schutzwürdiges Interesse an der Nichtweitergabe Ihrer Daten haben (Art. 6 Abs. 1 S. 1 lit. f DSGVO)</li>
+                <li>eine gesetzliche Verpflichtung zur Weitergabe besteht (Art. 6 Abs. 1 S. 1 lit. c DSGVO)</li>
+            </ul>
+
+            <h2>Speicherdauer</h2>
+            <p>
+                Ihre personenbezogenen Daten werden nur so lange gespeichert, wie dies für den jeweiligen Zweck erforderlich ist oder gesetzliche Aufbewahrungsfristen bestehen.
+            </p>
+
+            <h2>Datensicherheit</h2>
+            <p>
+                Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird. Ob eine einzelne Seite unseres Internetauftrittes verschlüsselt übertragen wird, erkennen Sie an der geschlossenen Darstellung des Schließ-Symbols in der unteren Statusleiste Ihres Browsers.
+            </p>
+            <p>
+                Wir bedienen uns im Übrigen geeigneter technischer und organisatorischer Sicherheitsmaßnahmen, um Ihre Daten gegen zufällige oder vorsätzliche Manipulationen, teilweisen oder vollständigen Verlust, Zerstörung oder gegen den unbefugten Zugriff Dritter zu schützen.
+            </p>
+
+            <h2>Aktualität und Änderung dieser Datenschutzerklärung</h2>
+            <p>
+                Diese Datenschutzerklärung ist aktuell gültig und hat den Stand November 2024. Durch die Weiterentwicklung unserer Website und Angebote oder aufgrund geänderter gesetzlicher beziehungsweise behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern. Die jeweils aktuelle Datenschutzerklärung kann jederzeit auf der Website von Ihnen abgerufen und ausgedruckt werden.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                <p>Bewahrer des kulturellen Erbes<br>
+                   der Region Vorchdorf seit Generationen</p>
+            </div>
+            <div>
+                <h4>Kontakt</h4>
+                <p>Bahnhofstraße 9<br>
+                   4655 Vorchdorf<br>
+                   E-Mail: dr.claudia@westreicher.at</p>
+            </div>
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>
+                   4655 Vorchdorf<br>
+                   Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

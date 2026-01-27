@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitaler Audioguide - Heimat- und Kulturverein Vorchdorf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2c3e50;
+            --secondary-dark: #34495e;
+            --light-gray: #7f8c8d;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+            --warm-cream: #ecf0f1;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .site-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-gold);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%2334495e" width="1200" height="400"/></svg>');
+            background-size: cover;
+            padding: 10rem 2rem 5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Content */
+        .content {
+            padding: 4rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Intro Section */
+        .intro-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 4rem;
+        }
+
+        .intro-section h2 {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background: var(--warm-cream);
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-gold);
+            margin: 2rem 0;
+        }
+
+        .highlight-box h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .highlight-box li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .highlight-box li:before {
+            content: "🎧";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Audio/Video Cards */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .media-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .media-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .media-placeholder {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--light-gray), var(--secondary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .media-type-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--accent-gold);
+            color: var(--text-dark);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .play-icon {
+            font-size: 4rem;
+            color: var(--accent-gold);
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 5px;
+        }
+
+        .media-content {
+            padding: 2rem;
+        }
+
+        .media-card h3 {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .media-card p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .media-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding-top: 1rem;
+            border-top: 2px solid var(--warm-cream);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Price Info Box */
+        .price-box {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            color: var(--text-light);
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .price-box h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .price-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--text-light);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer p, .footer a {
+            color: var(--warm-cream);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--warm-cream);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--primary-dark);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                gap: 1rem;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .media-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .site-title {
+                font-size: 1rem;
+            }
+
+            .logo {
+                height: 40px;
+                width: auto;
+            }
+
+            .intro-section {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
+            <li><a href="audioguide.html">Audioguide</a></li>
+            <li><a href="exponate.html">Exponate</a></li>
+            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+            <li><a href="timeline.html">Zeitlinie</a></li>
+            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Digitaler Audioguide</h1>
+        <p>Entdecken Sie das Museum der Region Vorchdorf mit unserem brandneuen digitalen Audioguide!</p>
+    </header>
+
+    <!-- Content -->
+    <section class="content">
+        <div class="container">
+            <!-- Intro Section -->
+            <div class="intro-section">
+                <h2>🎧 Spannende Neuheit: Audioguide ab jetzt verfügbar!</h2>
+                <p>Wir freuen uns, Ihnen eine spannende Innovation präsentieren zu können: </p>
+                
+                <p>Tauchen Sie mit unserem Audioguide in die Vergangenheit ein und entdecken Sie die faszinierende Geschichte der Region Vorchdorf auf eine ganz neue, interaktive Weise. Ob die beeindruckende Pfeifensammlung, die berühmten Krumhuber-Uhren oder die bewegende Industriegeschichte der Kitzmantelfabrik – unser Audioguide begleitet Sie durch alle Ausstellungsbereiche.</p>
+
+                <div class="highlight-box">
+                    <h3>Vorteile des digitalen Audioguides:</h3>
+                    <ul>
+                        <li>Flexibles Erkunden in Ihrem eigenen Tempo</li>
+                        <li>Detaillierte Hintergrundinformationen zu allen Exponaten</li>
+                        <li>Sehr viele Audio- und Videoinhalte</li>
+                        <li>Interaktive Stationen mit Zusatzinformationen</li>
+                        <li>Perfekt für Einzelbesucher aber auch kleineren Gruppen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Price Box -->
+            <div class="price-box">
+                <h2>Audioguide Service</h2>
+                <div class="price">€ 2,00</div>
+                <p>
+                   Inklusive aller Stationen und Zusatzinhalte<br>
+                   Im Eintrittspreis NICHT enthalten</p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Einfache Bedienung</h3>
+                    <p>Intuitives Interface für alle Altersgruppen</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📍</div>
+                    <h3>Alle Bereiche</h3>
+                    <p>Vollständige Abdeckung aller Ausstellungsbereiche</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔊</div>
+                    <h3>Interessante Audiobeiträge</h3>
+                    <p>Teilweise von ehemaligen Vereinsvorständen besprochen</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <h3>Einfache Software</h3>
+                    <p>Viele Video- und Audiobeiträge, Texte und Links</p>
+                </div>
+            </div>
+
+            <!-- Media Grid -->
+            <h2 style="text-align: center; color: var(--primary-dark); font-size: 2.5rem; margin: 4rem 0 2rem;">Hörproben & Videobeispiele</h2>
+            <div class="media-grid">
+                <!-- Video 1 -->
+                <div class="media-card">
+                    <div class="media-placeholder">
+                        <span class="media-type-badge">Video</span>
+                        <div class="play-icon">▶</div>
+                    </div>
+                    <div class="media-content">
+                        <h3>Krumhuber Taschenuhren</h3>
+                        <p>Erfahren Sie mehr über die weltberühmten Spindeltaschenuhren der Vorchdorfer Uhrmacherfamilie Krumhuber aus dem 18. und 19. Jahrhundert.</p>
+                        <video controls style="width: 100%; margin: 1rem 0; border-radius: 10px;">
+                            <source src="video/Spindeluhrerklärung am Model.mp4" type="video/mp4">
+                            Ihr Browser unterstützt das Video-Element nicht.
+                        </video>
+                        <div class="media-meta">
+                            <div class="meta-item">
+                                <span>⏱️</span>
+                                <span>Video</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>🎬</span>
+                                <span>HD-Video</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio 2 -->
+                <div class="media-card">
+                    <div class="media-placeholder">
+                        <span class="media-type-badge">Audio</span>
+                        <div class="play-icon">▶</div>
+                    </div>
+                    <div class="media-content">
+                        <h3>Tabakpfeifensammlung</h3>
+                        <p>Tauchen Sie ein in die Geschichte der einzigartigen Pfeifensammlung und erfahren Sie spannende Details über die einzelnen Exponate.</p>
+                        <audio controls style="width: 100%; margin: 1rem 0;">
+                            <source src="audio/Saubladern.mp3" type="audio/mpeg">
+                            Ihr Browser unterstützt das Audio-Element nicht.
+                        </audio>
+                        <div class="media-meta">
+                            <div class="meta-item">
+                                <span>⏱️</span>
+                                <span>1:15 Min</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>🎵</span>
+                                <span>Deutsch</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="media-card">
+                    <div class="media-placeholder">
+                        <span class="media-type-badge">Video</span>
+                        <div class="play-icon">▶</div>
+                    </div>
+                    <div class="media-content">
+                        <h3>Kitzmantelfabrik Geschichte</h3>
+                        <p>Zeitzeugenberichte und historische Aufnahmen dokumentieren die bewegende Geschichte der Schuhfabrik bis 1995.</p>
+                        <video controls style="width: 100%; margin: 1rem 0; border-radius: 10px;">
+                            <source src="video/20240320_104716.mp4" type="video/mp4">
+                            Ihr Browser unterstützt das Video-Element nicht.
+                        </video>
+                        <div class="media-meta">
+                            <div class="meta-item">
+                                <span>⏱️</span>
+                                <span>Video</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>🎬</span>
+                                <span>HD-Video</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Call to Action -->
+            <div class="intro-section" style="margin-top: 4rem; text-align: center;">
+                <h2>Jetzt im Museum erleben!</h2>
+                <p>Leihen Sie sich unseren Audioguide an der Museumskasse aus und entdecken Sie die Geschichte der Region Vorchdorf <br> auf eine ganz neue Art. Erhältlich während allen Öffnungszeiten und auch bei individuellen Führungen nach Vereinbarung.</p>
+                <p style="margin-top: 2rem;">
+                    <a href="kontakt.html" style="display: inline-block; padding: 1.2rem 3rem; background: linear-gradient(135deg, var(--accent-gold), #b8951f); color: var(--text-dark); text-decoration: none; font-weight: 700; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;">
+                        Museumsbesuch planen
+                    </a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                <p>Bewahrer des kulturellen Erbes<br>
+                   der Region Vorchdorf seit Generationen</p>
+            </div>
+            <div>
+                <h4>Kontakt</h4>
+                <p>Bahnhofstraße 9<br>
+                   4655 Vorchdorf<br>
+                   E-Mail: dr.claudia@westreicher.at</p>
+            </div>
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>
+                   4655 Vorchdorf<br>
+                   Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

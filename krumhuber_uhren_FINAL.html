@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Krumhuber Uhrmacher-Dynastie | 110 Jahre Handwerkskunst in Vorchdorf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #c9a961 0%, #f4e5c2 100%);
+            z-index: 9999;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 20px rgba(201, 169, 97, 0.6);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1410 0%, #2d2416 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(201,169,97,0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(244,229,194,0.08) 0%, transparent 40%);
+            animation: pulseGold 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGold {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            padding: 20px;
+        }
+
+        .clock-icon {
+            font-size: 8rem;
+            margin-bottom: 30px;
+            animation: clockRotate 20s linear infinite;
+            filter: drop-shadow(0 0 30px rgba(201,169,97,0.6));
+        }
+
+        @keyframes clockRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            margin-bottom: 20px;
+            color: #c9a961;
+            text-shadow: 0 0 40px rgba(201,169,97,0.5);
+            animation: fadeInDown 1.5s ease;
+            letter-spacing: 3px;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            opacity: 0.9;
+            color: #f4e5c2;
+            animation: fadeInUp 1.5s ease 0.3s backwards;
+            font-style: italic;
+        }
+
+        .hero .timespan {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            opacity: 0.8;
+            color: #c9a961;
+            margin-top: 15px;
+            animation: fadeInUp 1.5s ease 0.6s backwards;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            color: #c9a961;
+            font-size: 3em;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-20px); }
+            60% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Timeline Navigation */
+        .timeline-nav {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .timeline-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(201, 169, 97, 0.3);
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid rgba(201, 169, 97, 0.5);
+        }
+
+        .timeline-dot:hover {
+            background: rgba(201, 169, 97, 0.7);
+            transform: scale(1.3);
+            box-shadow: 0 0 20px rgba(201, 169, 97, 0.8);
+        }
+
+        .timeline-dot.active {
+            background: #c9a961;
+            box-shadow: 0 0 25px rgba(201, 169, 97, 0.9);
+            transform: scale(1.4);
+        }
+
+        .timeline-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-weight: bold;
+            color: #c9a961;
+            background: rgba(26, 20, 16, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(201, 169, 97, 0.3);
+        }
+
+        .timeline-dot:hover::after,
+        .timeline-dot.active::after {
+            opacity: 1;
+        }
+
+        /* Story Sections */
+        .story-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 50px;
+            position: relative;
+        }
+
+        .story-content {
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .story-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-content.reverse {
+            direction: rtl;
+        }
+
+        .story-content.reverse > * {
+            direction: ltr;
+        }
+
+        .story-text h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            color: #c9a961;
+            text-shadow: 0 3px 20px rgba(201, 169, 97, 0.4);
+        }
+
+        .story-text .speaker {
+            font-size: 1.3rem;
+            color: #f4e5c2;
+            margin-bottom: 20px;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .story-text p {
+            font-size: 1.2rem;
+            line-height: 1.9;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            color: #e8e8e8;
+        }
+
+        .story-text .quote {
+            border-left: 4px solid #c9a961;
+            padding-left: 30px;
+            margin: 30px 0;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #f4e5c2;
+            opacity: 0.95;
+        }
+
+        .story-text .highlight {
+            color: #c9a961;
+            font-weight: bold;
+        }
+
+        /* Image Container */
+        .story-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(201, 169, 97, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .story-image:hover {
+            transform: scale(1.02);
+            border-color: rgba(201, 169, 97, 0.6);
+            box-shadow: 0 25px 80px rgba(201, 169, 97, 0.3);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .story-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Detailed Timeline Section */
+        .detailed-timeline {
+            min-height: 100vh;
+            padding: 100px 50px;
+            background: linear-gradient(135deg, #1a1410 0%, #0f0d0a 100%);
+        }
+
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .timeline-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: #c9a961;
+            margin-bottom: 20px;
+            text-shadow: 0 5px 30px rgba(201, 169, 97, 0.4);
+        }
+
+        .timeline-header p {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            color: #f4e5c2;
+        }
+
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #c9a961 0%, #f4e5c2 100%);
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(201, 169, 97, 0.5);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 120px;
+            padding-top: 40px;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-item:nth-child(even) {
+            transform: translateX(50px);
+        }
+
+        .timeline-item:nth-child(even).visible {
+            transform: translateX(0);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 0;
+            margin-right: calc(50% + 60px);
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: calc(50% + 60px);
+            margin-right: 0;
+        }
+
+        .timeline-content {
+            background: linear-gradient(135deg, rgba(45,36,22,0.9) 0%, rgba(26,20,16,0.9) 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(201, 169, 97, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: rgba(201, 169, 97, 0.6);
+            box-shadow: 0 15px 50px rgba(201, 169, 97, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .timeline-content h3 {
+            color: #c9a961;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: 50%;
+            top: -15px;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #c9a961 0%, #d4b574 100%);
+            color: #1a1410;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 25px rgba(201, 169, 97, 0.5);
+            border: 3px solid rgba(26, 20, 16, 0.8);
+            z-index: 10;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1410 0%, #2d2416 100%);
+            text-align: center;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(201,169,97,0.1) 0%, transparent 70%);
+            animation: ctaPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes ctaPulse {
+            0%, 100% { transform: scale(1) translate(-25%, -25%); }
+            50% { transform: scale(1.2) translate(-25%, -25%); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 30px;
+            color: #c9a961;
+            text-shadow: 0 5px 30px rgba(201, 169, 97, 0.6);
+        }
+
+        .cta-content p {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 50px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #f4e5c2;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 25px 60px;
+            background: linear-gradient(135deg, #c9a961 0%, #d4b574 100%);
+            color: #1a1410;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 40px rgba(201, 169, 97, 0.4);
+            border: 3px solid rgba(26, 20, 16, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(201, 169, 97, 0.6);
+            background: linear-gradient(135deg, #d4b574 0%, #e0c68a 100%);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .story-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .story-content.reverse {
+                direction: ltr;
+            }
+
+            .timeline-nav {
+                display: none;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 60px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .timeline-line {
+                left: 20px;
+            }
+
+            .timeline-year {
+                left: 20px;
+                transform: none;
+            }
+        }
+        /* Home quick button */
+        .home-button {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 20000;
+            background: #c9a961;
+            color: #111;
+            padding: 8px 12px;
+            border-radius: 999px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+    <!-- Home quick button -->
+    <a href="timeline.html" class="home-button" title="Zurück zur Zeitlinie">⏰ Zeitlinie</a>
+
+    <!-- Timeline Navigation -->
+    <div class="timeline-nav">
+        <div class="timeline-dot active" data-label="Start" data-target="hero"></div>
+        <div class="timeline-dot" data-label="Die Familie" data-target="intro"></div>
+        <div class="timeline-dot" data-label="Die Uhren" data-target="watches"></div>
+        <div class="timeline-dot" data-label="Zeitreise" data-target="timeline"></div>
+        <div class="timeline-dot" data-label="Museum" data-target="cta"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="clock-icon">⚙️</div>
+            <h1>Die Krumhuber Dynastie</h1>
+            <p class="subtitle">110 Jahre Uhrmacherkunst in Vorchdorf</p>
+            <p class="timespan">1776 — 1886</p>
+        </div>
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- Introduction: Die Familie -->
+    <section class="story-section" id="intro" style="background: linear-gradient(135deg, #1a1410 0%, #2d2416 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Die Krumhuber Familie</h2>
+                <p>
+                    Vorchdorf hatte das Glück, eine bekannte Uhrmacherfamilie zu beherbergen. Über einen Zeitraum von <span class="highlight">110 Jahren</span>, von 1776 bis 1886, war diese Familie in drei Generationen in Vorchdorf tätig.
+                </p>
+                <p>
+                    Die Familie hatte ihre Wurzeln ursprünglich in Steinerkirchen, wo der Vater <span class="highlight">Georg</span> bereits als Uhrmacher arbeitete. Zwei seiner Söhne, <span class="highlight">Bartholomäus</span> und <span class="highlight">Johann Michael</span>, kamen nach Vorchdorf und begründeten hier die berühmte Uhrmacherdynastie. Ein dritter Sohn zog nach Kremsmünster und eröffnete dort ebenfalls eine Uhrmacherwerkstatt.
+                </p>
+                <div class="quote">
+                    "Von 1790 bis 1860 waren die Krumhuber für Vorchdorf von großer wirtschaftlicher Bedeutung. Die Qualität ihrer Taschenuhren machte sie weit über die Grenzen der Gemeinde hinaus bekannt und berühmt."
+                </div>
+            </div>
+            <div class="story-image">
+            <img src="Krumhuber/foto1.jpg" alt="Krumhuber Taschenuhr - Frontansicht">
+            </div>
+        </div>
+    </section>
+
+    <!-- Bartholomäus & Johann Michael -->
+    <section class="story-section" style="background: linear-gradient(135deg, #2d2416 0%, #1a1410 100%);">
+        <div class="story-content reverse">
+            <div class="story-text">
+                <h2>Die Brüder Krumhuber</h2>
+                <p>
+                    <span class="highlight">Bartholomäus</span> hatte das Glück, in eine bestehende Kramerei am Tangelberg einzuheiraten und gründete dort seine Uhrmacherwerkstatt. Leider starben Bartholomäus und seine Frau kurz nach 1800.
+                </p>
+                <p>
+                    Sein Bruder <span class="highlight">Johann Michael</span> übernahm daraufhin die Werkstatt und führte sie <span class="highlight">40 Jahre</span> weiter. Obwohl Johann Michael sieben eigene Kinder hatte, die alle vor ihm verstarben, bildete er die Kinder von Bartholomäus zu Uhrmachern aus.
+                </p>
+                <p>
+                    Vier seiner Söhne erlernten das Handwerk, und einer von ihnen, <span class="highlight">Johann</span>, übernahm die Werkstatt nach Johann Michaels Tod im Jahr <span class="highlight">1840</span>.
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="Krumhuber/foto2.jpg" alt="Kunstvolle Krumhuber Uhr mit emailliertem Zifferblatt">
+            </div>
+        </div>
+    </section>
+
+    <!-- Die Uhren -->
+    <section class="story-section" id="watches" style="background: linear-gradient(135deg, #1a1410 0%, #2d2416 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Meisterwerke der Feinmechanik</h2>
+                <p>
+                    Die Uhren selbst sind aus mehreren Gründen interessant: Zum einen basieren sie auf einem <span class="highlight">Spindelwerk</span>, einer Mechanik, die schon seit 300 Jahren bekannt ist und sich durch ihre Zuverlässigkeit und Genauigkeit auszeichnet.
+                </p>
+                <p>
+                    Die Uhrengehäuse und Übergehäuse sind oft kunstvoll gestaltet, beispielsweise mit <span class="highlight">Schildpatt</span> überzogen. Die inneren Platten sind kunstvoll ziseliert, gesägt und vergoldet, oft mit schönen Ornamenten und Tiermotiven verziert.
+                </p>
+                <p>
+                    Besonders interessant ist auch der Aufzug der Uhren: Sie verwendeten eine sogenannte <span class="highlight">Schnecke und ein Federhaus</span>. Eine kleine Kette wurde aufgewickelt, und wenn die Uhr ablief, vergrößerte sich der Konus – dies funktionierte wie eine Gangschaltung.
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="Krumhuber/foto3.jpg" alt="Krumhuber Silberuhr mit römischen Ziffern">
+            </div>
+        </div>
+    </section>
+
+    <!-- Das Uhrwerk -->
+    <section class="story-section" style="background: linear-gradient(135deg, #2d2416 0%, #1a1410 100%);">
+        <div class="story-content reverse">
+            <div class="story-text">
+                <h2>Das mechanische Wunderwerk</h2>
+                <p>
+                    Im Inneren verbirgt sich ein mechanisches Meisterwerk: Das <span class="highlight">Spindeluhrwerk</span> besteht aus über hundert winzigen Komponenten, die alle mit höchster Präzision gefertigt und zusammengesetzt wurden.
+                </p>
+                <p>
+                    Die <span class="highlight">Unruhbrücke</span> ist kunstvoll durchbrochen und zeigt feinste Akanthusblätter. Die Zierplatten enthalten neben reichhaltigen Rankenmotiven auch stilisierte Tierdarstellungen – Vögel, Hirsche und andere Motive.
+                </p>
+                <div class="quote">
+                    "Eine Krumhuberuhr kostete um 1800 bereits 50 Gulden. Zum Vergleich: Der Jahreslohn eines Knechtes betrug damals 15 Gulden."
+                </div>
+            </div>
+            <div class="story-image">
+                <img src="Krumhuber/foto4.jpg" alt="Das Krumhuber Uhrwerk - Detailaufnahme der Mechanik">
+            </div>
+        </div>
+    </section>
+
+    <!-- Johann Krumhuber der Jüngere -->
+    <section class="story-section" style="background: linear-gradient(135deg, #1a1410 0%, #2d2416 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Johann Krumhuber</h2>
+                <p class="speaker">1846 — 1913</p>
+                <p>
+                    Dieser <span class="highlight">Johann</span> hatte wiederum einen Sohn, ebenfalls namens Johann, der die Werkstatt erbte. Doch in dieser Zeit erlebte das Uhrmachergewerbe eine Krise.
+                </p>
+                <p>
+                    Fabrikmäßig hergestellte Uhren aus <span class="highlight">Amerika und der Schweiz</span> wurden importiert und waren wesentlich günstiger als handgefertigte Uhren. Dadurch verlor das Uhrmacherhandwerk an Bedeutung.
+                </p>
+                <p>
+                    1886 verkaufte Johann Krumhuber das Anwesen und zog weg. Die Familie hatte noch zwei Kinder, die jedoch im Jugendalter starben. Mit dem Tod von Johann Krumhuber im Jahr <span class="highlight">1913</span> erlosch die Dynastie.
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="Krumhuber/foto5.jpg" alt="Portrait von Johann Krumhuber (1846-1913)">
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Timeline -->
+    <section class="detailed-timeline" id="timeline">
+        <div class="timeline-header">
+            <h2>Die Geschichte der Dynastie</h2>
+            <p>110 Jahre Uhrmacherkunst in Vorchdorf</p>
+        </div>
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">1725</div>
+                <div class="timeline-content">
+                    <h3>Georg Krumhuber</h3>
+                    <p>Georg Krumhuber wird 1725 in Steinerkirchen geboren und begründet die Uhrmacherdynastie. Er erwirbt die Wintersölde in Spereck und hat in zwei Ehen insgesamt 16 Kinder. Drei seiner Söhne werden Uhrmacher.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1757</div>
+                <div class="timeline-content">
+                    <h3>Geburt von Johann Michael</h3>
+                    <p>Johann Michael Krumhuber wird am 27. Januar 1757 geboren. Er wird später zum Hauptvertreter der Familie und zum berühmtesten Uhrmacher der Krumhuber-Dynastie.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1764</div>
+                <div class="timeline-content">
+                    <h3>Geburt von Bartholomäus</h3>
+                    <p>Bartholomäus Krumhuber wird am 24. August 1764 geboren. Er wird durch Heirat Besitzer des Kramerhauses in Vorchdorf und gründet seine eigene Uhrmacherwerkstatt.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1776</div>
+                <div class="timeline-content">
+                    <h3>Werkstatt in Vorchdorf</h3>
+                    <p>Johann Michael Krumhuber erwirbt die Holzbauernsölde in Messenbach (Vorchdorf 62) und lässt sich als Kleinuhrmacher nieder. Dies markiert den Beginn der Uhrmacherdynastie in Vorchdorf.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1787</div>
+                <div class="timeline-content">
+                    <h3>Bartholomäus heiratet</h3>
+                    <p>Bartholomäus kommt durch die Heirat mit der Kaufmannstochter Theresia Bergmann nach Vorchdorf und damit in den Besitz des Kramerhauses, des Werkstättenhäusels und weiterer Immobilien.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1793</div>
+                <div class="timeline-content">
+                    <h3>Mathias in Kremsmünster</h3>
+                    <p>Mathias Krumhuber (1767-1816), ein weiterer Sohn von Georg, wird Kleinuhrmacher in Kremsmünster. Sein Sohn Mathias (1796-1879) fertigt später für das Stift mehrere Pendeluhren von hervorragender Qualität.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1800-1801</div>
+                <div class="timeline-content">
+                    <h3>Schicksalsschläge</h3>
+                    <p>Am 20. November 1800 stirbt Theresia, die Frau von Bartholomäus. Vier Monate später, am 18. März 1801, stirbt auch Bartholomäus. Die vier Söhne Franz, Joseph, Cajetan und Johann werden zu Vollwaisen.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1801</div>
+                <div class="timeline-content">
+                    <h3>Johann Michael übernimmt</h3>
+                    <p>Onkel Johann Michael übernimmt die Vormundschaft über die vier Waisen und bildet alle zu Uhrmachern aus. Er übernimmt auch das Kramerhaus und die Werkstatt seines Bruders und gelangt zu großem Wohlstand.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1790-1820</div>
+                <div class="timeline-content">
+                    <h3>Blütezeit der Werkstatt</h3>
+                    <p>Die Krumhuber-Uhren werden weit über Vorchdorf hinaus bekannt. Johann Michael beschäftigt mehrere Gesellen und Lehrlinge. Die kunstvolle Gestaltung der Uhren mit Schildpatt-Übergehäusen und vergoldeten Zierplatten erreicht ihren Höhepunkt.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1820</div>
+                <div class="timeline-content">
+                    <h3>Cajetan in Wels</h3>
+                    <p>Cajetan Krumhuber erwirbt von der Uhrmacherswitwe Elisabeth Schäflerin in Wels um 2950 Gulden das Haus Vorstadt 52 (Kaiser Josef-Platz 15) und damit auch die Uhrmachergerechtigkeit.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1821</div>
+                <div class="timeline-content">
+                    <h3>Die Weißenwiesen</h3>
+                    <p>Johann Michael kauft die Weißenwiesen, die bis 1887 im Besitz der Familie bleiben. Er ist nun Besitzer des Kramerhauses, der Holzbauernsölde, des Werkstatthäusels und der Weißenwiesen.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1840</div>
+                <div class="timeline-content">
+                    <h3>Tod von Johann Michael</h3>
+                    <p>Nach dem Tod von Johann Michael im Jahr 1840 übernimmt sein Neffe Johann (geb. 1798) die Werkstätte und damit auch den gesamten Besitz. Bei seiner Hochzeit 1842 wird er als "Uhrenfabrikant und Handelsmann" bezeichnet.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1846</div>
+                <div class="timeline-content">
+                    <h3>Geburt von Johann (junior)</h3>
+                    <p>Am 8. September 1846 wird Johann Krumhuber (junior) geboren, der letzte Uhrmacher der Dynastie. Er wird das Erbe der Familie fortführen, aber auch ihren Niedergang erleben.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1850-1870</div>
+                <div class="timeline-content">
+                    <h3>Die Krise beginnt</h3>
+                    <p>Billige Fabriksuhren aus der Schweiz und den USA überschwemmen den europäischen Markt. Den handwerklich erzeugten Spindeluhren wird die Existenzgrundlage entzogen. Viele Kleinuhrmacher geraten an den Rand des Ruins.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1851</div>
+                <div class="timeline-content">
+                    <h3>Tod des Vaters</h3>
+                    <p>Johann (senior) stirbt am 1. Juli 1851. Seine Witwe Cäcilia schafft es, das Geschäft und den Betrieb mit Hilfe tüchtiger Gesellen weiterzuführen. Einer von ihnen ist Josef Jenner, Urgroßonkel des Vorchdorfer Uhrmachermeisters Karl Jenner.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1869</div>
+                <div class="timeline-content">
+                    <h3>Johann übernimmt</h3>
+                    <p>Johann Krumhuber (junior) übernimmt den Besitz nach dem Tod seiner Mutter am 8. Dezember 1869. Seine Schwester Theresia führt ihm bis zu ihrem Tod 1885 die Wirtschaft.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1870-1886</div>
+                <div class="timeline-content">
+                    <h3>Verkauf des Besitzes</h3>
+                    <p>Johann dürfte nicht sehr gut gewirtschaftet haben. Er verkauft nach und nach seinen Besitz: 1870 das Werkstättenhäusel, 1886 das Kramerhaus, das Stiegenhäusel und schließlich 1887 die Weißenwiesen.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1886</div>
+                <div class="timeline-content">
+                    <h3>Ende in Vorchdorf</h3>
+                    <p>1886 verkauft Johann Krumhuber den letzten Besitz in Vorchdorf und verlässt den Ort. Die 110-jährige Geschichte der Uhrmacherdynastie in Vorchdorf endet. Damit erlosch die Tradition der Krumhuber-Uhren.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1887</div>
+                <div class="timeline-content">
+                    <h3>Neuanfang in Sierning</h3>
+                    <p>Johann kauft sich ein Haus in Sierning (Nr. 67) und heiratet am 19. Juli 1887 Theresia Eiersebner. Dem Paar werden zwei Kinder geboren: Johann (1888) und Cäcilia Anna (1889).</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1897</div>
+                <div class="timeline-content">
+                    <h3>Umzug nach Wels</h3>
+                    <p>Am 18. Mai 1897 wird das Haus in Sierning verkauft und die Familie zieht nach Wels, Hans Sachs-Straße 7. Dort werden die letzten Jahre der Familie verbracht.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1904-1911</div>
+                <div class="timeline-content">
+                    <h3>Tod der Kinder</h3>
+                    <p>Die beiden Kinder von Johann sterben jung: Sohn Johann stirbt 1904 mit nur 16 Jahren, Tochter Cäcilia 1911 mit 22 Jahren. Die Hoffnung auf eine Fortsetzung der Dynastie erlischt.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1913</div>
+                <div class="timeline-content">
+                    <h3>Ende der Dynastie</h3>
+                    <p>Johann Krumhuber stirbt am 25. Dezember 1913 in Wels. Seine Frau Theresia überlebt ihn um 22 Jahre und stirbt am 3. Dezember 1935. Mit ihrem Tod erlischt die Vorchdorfer Uhrmacherdynastie endgültig.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="cta-content">
+            <h2>Erleben Sie Geschichte hautnah</h2>
+            <p>Besuchen Sie das Museum Vorchdorf und entdecken Sie die Krumhuber-Uhren und viele weitere Schätze unserer regionalen Geschichte.</p>
+            <a href="index.html" class="cta-button">Museum besuchen</a>
+        </div>
+    </section>
+
+    <script>
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Intersection Observer
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.story-content, .timeline-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Timeline Navigation
+        const timelineDots = document.querySelectorAll('.timeline-dot');
+        const sections = document.querySelectorAll('section[id]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            timelineDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-target') === current) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+
+        timelineDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const target = dot.getAttribute('data-target');
+                const targetSection = document.getElementById(target);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Scroll indicator
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', () => {
+                document.querySelector('#intro').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    </script>
+</body>
+</html>

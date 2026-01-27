@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videogalerie - Heimat- und Kulturverein Vorchdorf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2c3e50;
+            --secondary-dark: #34495e;
+            --light-gray: #7f8c8d;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+            --warm-cream: #ecf0f1
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .site-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-gold);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%23795548" width="1200" height="400"/></svg>');
+            background-size: cover;
+            padding: 10rem 2rem 5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Content */
+        .content {
+            padding: 4rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, var(--light-gray), var(--secondary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .play-button {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            transition: all 0.3s ease;
+            padding-left: 5px;
+        }
+
+        .video-placeholder:hover .play-button {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .video-info {
+            padding: 2rem;
+        }
+
+        .video-card h3 {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .video-card p {
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            color: var(--text-light);
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+            border-radius: 15px;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent-gold);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--text-light);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer p, .footer a {
+            color: var(--warm-cream);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--warm-cream);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--primary-dark);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                gap: 1rem;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .site-title {
+                font-size: 1rem;
+            }
+
+            .logo {
+                height: 40px;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
+            <li><a href="audioguide.html">Audioguide</a></li>
+            <li><a href="exponate.html">Exponate</a></li>
+            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+            <li><a href="timeline.html">Zeitlinie</a></li>
+            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Videogalerie</h1>
+        <p>Das Museum der Region Vorchdorf in bewegten Bildern</p>
+    </header>
+
+    <!-- Content -->
+    <section class="content">
+        <div class="container">
+            <div class="video-grid" id="video-gallery">
+                <!-- Videos werden hier dynamisch eingefügt -->
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <h2>💬 Persönliche Führung gewünscht?</h2>
+                <p>Gerne zeigen wir Ihnen unser Museum persönlich und beantworten alle Ihre Fragen.<br>
+                   Führungen sind nach Vereinbarung auch außerhalb der regulären Öffnungszeiten möglich.</p>
+                <a href="kontakt.html" class="cta-button">Termin vereinbaren</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                <p>Bewahrer des kulturellen Erbes<br>
+                   der Region Vorchdorf seit Generationen</p>
+            </div>
+            <div>
+                <h4>Kontakt</h4>
+                <p>Bahnhofstraße 9<br>
+                   4655 Vorchdorf<br>
+                   E-Mail: dr.claudia@westreicher.at</p>
+            </div>
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>
+                   4655 Vorchdorf<br>
+                   Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Video data - URLs from Dropbox
+        const videos = [
+            {
+                url: "https://www.dropbox.com/scl/fi/akcjb8qse3mqysbqvlzgb/20251113_164157.mp4?rlkey=d3ksejbgorp5zmjw0xxmigmc3&dl=0",
+                title: "Sonderausstellung Andreanum",
+                description: "Einblicke in die Sonderausstellung \"800 Jahre Recht & Verfassung der Siebenbürger Sachsen\". Die Ausstellungstafeln dokumentieren die Geschichte des Andreanums von 1224 und seine Bedeutung für die Siebenbürger Sachsen."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/qd4bpkhj82jzglhvnvbl5/20240320_103002-enhanced-25p.mp4?rlkey=qsm69m7pi6omf07zxyu4hkpys&dl=0",
+                title: "Audioguide: Nagelmaschine Kitzmantel",
+                description: "Alfred Holinetz erklärt die historische Nagelmaschine aus der Kitzmantelfabrik. Ein spannender Ausschnitt aus unserem Audioguide, der die Industriegeschichte Vorchdorfs lebendig werden lässt."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/ge3t5g1y63r7tnyjrfume/20240317_101149.mp4?rlkey=oni0n2dz32kwyw8peu9bd91dm&dl=0",
+                title: "120 Jahre Lokalbahn Lambach-Vorchdorf-Eggenberg",
+                description: "Impressionen von der Sonderausstellung zur 120-jährigen Geschichte der Lokalbahn. Die Ausstellung zeigte historische Dokumente, Fotografien und Exponate zur Eisenbahngeschichte unserer Region."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/byx8856klxqnx11q14cc7/20240605_151724.mp4?rlkey=eeug8gvz40tdjg35u2z9uqix7&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 1",
+                description: "Einblicke in die faszinierende Miniatursammlung von Herrn Huemer. Seine beeindruckende Privatsammlung war Teil unserer Sonderausstellung \"Miniaturkunstwerke ganz groß\" im Museum der Region Vorchdorf."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/xqivqsbx9u1m2eu1mt4nj/20240605_150807.mp4?rlkey=p8clu223hu5xu4346bq96jrtg&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 2",
+                description: "Weitere kunstvolle Miniaturen aus der Sammlung Huemer. Jedes Exponat ist ein Meisterwerk seiner Handwerkskunst und erzählt seine eigene Geschichte."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/1z2e4bkf24zh14a8kw8l6/20240605_152613.mp4?rlkey=mgbp2didjyuv7m7e0puvcng0m&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 3",
+                description: "Detailaufnahmen der kunstvollen Miniaturexponate. Diese besondere Sammlung zeigt die Vielfalt und Präzision seiner Miniaturkunst, die er großteils mit entsorgten und weggeworfenen Materialien zusammengebaut hat."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/7w5oajcco5ae0bj7yxmzu/20240605_160616.mp4?rlkey=28flcur8kc3l03unrf79haovx&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 4",
+                description: "Miniatur einer elektrifizierten Heuerntemaschine."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/h3trb5n5yhgfztbfecgrp/20240605_155329.mp4?rlkey=23pv0p6qdshm3ny39nerrxpa4&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 5",
+                description: "Ein Traktor der Marke \"LANZ\" welcher hier in Betrieb genommen wird. Ein Fest für die Augen, wenn man sich diesen Detailreichtum genauer ansieht."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/im835k4m6kt3xvmz2tbdi/20240605_155830.mp4?rlkey=adf3m49xv0q6cguyhtnmo3exv&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 6",
+                description: "Aus einem Buch mit dem Titel \"333 Traktoren, die man kennen muss\" hat Herr Huemer bislang über 110 Exponaten detailgetreu nachgebaut. Hier sehen wir ein eher seltenes Exemplar, dass mit hohen Stützrädern für Spezialeinsätze konzipiert wurde."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/93u0e8nfsc43rhe5ne1sj/20240605_155009.mp4?rlkey=gc903n6k334uv0hs15pjnca2f&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 7",
+                description: "Hier handelt es sich um ein Gerät, welches hauptsächlich Bergbauern in Verwendung hatten          ."
+            },
+            {
+                url: "https://www.dropbox.com/scl/fi/tjxmuko91z0dmbhv4ee8t/20240605_153220.mp4?rlkey=ozlitdzao5fohat3a4z6p9pts&dl=0",
+                title: "Privatsammlung Huemer<br>Teil 8",
+                description: "Abschluss des Rundgangs durch die Privatsammlung Huemer. Ein einmaliger Einblick in die Welt der Miniaturen, die in unserer Sonderausstellung einem breiten Publikum zugänglich gemacht wurden."
+            }
+        ];
+
+        // Convert Dropbox share link to raw/direct link
+        function toRawLink(url) {
+            if (!url) return url;
+            if (url.indexOf('?') === -1) return url + '?raw=1';
+            return url.replace(/([?&])dl=0/, '$1raw=1')
+                      .replace(/[?&]raw=0/, '?raw=1');
+        }
+
+        // Build video gallery
+        function buildVideoGallery() {
+            const gallery = document.getElementById('video-gallery');
+
+            videos.forEach(video => {
+                const rawUrl = toRawLink(video.url);
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+
+                card.innerHTML = `
+                    <div class="video-placeholder">
+                        <video width="100%" height="300" controls>
+                            <source src="${rawUrl}" type="video/mp4">
+                            Ihr Browser unterstützt das Video-Element nicht.
+                        </video>
+                    </div>
+                    <div class="video-info">
+                        <h3>${video.title}</h3>
+                        <p>${video.description}</p>
+                    </div>
+                `;
+
+                gallery.appendChild(card);
+            });
+        }
+
+        // Load videos on page load
+        document.addEventListener('DOMContentLoaded', buildVideoGallery);
+    </script>
+</body>
+</html>

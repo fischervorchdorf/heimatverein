@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Kitzmantelfabrik - Hauptattraktion des Museums</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #8B4513 0%, #CD853F 100%);
+            z-index: 9999;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.6);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2a1810 0%, #1a0f0a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139,69,19,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(205,133,63,0.1) 0%, transparent 40%);
+            animation: pulseFactory 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseFactory {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            padding: 20px;
+        }
+
+        .factory-icon {
+            font-size: 8rem;
+            margin-bottom: 30px;
+            animation: factoryPulse 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(139,69,19,0.6));
+        }
+
+        @keyframes factoryPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            margin-bottom: 20px;
+            color: #CD853F;
+            text-shadow: 0 0 40px rgba(205,133,63,0.5);
+            animation: fadeInDown 1.5s ease;
+            letter-spacing: 3px;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            opacity: 0.9;
+            color: #DEB887;
+            animation: fadeInUp 1.5s ease 0.3s backwards;
+            font-style: italic;
+        }
+
+
+                /* Home quick button (Leder-Icon) */
+                .home-button {
+                    position: fixed;
+                    top: 12px;
+                    right: 12px;
+                    z-index: 20000;
+                    background: #8B4513;
+                    color: #DEB887;
+                    padding: 8px 12px;
+                    border-radius: 999px;
+                    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+                    text-decoration: none;
+                    font-weight: 700;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                }
+
+                .home-button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+                    background: #A0522D;
+                }
+        .hero .timespan {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            opacity: 0.8;
+            color: #CD853F;
+            margin-top: 15px;
+            animation: fadeInUp 1.5s ease 0.6s backwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            color: #CD853F;
+            font-size: 3em;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-20px); }
+            60% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .timeline-nav {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .timeline-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(139, 69, 19, 0.3);
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid rgba(139, 69, 19, 0.5);
+        }
+
+        .timeline-dot:hover {
+            background: rgba(139, 69, 19, 0.7);
+            transform: scale(1.3);
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.8);
+        }
+
+        .timeline-dot.active {
+            background: #8B4513;
+            box-shadow: 0 0 25px rgba(139, 69, 19, 0.9);
+            transform: scale(1.4);
+        }
+
+        .timeline-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-weight: bold;
+            color: #CD853F;
+            background: rgba(26, 15, 10, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+
+        .timeline-dot:hover::after,
+        .timeline-dot.active::after {
+            opacity: 1;
+        }
+
+        .story-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 50px;
+            position: relative;
+        }
+
+        .story-content {
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .story-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-content.reverse {
+            direction: rtl;
+        }
+
+        .story-content.reverse > * {
+            direction: ltr;
+        }
+
+        .story-text h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            color: #CD853F;
+            text-shadow: 0 3px 20px rgba(205,133,63,0.4);
+        }
+
+        .story-text p {
+            font-size: 1.2rem;
+            line-height: 1.9;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            color: #e8e8e8;
+        }
+
+        .story-text .quote {
+            border-left: 4px solid #CD853F;
+            padding-left: 30px;
+            margin: 30px 0;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #DEB887;
+            opacity: 0.95;
+        }
+
+        .story-text .highlight {
+            color: #CD853F;
+            font-weight: bold;
+        }
+
+        .story-text .kivo-logo {
+            font-size: 2.5rem;
+            color: #CD853F;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(205,133,63,0.5);
+        }
+
+        .story-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(139, 69, 19, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .story-image:hover {
+            transform: scale(1.02);
+            border-color: rgba(139, 69, 19, 0.6);
+            box-shadow: 0 25px 80px rgba(139, 69, 19, 0.3);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .story-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, #2d1810 0%, #3d2520 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #CD853F;
+            border: 2px dashed rgba(139, 69, 19, 0.3);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .placeholder-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .detailed-timeline {
+            min-height: 100vh;
+            padding: 100px 50px;
+            background: linear-gradient(135deg, #1a0f0a 0%, #0f0d0a 100%);
+        }
+
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .timeline-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: #CD853F;
+            margin-bottom: 20px;
+            text-shadow: 0 5px 30px rgba(205,133,63,0.4);
+        }
+
+        .timeline-header p {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            color: #DEB887;
+        }
+
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #8B4513 0%, #CD853F 100%);
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.5);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 120px;
+            padding-top: 40px;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-item:nth-child(even) {
+            transform: translateX(50px);
+        }
+
+        .timeline-item:nth-child(even).visible {
+            transform: translateX(0);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 0;
+            margin-right: calc(50% + 60px);
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: calc(50% + 60px);
+            margin-right: 0;
+        }
+
+        .timeline-content {
+            background: linear-gradient(135deg, rgba(45,24,16,0.9) 0%, rgba(26,15,10,0.9) 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: rgba(139, 69, 19, 0.6);
+            box-shadow: 0 15px 50px rgba(139, 69, 19, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .timeline-content h3 {
+            color: #CD853F;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: 50%;
+            top: -15px;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 25px rgba(139, 69, 19, 0.5);
+            border: 3px solid rgba(26, 15, 10, 0.8);
+            z-index: 10;
+        }
+
+        .cta-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2a1810 0%, #1a0f0a 100%);
+            text-align: center;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139,69,19,0.1) 0%, transparent 70%);
+            animation: ctaPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes ctaPulse {
+            0%, 100% { transform: scale(1) translate(-25%, -25%); }
+            50% { transform: scale(1.2) translate(-25%, -25%); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 30px;
+            color: #CD853F;
+            text-shadow: 0 5px 30px rgba(205,133,63,0.6);
+        }
+
+        .cta-content p {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 50px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #DEB887;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 25px 60px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 40px rgba(139, 69, 19, 0.4);
+            border: 3px solid rgba(26, 15, 10, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(139, 69, 19, 0.6);
+            background: linear-gradient(135deg, #A0522D 0%, #BC6C3F 100%);
+        }
+
+        @media (max-width: 968px) {
+            .story-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .story-content.reverse {
+                direction: ltr;
+            }
+
+            .timeline-nav {
+                display: none;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 60px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .timeline-line {
+                left: 20px;
+            }
+
+            .timeline-year {
+                left: 20px;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <!-- Home quick button (Leder-Icon) -->
+    <a href="timeline.html" class="home-button" title="Zurück zur Zeitlinie">👜 Zeitlinie</a>
+
+    <div class="timeline-nav">
+        <div class="timeline-dot active" data-label="Start" data-target="hero"></div>
+        <div class="timeline-dot" data-label="Die Familie" data-target="intro"></div>
+        <div class="timeline-dot" data-label="Die Fabrik" data-target="factory"></div>
+        <div class="timeline-dot" data-label="KIVO" data-target="kivo"></div>
+        <div class="timeline-dot" data-label="Produktion" data-target="production"></div>
+        <div class="timeline-dot" data-label="Zeitreise" data-target="timeline"></div>
+        <div class="timeline-dot" data-label="Heute" data-target="today"></div>
+        <div class="timeline-dot" data-label="Museum" data-target="cta"></div>
+    </div>
+
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="factory-icon">🏭</div>
+            <h1>Die Kitzmantelfabrik</h1>
+            <p class="subtitle">80 Jahre Leder- und Schuhproduktion in Vorchdorf</p>
+            <p class="timespan">1865 — heute</p>
+        </div>
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <section class="story-section" id="intro" style="background: linear-gradient(135deg, #1a0f0a 0%, #2a1810 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Die Familie Kitzmantel</h2>
+                <p>
+                    Die Verbindung der Familie Kitzmantel mit Vorchdorf begann im Jahre <span class="highlight">1865</span>, als <span class="highlight">Cajetan Kitzmantel</span>, Gerbermeistersohn aus Vöcklabruck, das Ledererhaus in Freudenthal kaufte.
+                </p>
+                <p>
+                    Nach dessen Tod 1890 übernahm sein Schwiegersohn die Gerberei. Als dieser 1897 verstarb, übernahmen die <span class="highlight">Neffen von Cajetan</span> – seine Söhne <span class="highlight">Cajetan</span> (der Jüngere) und <span class="highlight">Michael</span> – den Betrieb.
+                </p>
+                <p>
+                    Die beiden Brüder führten die Tradition fort, verstanden sich aber nicht immer gut. Während Michael die Gerberei in Freudenthal zur leistungsfähigen Lederfabrik ausbaute und über <span class="highlight">15 Jahre als Bürgermeister</span> in Vorchdorf tätig war, wagte Cajetan den großen Schritt.
+                </p>
+                <div class="quote">
+                    "Leder hat in Vorchdorf eine lange Tradition: Aufzeichnungen aus dem Jahr 1749 erwähnen sogenannte Lederer, die Leder herstellten."
+                </div>
+                <p>
+                    Heute erinnert der Ortsteilname <span class="highlight">"Lederau"</span> an dieses alte Handwerk.
+                </p>
+            </div>
+            <div class="story-image">
+                 <img src="kitzmantel/bild3.jpg" alt="Familienfoto Kitzmantel" />
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="factory" style="background: linear-gradient(135deg, #2a1810 0%, #1a0f0a 100%);">
+        <div class="story-content reverse">
+            <div class="story-text">
+                <h2>Die erste Schuhfabrik</h2>
+                <p>
+                    Da das Geschäft sehr gut lief und viel Nachfrage da war, ließ <span class="highlight">Cajetan Kitzmantel</span> im Jahr <span class="highlight">1913</span> ein Produktionsgebäude direkt zwischen Laudach und Bahnhofstraße errichten – genau dort, wo sich heute das Museum befindet!
+                </p>
+                <p>
+                    Es war die <span class="highlight">erste Schuhfabrik in Oberösterreich</span>! Die Kitzmantelfabrik betrieb als Erstes die mechanische Herstellung von Schuhoberteilen in Oberösterreich.
+                </p>
+                <p>
+                    Nach dem Ersten Weltkrieg wurde die Fabrik mit <span class="highlight">modernsten Maschinen</span> ausgestattet. In den 20er Jahren erfolgte eine Erweiterung durch eine Lagerhalle.
+                </p>
+                <p>
+                    1929 erreichte die Fabrik eine Leistungsfähigkeit von wöchentlich <span class="highlight">2.000 Paar Schuhen</span>!
+                </p>
+                <div class="quote">
+                    "Es war die erste Schuhfabrik in Oberösterreich."
+                </div>
+            </div>
+            <div class="story-image">
+                 <img src="kitzmantel/arbeit4.jpg" alt="Historische Fabrikansicht / Arbeiter" />
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="kivo" style="background: linear-gradient(135deg, #1a0f0a 0%, #2a1810 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Die Marke KIVO</h2>
+                <div class="kivo-logo">K I V O</div>
+                <p>
+                    Das Logo entwickelte sich zu einem Markenzeichen für Qualität. <span class="highlight">KIVO</span> ist ein Akronym, das sich aus <span class="highlight">„KItzmantel"</span> und <span class="highlight">„VOrchdorf"</span> zusammensetzt und die heimischen Qualitätsschuhe präsentieren sollte.
+                </p>
+                <p>
+                    Die Schuhe wurden unter dem Namen <span class="highlight">„Vorchdorfer Schuhe"</span> in den Handel gebracht und ihre Güte wurde allgemein anerkannt.
+                </p>
+                <div class="quote">
+                    "So nimmt die Fabrik eine führende Stellung in der an und für sich hochentwickelten österreichischen Schuhindustrie ein."
+                </div>
+                <p>
+                    Das Sortiment reichte von <span class="highlight">Sicherheitsschuhen</span> bis hin zu <span class="highlight">Skischuhen</span>. Besonders erfolgreich war der sogenannte <span class="highlight">Maronibraterstiefel</span> – ein robuster Arbeitsstiefel.
+                </p>
+                <p>
+                    Besonders bekannt wurden auch die Hausschuhe für das Bundesheer, die sogenannten <span class="highlight">„Militärtritlinge"</span>.
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="kitzmantel/Aufsteller_Kitz.jpg" alt="KIVO Aufsteller / Markenpräsentation" />
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="production" style="background: linear-gradient(135deg, #2a1810 0%, #1a0f0a 100%);">
+        <div class="story-content reverse">
+            <div class="story-text">
+                <h2>Die Produktion</h2>
+                <p>
+                    <span class="highlight">Cajetan Kitzmantel</span> hatte 9 Kinder. Die beiden Söhne <span class="highlight">Josef</span> und <span class="highlight">Otto</span> übernahmen als Betriebsinhaber die Kitzmantelfabrik von ihrem Vater.
+                </p>
+                <p>
+                    Sohn <span class="highlight">Kamillo</span> arbeitete ebenfalls in der Fabrik im Einkauf mit. Die anderen Kinder hatten nichts mit dem Familienbetrieb zu tun.
+                </p>
+                <p>
+                    Zu den Glanzzeiten waren <span class="highlight">150 Mitarbeiter*innen</span> in der Kitzmantelfabrik beschäftigt, wobei der Großteil Frauen war.
+                </p>
+                <div class="quote">
+                    "Damit rohe Tierhaut letztendlich als Leder weiterverwendet werden kann, werden viele fachkundige Arbeitskräfte benötigt."
+                </div>
+                <p>
+                    Die Produktion umfasste viele aufwendige Schritte: <span class="highlight">Gerben, Falzen, Färben, Stoßen, Stepperei</span> und schließlich die Schusterei – alles unter einem Dach!
+                </p>
+                <p>
+                    Die Kitzmantel-Schuhe wurden nach traditionellen Verfahren in aufwendiger Handarbeit <span class="highlight">holzgenagelt, durchgenäht oder flexibel genäht</span>.
+                </p>
+            </div>
+            <div class="story-image">
+                 <img src="kitzmantel/arbeiten1.jpg" alt="Produktion: Arbeiter*innen an Maschinen" />
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" style="background: linear-gradient(135deg, #1a0f0a 0%, #2a1810 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Das Ende einer Ära</h2>
+                <p>
+                    Der Familienbetrieb, der hochwertige Schuh- und Ledererzeugnisse produzierte, wurde knapp <span class="highlight">80 Jahre</span> nach seiner Gründung, im Jahr <span class="highlight">1992</span>, von dem Wiener Schuhfabrikanten <span class="highlight">Ludwig Reiter</span> übernommen.
+                </p>
+                <p>
+                    Ludwig Reiter entwickelte den legendären <span class="highlight">Maronibraterstiefel</span> aus den Arbeitsstiefeln weiter und produzierte ihn weiterhin.
+                </p>
+                <p>
+                    Doch die Zeiten hatten sich geändert. Mit der zunehmenden Verfügbarkeit günstigerer Materialien und Leder aus Übersee konnte die lokale Produktion nicht mehr mithalten.
+                </p>
+                <p>
+                    <span class="highlight">1995</span> wurde die Produktionsstätte stillgelegt. Die Geschichte der Schuhproduktion in Vorchdorf endete nach 80 Jahren.
+                </p>
+                <div class="quote">
+                    "Die Lederherstellung in der Region lohnte sich kaum noch, und die Umweltauflagen brachten zusätzliche Herausforderungen mit sich."
+                </div>
+                <p>
+                    Die letzte Besitzerin, <span class="highlight">Marianne Kitzmantel</span>, übergab dem Museum eine besondere Sammlung: <span class="highlight">39 verschiedene Schuhe und Stiefel</span>, jedoch jeweils nur einen Schuh pro Paar, um sicherzustellen, dass sie nicht weiterverkauft werden konnten.
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="kitzmantel/schuh.jpg" alt="Kitzmantel Schuh / Maronibraterstiefel" />
+            </div>
+        </div>
+    </section>
+
+    <section class="detailed-timeline" id="timeline">
+        <div class="timeline-header">
+            <h2>80 Jahre Familiengeschichte</h2>
+            <p>Von der Gerberei zur Schuhfabrik – und zum Museum</p>
+        </div>
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">1749</div>
+                <div class="timeline-content">
+                    <h3>Lederer in Vorchdorf</h3>
+                    <p>Aufzeichnungen aus dem Jahr 1749 erwähnen bereits sogenannte "Lederer", die in Vorchdorf Leder herstellten. Der Ortsteilname "Lederau" erinnert bis heute an dieses alte Handwerk und die Lederstampfen, die dort nachweislich existierten.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1865</div>
+                <div class="timeline-content">
+                    <h3>Cajetan kauft das Ledererhaus</h3>
+                    <p>Cajetan Kitzmantel, Gerbermeistersohn aus Vöcklabruck, kauft das Ledererhaus in Freudenthal an der Laudach. Dies markiert den Beginn der Verbindung der Familie Kitzmantel mit Vorchdorf.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1890</div>
+                <div class="timeline-content">
+                    <h3>Tod von Cajetan (Senior)</h3>
+                    <p>Nach dem Tod von Cajetan Kitzmantel übernimmt sein Schwiegersohn die Gerberei und führt den Betrieb weiter.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1897</div>
+                <div class="timeline-content">
+                    <h3>Die Neffen übernehmen</h3>
+                    <p>Nach dem Tod des Schwiegersohns übernehmen die Söhne von Cajetan - Cajetan (der Jüngere) und Michael Kitzmantel - die Gerberei. Die beiden Brüder begründen zwei Linien des Familienunternehmens in Vorchdorf.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1912</div>
+                <div class="timeline-content">
+                    <h3>Gründung der Leder- und Schuhfabrik</h3>
+                    <p>Cajetan Kitzmantel gründet in Vorchdorf, im oberösterreichischen Alpenvorland am Rande des Salzkammerguts, eine Leder- und Schuhfabrik zur Herstellung erstklassigen Schuhwerks für die Landbevölkerung.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1913</div>
+                <div class="timeline-content">
+                    <h3>Bau der ersten Schuhfabrik in OÖ</h3>
+                    <p>Cajetan Kitzmantel lässt ein Produktionsgebäude direkt zwischen Laudach und Bahnhofstraße errichten - genau dort, wo heute das Museum steht! Es ist die ERSTE Schuhfabrik in Oberösterreich. Die Kitzmantelfabrik betreibt als Erstes die mechanische Herstellung von Schuhoberteilen in Oberösterreich.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1920</div>
+                <div class="timeline-content">
+                    <h3>Zwei Fabriken in Vorchdorf</h3>
+                    <p>Michael Kitzmantel baut die Gerberei in Freudenthal (heute Standort des Kindergartens) zu einer leistungsfähigen Lederfabrik aus, spezialisiert auf Sämischleder. Sein Bruder Cajetan führt die Schuhfabrik. Beide Fabriken tragen den Namen Kitzmantel. Belegschaftsfoto vom Jahr 1920 zeigt das Team mit dem Chef.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1920er</div>
+                <div class="timeline-content">
+                    <h3>Modernisierung & Expansion</h3>
+                    <p>Nach dem Ersten Weltkrieg wird die Kitzmantelfabrik mit modernsten Maschinen ausgestattet: Falzmaschinen, Glanzstoßmaschinen und große drehbare Gerbfässer. In den 20er Jahren erfolgt die Erweiterung durch eine Lagerhalle. Die Fabrik wächst rasant.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1924</div>
+                <div class="timeline-content">
+                    <h3>Michael Kitzmantel als Bürgermeister</h3>
+                    <p>Michael Kitzmantel ist über 15 Jahre als Bürgermeister in Vorchdorf tätig und prägt die Gemeinde nachhaltig. Das Weihnachtsfoto von 1924 zeigt Bürgermeister und Lederfabrikant Michael Kitzmantel mit Gattin Rosina und Kindern. Die Familie genießt hohes Ansehen.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1929</div>
+                <div class="timeline-content">
+                    <h3>Höchste Produktionsleistung</h3>
+                    <p>Die Kitzmantelfabrik erreicht 1929 eine Leistungsfähigkeit von wöchentlich 2.000 Paar Schuhen! Die Fabrik nimmt eine führende Stellung in der hochentwickelten österreichischen Schuhindustrie ein.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1930er-1950er</div>
+                <div class="timeline-content">
+                    <h3>Blütezeit & die Marke KIVO</h3>
+                    <p>Die Söhne Josef und Otto übernehmen die Fabrik von ihrem Vater Cajetan. Sohn Kamillo arbeitet im Einkauf mit. Zu den Glanzzeiten sind 150 Mitarbeiter*innen beschäftigt, der Großteil davon Frauen. Das Sortiment reicht von Sicherheitsschuhen bis zu Skischuhen. Die "Vorchdorfer Schuhe" unter der Marke KIVO (KItzmantel + VOrchdorf) genießen einen ausgezeichneten Ruf. Der Maronibraterstiefel wird zum Bestseller.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1960er-1980er</div>
+                <div class="timeline-content">
+                    <h3>Erfolgreiche Jahrzehnte</h3>
+                    <p>Die Fabrik produziert weiterhin hochwertige Schuhe nach traditionellen Verfahren in aufwendiger Handarbeit: holzgenagelt, durchgenäht oder flexibel genäht. Arbeitsschuhe (später mit Stahlkappen), Militärschuhe, Bergschuhe, Skischuhe, Stiefel und die berühmten "Militärtritlinge" (Hausschuhe für das Bundesheer) werden hergestellt. Es werden nur erstklassige Materialien verwendet: Lederfutter, Lederbrandsohlen, Vollgummisohlen und vegetabil gegerbtes Oberleder.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1990er</div>
+                <div class="timeline-content">
+                    <h3>Zunehmender Wettbewerbsdruck</h3>
+                    <p>Günstigere Materialien und Leder aus Übersee setzen der lokalen Produktion zu. Die Lederherstellung in der Region lohnt sich kaum noch. Die Spezialisierung auf robuste Arbeitsschuhe wird zum Verhängnis. Umweltauflagen bringen zusätzliche Herausforderungen: Abwässer mit Äscher, Bleichmitteln, Chrom und Salzsäure belasten die Laudach. Die Schuhproduktion läuft bis in die 1990er Jahre.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1992</div>
+                <div class="timeline-content">
+                    <h3>Übernahme durch Ludwig Reiter</h3>
+                    <p>Nach knapp 80 Jahren wird der Familienbetrieb von dem Wiener Schuhfabrikanten Ludwig Reiter übernommen. Er entwickelt den Maronibraterstiefel aus den Arbeitsstiefeln weiter und produziert ihn zunächst weiter. Franz Bammer, erster und letzter Lehrling unter Otto Kitzmantel, übersiedelt mit Ludwig Reiter nach Wien.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1995</div>
+                <div class="timeline-content">
+                    <h3>Stilllegung der Produktion</h3>
+                    <p>Ludwig Reiter legt die Produktionsstätte still. Die 80-jährige Geschichte der Schuh- und Lederproduktion in der Kitzmantelfabrik endet. Die Fabrik wird nach und nach geschlossen. Die letzte Besitzerin Marianne Kitzmantel übergibt später 39 Musterschuhe (jeweils nur einen Schuh pro Paar) an das Museum.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1998</div>
+                <div class="timeline-content">
+                    <h3>Gemeinde kauft die Fabrik</h3>
+                    <p>Die Marktgemeinde Vorchdorf erwirbt die Kitzmantelfabrik. Die Geschichte des Hauses endet nicht - eine neue Ära beginnt!</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2001</div>
+                <div class="timeline-content">
+                    <h3>Beginn der Sanierung</h3>
+                    <p>Auf Basis eines Architektenwettbewerbs und einer Studie zu verschiedenen Nutzungsmöglichkeiten wird ein groß angelegtes Sanierungsprojekt in drei Etappen eingeleitet. Alle drei Bauabschnitte werden von den Architekten Luger & Maul aus Wels umgesetzt. Der Industriekomplex wird unter Denkmalschutz gestellt.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2005</div>
+                <div class="timeline-content">
+                    <h3>Erster Bauabschnitt</h3>
+                    <p>Im ersten Bauabschnitt werden ein Probenlokal für die Marktmusikkapelle und das Jugendzentrum fertiggestellt. Neues Leben kehrt in die alten Mauern ein. Die Revitalisierung beginnt.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2009</div>
+                <div class="timeline-content">
+                    <h3>Kultur- und Veranstaltungszentrum</h3>
+                    <p>Im zweiten Bauabschnitt wird das neue Kultur- und Veranstaltungszentrum in den traditionsreichen Hallen der Schuhfabrik eröffnet. Die Kitzmantelfabrik wird zum kulturellen Herzstück von Vorchdorf. Hier treffen historische Architektur und hochmodernes Equipment aufeinander.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2018</div>
+                <div class="timeline-content">
+                    <h3>Museum & Fabriksaal</h3>
+                    <p>Im dritten und letzten Bauabschnitt wird das Nebengebäude mit der alten Gerberei zum Museum der Region Vorchdorf umgewandelt. Das Kulturzentrum wird um den "Fabriksaal" erweitert, der erfolgreich in Betrieb geht. Die Transformation des denkmalgeschützten Industriekomplexes ist abgeschlossen - ein Beispiel dafür, wie Revitalisierung mit Konzept nachhaltig neues Leben einhaucht.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2022</div>
+                <div class="timeline-content">
+                    <h3>Kitzmantelvilla</h3>
+                    <p>Die Marktgemeinde Vorchdorf kauft die Kitzmantelvilla an, die Angela Kitzmantel (älteste Tochter von Cajetan, verheiratete Stenz) geerbt hatte. Die Villa steht neben dem ehemaligen Industriekomplex. Im Obergeschoss befindet sich eine Englisch-Sprachschule.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2024</div>
+                <div class="timeline-content">
+                    <h3>Kulturvilla & Kulturhauptstadt</h3>
+                    <p>Unter dem Namen "Kulturvilla" öffnet die Villa im Untergeschoss ihre Türen für die Öffentlichkeit und ermöglicht allen Bürger*innen die Nutzung der Räumlichkeiten. Sie wird zum Referenzprojekt der Kulturhauptstadt Europas Bad Ischl Salzkammergut 2024. Ein Infopoint zur Kulturhauptstadt wird eingerichtet (DI 11:00-13:00, DO 10:00-12:00, FR 14:00-16:00). www.kulturvilla.at</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="today" style="background: linear-gradient(135deg, #2a1810 0%, #1a0f0a 100%);">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Die Kitzmantelfabrik heute</h2>
+                <p>
+                    Heute ist die Kitzmantelfabrik ein <span class="highlight">innovativer Schmelztiegel am Puls der Zeit</span>. Hier treffen historische Architektur und hochmodernes Equipment aufeinander.
+                </p>
+                <p>
+                    Die Vielseitigkeit der Eventlocation bietet den perfekten Rahmen für die unterschiedlichsten Veranstaltungen: von privaten Feiern und Hochzeiten über Firmenevents und Märkte bis hin zu Maturabällen und Konzerten.
+                </p>
+                <p>
+                    Der denkmalgeschützte Industriekomplex dient als bestes Beispiel dafür, wie eine <span class="highlight">Revitalisierung mit Konzept und einzigartiger Architektur</span> nachhaltig neues Leben einhaucht.
+                </p>
+                <div class="quote">
+                    "Circa 100 Events mit über 150 Veranstaltungstagen pro Jahr gastieren in der Kitzmantelfabrik und locken rund 25.000 Gäste jährlich nach Vorchdorf."
+                </div>
+                <p>
+                    Die Geschichte des Hauses endet also nicht 1995 – bis heute hat das Areal eine erstaunliche Wandlung vorzuweisen!
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="kitzmantel/aussen.jpg" alt="Kitzmantelfabrik Außenansicht" />
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="cta">
+        <div class="cta-content">
+            <h2>Erleben Sie die Geschichte</h2>
+            <p>Besuchen Sie das Museum der Region Vorchdorf in den historischen Mauern der Kitzmantelfabrik und entdecken Sie 80 Jahre Leder- und Schuhproduktion!</p>
+            <a href="https://www.kitzmantelfabrik.at" class="cta-button">www.kitzmantelfabrik.at</a>
+        </div>
+    </section>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.story-content, .timeline-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        const timelineDots = document.querySelectorAll('.timeline-dot');
+        const sections = document.querySelectorAll('section[id]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            timelineDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-target') === current) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+
+        timelineDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const target = dot.getAttribute('data-target');
+                const targetSection = document.getElementById(target);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', () => {
+                document.querySelector('#intro').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    </script>
+</body>
+</html>
