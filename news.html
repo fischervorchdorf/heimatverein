@@ -4,624 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News - Heimat- und Kulturverein Vorchdorf</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-dark: #2c3e50;
-            --secondary-dark: #34495e;
-            --light-gray: #7f8c8d;
-            --accent-gold: #d4af37;
-            --accent-red: #c0392b;
-            --warm-cream: #ecf0f1;
-            --text-dark: #2c3e50;
-            --text-light: #ffffff;
-            --bg-light: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            height: 50px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .site-title {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0.6rem;
-            border-radius: 5px;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu a:hover {
-            background-color: var(--accent-gold);
-            color: var(--primary-dark);
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background-color: var(--text-light);
-            border-radius: 2px;
-        }
-
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-menu {
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                flex-direction: column;
-                background-color: var(--secondary-dark);
-                gap: 0;
-                display: none;
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
-
-            .nav-menu a {
-                width: 100%;
-                padding: 1rem;
-                border-radius: 0;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-            }
-
-            .navbar {
-                padding: 1rem;
-            }
-        }
-
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            color: var(--text-light);
-            padding: 8rem 2rem 3rem;
-            text-align: center;
-            margin-top: 60px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-header p {
-            font-size: 1.1rem;
-            color: var(--warm-cream);
-        }
-
-        /* Content Container */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: var(--bg-light);
-        }
-
-        /* News Blocks Grid */
-        .news-blocks {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .news-block {
-            background: var(--text-light);
-            border-left: 5px solid var(--accent-gold);
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .news-block:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .news-block h2 {
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-            border-bottom: 2px solid var(--accent-gold);
-            padding-bottom: 0.5rem;
-        }
-
-        .news-block h3 {
-            color: var(--secondary-dark);
-            margin-top: 1.5rem;
-            margin-bottom: 0.8rem;
-            font-size: 1.2rem;
-        }
-
-        .event-item {
-            background: var(--warm-cream);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-            border-left: 4px solid var(--accent-red);
-        }
-
-        .event-item strong {
-            color: var(--accent-red);
-            font-size: 1.05rem;
-        }
-
-        .event-item p {
-            margin-top: 0.5rem;
-            color: var(--text-dark);
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .form-group label .required {
-            color: var(--accent-red);
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* Button Styles */
-        .btn {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            color: var(--text-light);
-            padding: 0.9rem 2rem;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-accent {
-            background: var(--accent-gold);
-            color: var(--primary-dark);
-        }
-
-        .btn-accent:hover {
-            background: #e0c547;
-        }
-
-        /* Info Box */
-        .info-box {
-            background: #e8f4f8;
-            border-left: 4px solid #3498db;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            color: #2c5aa0;
-        }
-
-        .info-box strong {
-            color: #2c5aa0;
-        }
-
-        /* Ideas List */
-        .ideas-list {
-            list-style: none;
-            margin: 1rem 0;
-        }
-
-        .ideas-list li {
-            background: var(--warm-cream);
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            border-radius: 5px;
-            border-left: 4px solid var(--accent-gold);
-            color: var(--text-dark);
-        }
-
-        .ideas-list li:before {
-            content: "💡 ";
-            margin-right: 0.5rem;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--primary-dark);
-            color: var(--text-light);
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            font-size: 0.9rem;
-        }
-
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-
-        footer a {
-            color: var(--accent-gold);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-header {
-                padding: 8rem 1rem 2rem;
-                margin-top: 60px;
-            }
-
-            .page-header h1 {
-                font-size: 1.8rem;
-            }
-
-            .page-header p {
-                font-size: 1rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .news-block {
-                padding: 1.5rem;
-            }
-
-            .news-block h2 {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="logo-container">
-            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
-            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
-        </div>
-        <ul class="nav-menu" id="navMenu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="news.html">News</a></li>
-            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
-            <li><a href="audioguide.html">Audioguide</a></li>
-            <li><a href="exponate.html">Exponate</a></li>
-            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
-            <li><a href="timeline.html">Zeitlinie</a></li>
-            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
-            <li><a href="kontakt.html">Kontakt</a></li>
-        </ul>
-        <div class="hamburger" id="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </nav>
-    </nav>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
 
     <!-- Page Header -->
     <div class="page-header">
         <h1>News & Veranstaltungen</h1>
-        <p>Bleiben Sie informiert über aktuelle Aktivitäten des Heimatvereins</p>
+        <p>Bleiben Sie informiert ueber aktuelle Aktivitaeten des Heimatvereins</p>
     </div>
 
     <!-- Main Content -->
-    <div class="container">
-        <!-- Aktuelle Ereignisse -->
-        <div class="news-block">
-            <h2>📢 Aktuelle Ereignisse</h2>
-            <div id="aktuelle-events"></div>
-            <p id="no-events" style="text-align: center; color: var(--light-gray); padding: 1rem; display: none;">
-                Derzeit keine anstehenden Veranstaltungen. <a href="aktivitaeten_archiv.html" style="color: var(--accent-gold); text-decoration: none;">Zu den vergangenen Aktivitäten →</a>
-            </p>
-            <p style="text-align: center; margin-top: 1rem;">
-                <a href="aktivitaeten_archiv.html" class="btn" style="display: inline-block; margin-top: 1rem;">📚 Archiv der vergangenen Aktivitäten</a>
-            </p>
-        </div>
-
-        <!-- Ausflüge mit Anmeldung -->
-        <div class="news-block">
-            <h2>🚌 Ausflüge & Anmeldung</h2>
-            <p>Melden Sie sich für unsere geplanten Ausflüge an! Genießen Sie gemeinsame Erlebnisse und lernen Sie interessante Orte kennen.</p>
-            
-            <h3>Geplante Ausflüge</h3>
-            <div class="event-item">
-                <strong>Ausflug zur Burg Wels</strong>
-                <p>🗓️ Mittwoch, 20. April 2026</p>
-                <p>Treffpunkt Kirche Vorchdorf, Abfahrt 14:00 Uhr.</p>
-            </div>
-            <div class="event-item">
-                <strong>Besuch des Stift Kremsmünster</strong>
-                <p>🗓️ Donnerstag, 6. Juni 2026</p>
-                <p>Kulturelle Exkursion mit Führung durch das beeindruckende Benediktinerstift.</p>
+    <div class="content">
+        <div class="container" style="max-width: 1000px;">
+            <!-- Aktuelle Ereignisse -->
+            <div class="news-block">
+                <h2>📢 Aktuelle Ereignisse</h2>
+                <div id="aktuelle-events"></div>
+                <p id="no-events" style="text-align: center; color: var(--light-gray); padding: 1rem; display: none;">
+                    Derzeit keine anstehenden Veranstaltungen. <a href="aktivitaeten_archiv.html" style="color: var(--accent-gold); text-decoration: none;">Zu den vergangenen Aktivitaeten →</a>
+                </p>
+                <p style="text-align: center; margin-top: 1rem;">
+                    <a href="aktivitaeten_archiv.html" class="btn btn-primary" style="display: inline-block; margin-top: 1rem;">📚 Archiv der vergangenen Aktivitaeten</a>
+                </p>
             </div>
 
-            <h3 style="margin-top: 2rem;">Zur Anmeldung</h3>
-            <div class="info-box">
-                <strong>Pflichtfelder:</strong> Vorname, Nachname<br>
-                <strong>Optional:</strong> Telefon, E-Mail
+            <!-- Ausfluege mit Anmeldung -->
+            <div class="news-block">
+                <h2>🚌 Ausfluege & Anmeldung</h2>
+                <p>Melden Sie sich fuer unsere geplanten Ausfluege an! Geniessen Sie gemeinsame Erlebnisse und lernen Sie interessante Orte kennen.</p>
+
+                <h3 style="color: var(--secondary-dark); margin-top: 1.5rem; margin-bottom: 0.8rem;">Geplante Ausfluege</h3>
+                <div class="event-item">
+                    <strong>Ausflug zur Burg Wels</strong>
+                    <p>🗓️ Mittwoch, 20. April 2026</p>
+                    <p>Treffpunkt Kirche Vorchdorf, Abfahrt 14:00 Uhr.</p>
+                </div>
+                <div class="event-item">
+                    <strong>Besuch des Stift Kremsmuenster</strong>
+                    <p>🗓️ Donnerstag, 6. Juni 2026</p>
+                    <p>Kulturelle Exkursion mit Fuehrung durch das beeindruckende Benediktinerstift.</p>
+                </div>
+
+                <h3 style="margin-top: 2rem; color: var(--secondary-dark);">Zur Anmeldung</h3>
+                <div class="info-box">
+                    <strong>Pflichtfelder:</strong> Vorname, Nachname<br>
+                    <strong>Optional:</strong> Telefon, E-Mail
+                </div>
+
+                <form method="POST" action="https://formspree.io/f/xyzabc123" onsubmit="handleAusflugSubmit(event)">
+                    <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
+                    <input type="hidden" name="form_type" value="Ausflug-Anmeldung">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="excursion_vorname">Vorname <span class="required">*</span></label>
+                            <input type="text" id="excursion_vorname" name="Vorname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="excursion_nachname">Nachname <span class="required">*</span></label>
+                            <input type="text" id="excursion_nachname" name="Nachname" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="excursion_telefon">Telefon</label>
+                            <input type="tel" id="excursion_telefon" name="Telefon">
+                        </div>
+                        <div class="form-group">
+                            <label for="excursion_email">E-Mail</label>
+                            <input type="email" id="excursion_email" name="E-Mail">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="excursion_event">Fuer welchen Ausflug moechten Sie sich anmelden? <span class="required">*</span></label>
+                        <select id="excursion_event" name="Ausflug" required>
+                            <option value="">-- Bitte waehlen --</option>
+                            <option value="Ausflug zur Burg Wels - 20.04.2026">Ausflug zur Burg Wels - 20.04.2026</option>
+                            <option value="Besuch des Stift Kremsmuenster - 06.06.2026">Besuch des Stift Kremsmuenster - 06.06.2026</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="excursion_bemerkung">Besondere Anmerkungen (z.B. Mobilitaetshilfen)</label>
+                        <textarea id="excursion_bemerkung" name="Bemerkungen" placeholder="Hier koennen Sie besondere Wuensche oder Anforderungen angeben..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Anmeldung absenden</button>
+                </form>
             </div>
 
-            <form method="POST" action="https://formspree.io/f/xyzabc123" onsubmit="handleAusflugSubmit(event)">
-                <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                <input type="hidden" name="form_type" value="Ausflug-Anmeldung">
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="excursion_vorname">Vorname <span class="required">*</span></label>
-                        <input type="text" id="excursion_vorname" name="Vorname" required>
+            <!-- Ideenworkshop -->
+            <div class="news-block">
+                <h2>💡 Ideenworkshop</h2>
+                <p>Helfen Sie uns, die Geschichte und Kultur unserer Region zu bewahren und zu erforschen! Teilen Sie Ihre Ideen mit uns – gemeinsam koennen wir Grossartiges schaffen.</p>
+
+                <h3 style="color: var(--secondary-dark); margin-top: 1.5rem; margin-bottom: 0.8rem;">Themenbeispiele:</h3>
+                <ul class="ideas-list">
+                    <li><strong>Wirtshaeuser-Projekt:</strong> Alle Wirtshaeuser in der Region aufspueren, ihre Geschichte erforschen und dokumentieren</li>
+                    <li><strong>Handwerk & Gewerbe:</strong> Traditionelle Handwerkstechniken und historische Gewerbe in Vorchdorf</li>
+                    <li><strong>Mundart-Erhaltung:</strong> Sammlung von Dialektwoertern und Redewendungen aus unserer Region</li>
+                    <li><strong>Schul- und Jugendgeschichte:</strong> Entwicklung von Schulen und Jugendvereinen im Laufe der Zeit</li>
+                    <li><strong>Architektur-Dokumentation:</strong> Besondere Bauwerke und deren architekturgeschichtliche Bedeutung</li>
+                </ul>
+
+                <p style="margin-top: 1.5rem; font-style: italic; color: var(--secondary-dark);">
+                    <strong>Ihre Idee:</strong> Falls Sie ein anderes spannendes Thema haben – teilen Sie es mit uns!
+                </p>
+            </div>
+
+            <!-- Newsletter/Kontakt Block -->
+            <div class="news-block">
+                <h2>📧 Bleiben Sie auf dem Laufenden</h2>
+                <p>Moechten Sie ueber neue Veranstaltungen, Ausfluege und Ideen-Workshops benachrichtigt werden?</p>
+
+                <form method="POST" action="https://formspree.io/f/mnopqr789" style="margin-top: 1.5rem;">
+                    <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
+                    <input type="hidden" name="form_type" value="Newsletter-Anmeldung">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newsletter_vorname">Vorname <span class="required">*</span></label>
+                            <input type="text" id="newsletter_vorname" name="Vorname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newsletter_nachname">Nachname <span class="required">*</span></label>
+                            <input type="text" id="newsletter_nachname" name="Nachname" required>
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="excursion_nachname">Nachname <span class="required">*</span></label>
-                        <input type="text" id="excursion_nachname" name="Nachname" required>
+                        <label for="newsletter_email">E-Mail <span class="required">*</span></label>
+                        <input type="email" id="newsletter_email" name="E-Mail" required>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="excursion_telefon">Telefon</label>
-                        <input type="tel" id="excursion_telefon" name="Telefon">
-                    </div>
-                    <div class="form-group">
-                        <label for="excursion_email">E-Mail</label>
-                        <input type="email" id="excursion_email" name="E-Mail">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="excursion_event">Für welchen Ausflug möchten Sie sich anmelden? <span class="required">*</span></label>
-                    <select id="excursion_event" name="Ausflug" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
-                        <option value="">-- Bitte wählen --</option>
-                        <option value="Ausflug zur Burg Wels - 20.04.2026">Ausflug zur Burg Wels - 20.04.2026</option>
-                        <option value="Besuch des Stift Kremsmünster - 06.06.2026">Besuch des Stift Kremsmünster - 06.06.2026</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="excursion_bemerkung">Besondere Anmerkungen (z.B. Mobilitätshilfen)</label>
-                    <textarea id="excursion_bemerkung" name="Bemerkungen" placeholder="Hier können Sie besondere Wünsche oder Anforderungen angeben..."></textarea>
-                </div>
-
-                <button type="submit" class="btn">Anmeldung absenden</button>
-            </form>
-        </div>
-
-        <!-- Ideenworkshop -->
-        <div class="news-block">
-            <h2>💡 Ideenworkshop</h2>
-            <p>Helfen Sie uns, die Geschichte und Kultur unserer Region zu bewahren und zu erforschen! Teilen Sie Ihre Ideen mit uns – gemeinsam können wir Großartiges schaffen.</p>
-
-            <h3>Themenbeispiele:</h3>
-            <ul class="ideas-list">
-                <li><strong>Wirtshäuser-Projekt:</strong> Alle Wirtshäuser in der Region aufspüren, ihre Geschichte erforschen und dokumentieren</li>
-                <li><strong>Handwerk & Gewerbe:</strong> Traditionelle Handwerkstechniken und historische Gewerbe in Vorchdorf</li>
-                <li><strong>Mundart-Erhaltung:</strong> Sammlung von Dialektwörtern und Redewendungen aus unserer Region</li>
-                <li><strong>Schul- und Jugendgeschichte:</strong> Entwicklung von Schulen und Jugendvereinen im Laufe der Zeit</li>
-                <li><strong>Architektur-Dokumentation:</strong> Besondere Bauwerke und deren architekturgeschichtliche Bedeutung</li>
-            </ul>
-
-            <p style="margin-top: 1.5rem; font-style: italic; color: var(--secondary-dark);">
-                <strong>Ihre Idee:</strong> Falls Sie ein anderes spannendes Thema haben – teilen Sie es mit uns!
-            </p>
-
-            <form method="POST" action="https://formspree.io/f/abcdef456" style="margin-top: 2rem;">
-                <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                <input type="hidden" name="form_type" value="Ideenworkshop">
-
-                <div class="form-group">
-                    <label for="idea_vorname">Vorname <span class="required">*</span></label>
-                    <input type="text" id="idea_vorname" name="Vorname" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_nachname">Nachname <span class="required">*</span></label>
-                    <input type="text" id="idea_nachname" name="Nachname" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_email">E-Mail</label>
-                    <input type="email" id="idea_email" name="E-Mail">
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_telefon">Telefon</label>
-                    <input type="tel" id="idea_telefon" name="Telefon">
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_titel">Titel Ihrer Idee <span class="required">*</span></label>
-                    <input type="text" id="idea_titel" name="Idee-Titel" placeholder="Z.B. 'Wirtshäuser-Projekt'" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_beschreibung">Beschreiben Sie Ihre Idee <span class="required">*</span></label>
-                    <textarea id="idea_beschreibung" name="Idee-Beschreibung" placeholder="Teilen Sie Ihre Gedanken, Vorschläge und Visionen mit uns..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_mitarbeit">Würden Sie gerne bei der Umsetzung mithelfen?</label>
-                    <select id="idea_mitarbeit" name="Mitarbeit" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
-                        <option value="">-- Bitte wählen --</option>
-                        <option value="Ja, ich möchte mithelfen">Ja, ich möchte mithelfen</option>
-                        <option value="Nein, nur die Idee beitragen">Nein, nur die Idee beitragen</option>
-                        <option value="Vielleicht, je nach Zeit und Aufwand">Vielleicht, je nach Zeit und Aufwand</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn">Idee einreichen</button>
-            </form>
-        </div>
-
-        <!-- Newsletter/Kontakt Block -->
-        <div class="news-block">
-            <h2>📧 Bleiben Sie auf dem Laufenden</h2>
-            <p>Möchten Sie über neue Veranstaltungen, Ausflüge und Ideen-Workshops benachrichtigt werden?</p>
-            
-            <form method="POST" action="https://formspree.io/f/mnopqr789">
-                <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                <input type="hidden" name="form_type" value="Newsletter-Anmeldung">
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="newsletter_vorname">Vorname <span class="required">*</span></label>
-                        <input type="text" id="newsletter_vorname" name="Vorname" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newsletter_nachname">Nachname <span class="required">*</span></label>
-                        <input type="text" id="newsletter_nachname" name="Nachname" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="newsletter_email">E-Mail <span class="required">*</span></label>
-                    <input type="email" id="newsletter_email" name="E-Mail" required>
-                </div>
-
-                <button type="submit" class="btn btn-accent">Zum Newsletter anmelden</button>
-            </form>
+                    <button type="submit" class="btn">Zum Newsletter anmelden</button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p><strong>Heimat- und Kulturverein Vorchdorf</strong></p>
-        <p>Telefon: <a href="tel:+43761465555578">07614/6555-578</a> | E-Mail: <a href="mailto:dr.claudia@westreicher.at">dr.claudia@westreicher.at</a></p>
-        <p><a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a></p>
-        <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
 
+    <script src="components.js"></script>
     <script>
-        // Hamburger Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('navMenu');
-
-        if (hamburger && navMenu) {
-            hamburger.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-            });
-        }
-
-        // Close menu when clicking on a link
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
         // Event-Datenbank mit Datumsparsing
         const events = [
             {
-                title: "Heimatvereinstreffen zur Fertigstellung des Bücherregals",
+                title: "Heimatvereinstreffen zur Fertigstellung des Buecherregals",
                 date: "2025-11-17",
                 time: "19:00 Uhr",
-                description: "Gemeinsames Treffen zur Fertigstellung des Bücherregals."
+                description: "Gemeinsames Treffen zur Fertigstellung des Buecherregals."
             },
             {
                 title: "Generalversammlung 2025",
@@ -633,13 +171,13 @@
                 title: "Gemeinsame Fahrt zur Burg Wels",
                 date: "2026-04-20",
                 time: "14:00 Uhr",
-                description: "Geführter Rundgang durch historische Orte unserer Nachbarstadt. Treffpunkt: Kirche Vorchdorf"
+                description: "Gefuehrter Rundgang durch historische Orte unserer Nachbarstadt. Treffpunkt: Kirche Vorchdorf"
             },
             {
-                title: "Frühjahrsputz im Museum Vorchdorf",
+                title: "Fruehjahrsputz im Museum Vorchdorf",
                 date: "2026-05-10",
                 time: "09:00 Uhr",
-                description: "Gemeinsamer Einsatz zur Verschönerung unseres Museums und der Umgebung."
+                description: "Gemeinsamer Einsatz zur Verschoenerung unseres Museums und der Umgebung."
             }
         ];
 
@@ -685,9 +223,9 @@
         function handleAusflugSubmit(event) {
             const vorname = document.getElementById('excursion_vorname').value.trim();
             const nachname = document.getElementById('excursion_nachname').value.trim();
-            
+
             if (!vorname || !nachname) {
-                alert('Bitte füllen Sie mindestens Vorname und Nachname aus.');
+                alert('Bitte fuellen Sie mindestens Vorname und Nachname aus.');
                 event.preventDefault();
                 return false;
             }

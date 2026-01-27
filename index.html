@@ -1,650 +1,37 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heimat- und Kulturverein Vorchdorf</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-dark: #2c3e50;
-            --secondary-dark: #34495e;
-            --light-gray: #7f8c8d;
-            --accent-gold: #d4af37;
-            --accent-red: #c0392b;
-            --warm-cream: #ecf0f1;
-            --text-dark: #2c3e50;
-            --text-light: #ffffff;
-            --bg-light: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .site-title {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0.6rem;
-            border-radius: 5px;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--accent-gold);
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: var(--text-light);
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(52, 73, 94, 0.9)),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%2334495e" width="1200" height="800"/></svg>');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: var(--text-light);
-            padding: 2rem;
-            position: relative;
-        }
-
-        .hero-logo {
-            width: 250px;
-            height: auto;
-            margin-bottom: 2rem;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-            opacity: 0.85;
-            animation: wobble 3s ease-in-out infinite;
-        }
-
-        @keyframes wobble {
-
-            0%,
-            100% {
-                transform: rotate(0deg) scale(1);
-            }
-
-            25% {
-                transform: rotate(-2deg) scale(1.02);
-            }
-
-            50% {
-                transform: rotate(2deg) scale(0.98);
-            }
-
-            75% {
-                transform: rotate(-1deg) scale(1.01);
-            }
-        }
-
-        .hero-content {
-            max-width: 900px;
-            animation: fadeInUp 1s ease;
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 1.2rem 3rem;
-            background: var(--accent-gold);
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 700;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
-        }
-
-        /* About Section */
-        .about {
-            padding: 6rem 2rem;
-            background: var(--bg-light);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            color: var(--primary-dark);
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: var(--accent-gold);
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 4rem;
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .about-image {
-            border-radius: 15px;
-            min-height: 400px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .about-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Call to Action - Helfer */
-        .volunteer-section {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            color: var(--text-light);
-            padding: 5rem 2rem;
-            text-align: center;
-        }
-
-        .volunteer-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .volunteer-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .volunteer-content h2 .word {
-            display: inline-block;
-            opacity: 0;
-        }
-
-        .volunteer-content h2 .word.word-wir {
-            transform: translate(100px, 100px);
-        }
-
-        .volunteer-content h2 .word.word-brauchen {
-            transform: translateY(-100px);
-        }
-
-        .volunteer-content h2 .word.word-dich {
-            transform: translate(-100px, 100px);
-        }
-
-        .volunteer-content h2 .word.animate {
-            animation-duration: 1s;
-            animation-fill-mode: forwards;
-            animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .volunteer-content h2 .word-wir.animate {
-            animation-name: slideFromBottomRight;
-        }
-
-        .volunteer-content h2 .word-brauchen.animate {
-            animation-name: slideFromTop;
-            animation-delay: 0.2s;
-        }
-
-        .volunteer-content h2 .word-dich.animate {
-            animation-name: slideFromBottomLeft;
-            animation-delay: 0.4s;
-        }
-
-        .volunteer-emoji {
-            opacity: 0;
-            transform: translateY(100px);
-        }
-
-        .volunteer-emoji.animate {
-            animation: slideFromBottom 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.6s forwards;
-        }
-
-        @keyframes slideFromBottomRight {
-            to {
-                opacity: 1;
-                transform: translate(0, 0);
-            }
-        }
-
-        @keyframes slideFromTop {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideFromBottomLeft {
-            to {
-                opacity: 1;
-                transform: translate(0, 0);
-            }
-        }
-
-        @keyframes slideFromBottom {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .volunteer-content p {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-
-        .benefit-card:last-child:nth-child(3n + 1) {
-            grid-column: 2;
-        }
-
-        .benefit-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .benefit-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .benefit-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .benefit-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--accent-gold);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 6rem 2rem;
-            background: var(--bg-light);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--accent-gold);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
-            color: var(--primary-dark);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card p {
-            line-height: 1.8;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--text-dark);
-            color: var(--text-light);
-            padding: 3rem 2rem 1rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer h4 {
-            color: var(--accent-gold);
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-
-        .footer p,
-        .footer a {
-            color: var(--warm-cream);
-            text-decoration: none;
-            line-height: 1.8;
-        }
-
-        .footer a:hover {
-            color: var(--accent-gold);
-        }
-
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 2rem;
-            text-align: center;
-            color: var(--warm-cream);
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0.75rem 1rem;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-menu {
-                position: fixed;
-                top: 60px;
-                right: -100%;
-                flex-direction: column;
-                background: var(--primary-dark);
-                width: 100%;
-                padding: 2rem;
-                transition: right 0.3s ease;
-                gap: 1rem;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-            }
-
-            .nav-menu.active {
-                right: 0;
-            }
-
-            .hero {
-                height: 100vh;
-                padding: 1rem;
-                padding-top: 80px;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-                margin-bottom: 1rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .cta-button {
-                padding: 1rem 2rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Landscape mobile optimization */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .navbar {
-                padding: 0.5rem 1rem;
-            }
-
-            .hero {
-                height: auto;
-                min-height: 100vh;
-                padding: 1rem;
-                padding-top: 70px;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .cta-button {
-                padding: 0.8rem 1.8rem;
-                font-size: 0.85rem;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-
-            .volunteer-content h2 {
-                font-size: 2rem;
-            }
-
-            .site-title {
-                font-size: 1rem;
-            }
-
-            .hero-logo {
-                width: 180px;
-                margin-bottom: 1.5rem;
-            }
-
-            .benefits-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .benefit-card:last-child:nth-child(3n + 1) {
-                grid-column: 1;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .benefits-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .benefit-card:last-child:nth-child(odd) {
-                grid-column: span 2;
-                max-width: 50%;
-                margin: 0 auto;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
-        <ul class="nav-menu" id="navMenu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="news.html">News</a></li>
-            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
-            <li><a href="audioguide.html">Audioguide</a></li>
-            <li><a href="exponate.html">Exponate</a></li>
-            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
-            <li><a href="timeline.html">Zeitlinie</a></li>
-            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
-            <li><a href="kontakt.html">Kontakt</a></li>
-        </ul>
-        <div class="hamburger" id="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </nav>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf"
-                class="hero-logo">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="hero-logo">
             <h1>Bewahren. Erleben. Weitergeben.</h1>
-            <p>Geschichte ist mehr als Vergangenheit – sie ist der Schlüssel zu unserer Identität.<br> Im Museum der
-                Region Vorchdorf erwecken wir gemeinsam <br>die Geschichten unserer Heimat zum Leben.</p>
+            <p>Geschichte ist mehr als Vergangenheit – sie ist der Schluessel zu unserer Identitaet.<br> Im Museum der Region Vorchdorf erwecken wir gemeinsam <br>die Geschichten unserer Heimat zum Leben.</p>
             <a href="#volunteer" class="cta-button">Werde Teil unseres Teams</a>
         </div>
     </section>
 
     <!-- About Section -->
-    <section class="about">
+    <section class="content-section">
         <div class="container">
             <h2 class="section-title">Unsere Mission</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Der Heimat- und Kulturverein Vorchdorf ist seit Jahrzehnten Hüter des kulturellen Erbes unserer
-                        Region. Wir sind eine engagierte Gemeinschaft von Menschen, die mit Leidenschaft die Geschichte
-                        Vorchdorfs bewahren, erforschen und für kommende Generationen lebendig halten.</p>
-
-                    <p>Als Inhaber und Verwalter der wertvollen Exponate im Museum der Region Vorchdorf tragen wir eine
-                        besondere Verantwortung. Von der beeindruckenden Tabakpfeifensammlung über die kostbaren
-                        Krumhuber-Taschenuhren bis hin zur bewegenden Geschichte der Kitzmantelfabrik – jedes Objekt
-                        erzählt eine Geschichte, die es zu bewahren gilt.</p>
-
-                    <p>Zweimal jährlich organisieren wir Sonderausstellungen, die besondere Aspekte der
-                        Regionalgeschichte beleuchten. Diese Ausstellungen sind Höhepunkte im Kulturleben unserer
-                        Gemeinde und ziehen Besucher aus nah und fern an.</p>
+                    <p>Der Heimat- und Kulturverein Vorchdorf ist seit Jahrzehnten Hueter des kulturellen Erbes unserer Region. Wir sind eine engagierte Gemeinschaft von Menschen, die mit Leidenschaft die Geschichte Vorchdorfs bewahren, erforschen und fuer kommende Generationen lebendig halten.</p>
+                    <p>Als Inhaber und Verwalter der wertvollen Exponate im Museum der Region Vorchdorf tragen wir eine besondere Verantwortung. Von der beeindruckenden Tabakpfeifensammlung ueber die kostbaren Krumhuber-Taschenuhren bis hin zur bewegenden Geschichte der Kitzmantelfabrik – jedes Objekt erzaehlt eine Geschichte, die es zu bewahren gilt.</p>
+                    <p>Zweimal jaehrlich organisieren wir Sonderausstellungen, die besondere Aspekte der Regionalgeschichte beleuchten. Diese Ausstellungen sind Hoehepunkte im Kulturleben unserer Gemeinde und ziehen Besucher aus nah und fern an.</p>
                 </div>
                 <div class="about-image">
-                    <img src="Bilder/Museum_der_Region_Vorchdorf_Startseite"
-                        alt="Museum der Region Vorchdorf - Kitzmantelfabrik">
+                    <img src="Bilder/Museum_der_Region_Vorchdorf_Startseite" alt="Museum der Region Vorchdorf - Kitzmantelfabrik">
                 </div>
             </div>
         </div>
@@ -659,14 +46,12 @@
                 <span class="word word-brauchen">brauchen</span>
                 <span class="word word-dich">DICH!</span>
             </h2>
-            <p>Geschichte lebendig zu halten ist Teamarbeit. Wir sind eine kleine, aber enthusiastische Gruppe von
-                Berufstätigen, die unsere Freizeit der Heimatgeschichte widmen. Doch um unsere Vision zu verwirklichen,
-                benötigen wir tatkräftige Unterstützung.</p>
+            <p>Geschichte lebendig zu halten ist Teamarbeit. Wir sind eine kleine, aber enthusiastische Gruppe von Berufstaetigen, die unsere Freizeit der Heimatgeschichte widmen. Doch um unsere Vision zu verwirklichen, benoetigen wir tatkraeftige Unterstuetzung.</p>
 
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <div class="benefit-icon">🏛️</div>
-                    <h3>Identität & Wurzeln</h3>
+                    <h3>Identitaet & Wurzeln</h3>
                     <p>Entdecke die faszinierende Geschichte deiner Heimat und verstehe, woher wir kommen</p>
                 </div>
                 <div class="benefit-card">
@@ -686,52 +71,46 @@
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">⭐</div>
-                    <h3>Sinnvolle Tätigkeit</h3>
+                    <h3>Sinnvolle Taetigkeit</h3>
                     <p>Leiste einen wertvollen Beitrag zur Bewahrung unseres kulturellen Erbes</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">🔗</div>
                     <h3>Generationen-<br>verbindung</h3>
-                    <p>Baue Brücken zwischen Jung und Alt und gib Wissen weiter</p>
+                    <p>Baue Bruecken zwischen Jung und Alt und gib Wissen weiter</p>
                 </div>
             </div>
 
-            <p style="font-size: 1.3rem; margin-top: 2rem;"><strong>Bereiche, in denen wir Unterstützung
-                    suchen:</strong></p>
+            <p style="font-size: 1.3rem; margin-top: 2rem;"><strong>Bereiche, in denen wir Unterstuetzung suchen:</strong></p>
             <p>✓ Digitalisierung & MUKO-Datenbank (Erfassung unserer Exponate)<br>
                 ✓ Sortierung und Inventarisierung von Exponaten<br>
                 ✓ Organisation von Sonderausstellungen<br>
-                ✓ Führungen und Besucherbetreuung<br>
-                ✓ Social Media & Öffentlichkeitsarbeit</p>
+                ✓ Fuehrungen und Besucherbetreuung<br>
+                ✓ Social Media & Oeffentlichkeitsarbeit</p>
 
-            <a href="kontakt.html" class="cta-button"
-                style="margin-top: 2rem; background: var(--text-light); color: var(--primary-dark);">Jetzt Kontakt
-                aufnehmen</a>
+            <a href="kontakt.html" class="cta-button" style="margin-top: 2rem; background: var(--text-light); color: var(--primary-dark);">Jetzt Kontakt aufnehmen</a>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features">
+    <section class="content-section">
         <div class="container">
             <h2 class="section-title">Was uns auszeichnet</h2>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">📜</div>
                     <h3>Dauerausstellung</h3>
-                    <p>Tauchen Sie ein in die Vor- und Frühgeschichte, bewundern Sie einzigartige Tabakpfeifen und die
-                        berühmten Krumhuber-Uhren</p>
+                    <p>Tauchen Sie ein in die Vor- und Fruehgeschichte, bewundern Sie einzigartige Tabakpfeifen und die beruehmten Krumhuber-Uhren</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎨</div>
                     <h3>Sonderausstellungen</h3>
-                    <p>Zweimal jährlich präsentieren wir besondere Themen – von regionaler Geschichte bis zu privaten
-                        Sammlungen</p>
+                    <p>Zweimal jaehrlich praesentieren wir besondere Themen – von regionaler Geschichte bis zu privaten Sammlungen</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🏭</div>
                     <h3>Industriegeschichte</h3>
-                    <p>Erleben Sie die bewegende Geschichte der Kitzmantelfabrik durch Zeitzeugenberichte und
-                        Originalobjekte</p>
+                    <p>Erleben Sie die bewegende Geschichte der Kitzmantelfabrik durch Zeitzeugenberichte und Originalobjekte</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎧</div>
@@ -740,114 +119,51 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">👨‍🏫</div>
-                    <h3>Führungen</h3>
-                    <p>Persönliche Führungen nach Vereinbarung – auch außerhalb der regulären Öffnungszeiten möglich</p>
+                    <h3>Fuehrungen</h3>
+                    <p>Persoenliche Fuehrungen nach Vereinbarung – auch ausserhalb der regulaeren Oeffnungszeiten moeglich</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🏛️</div>
                     <h3>Historisches Ambiente</h3>
-                    <p>Geschichte hautnah in den geschichtsträchtigen Mauern der ehemaligen Kitzmantelfabrik erleben</p>
+                    <p>Geschichte hautnah in den geschichtstraechtigen Mauern der ehemaligen Kitzmantelfabrik erleben</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div>
-                <h4>Heimat- und Kulturverein Vorchdorf</h4>
-                <p>Bewahrer des kulturellen Erbes<br>
-                    der Region Vorchdorf seit vielen Jahrzehnten</p>
-            </div>
-            <div>
-                <h4>Kontakt</h4>
-                <p>Bahnhofstraße 9<br>
-                    4655 Vorchdorf<br>
-                    E-Mail: dr.claudia@westreicher.at</p>
-            </div>
-            <div>
-                <h4>Museum der Region</h4>
-                <p>Laudachweg 17<br>
-                    4655 Vorchdorf<br>
-                    Tel: 07614/6555-578</p>
-            </div>
-            <div>
-                <h4>Rechtliches</h4>
-                <div class="footer-links">
-                    <a href="impressum.html">Impressum</a>
-                    <a href="datenschutz.html">Datenschutz</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
 
+    <script src="components.js"></script>
     <script>
-        // Mobile Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('navMenu');
-
-        hamburger.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // Close menu when clicking on a link
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
         // Scroll Animation for Volunteer Section
         const volunteerSection = document.getElementById('volunteer');
-        const volunteerWords = volunteerSection.querySelectorAll('.word');
-        const volunteerEmoji = volunteerSection.querySelector('.volunteer-emoji');
         let animationTriggered = false;
 
         function checkVolunteerSection() {
-            if (animationTriggered) return;
+            if (animationTriggered || !volunteerSection) return;
 
             const rect = volunteerSection.getBoundingClientRect();
             const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
-            // Trigger animation when section is 70% visible
             if (rect.top <= windowHeight * 0.7 && rect.bottom >= 0) {
                 animationTriggered = true;
+                const volunteerWords = volunteerSection.querySelectorAll('.word');
+                const volunteerEmoji = volunteerSection.querySelector('.volunteer-emoji');
 
-                // Animate words
                 volunteerWords.forEach(word => {
                     word.classList.add('animate');
                 });
 
-                // Animate emoji
-                volunteerEmoji.classList.add('animate');
+                if (volunteerEmoji) {
+                    volunteerEmoji.classList.add('animate');
+                }
             }
         }
 
-        // Check on scroll and on page load
         window.addEventListener('scroll', checkVolunteerSection);
         window.addEventListener('load', checkVolunteerSection);
-
-        // Initial check in case section is already in view
         checkVolunteerSection();
     </script>
 </body>
-
 </html>
