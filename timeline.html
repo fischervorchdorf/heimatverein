@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,7 +38,7 @@
             width: 100%;
             background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
             padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             display: flex;
             justify-content: space-between;
@@ -80,7 +81,7 @@
         }
 
         .nav-menu a:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: var(--accent-gold);
         }
 
@@ -111,7 +112,7 @@
         .page-header h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .page-header p {
@@ -158,7 +159,7 @@
             background: white;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             transform: translateY(0);
@@ -167,7 +168,7 @@
 
         .timeline-card:hover {
             transform: translateY(-15px);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
             border-left-color: var(--accent-red);
         }
 
@@ -191,8 +192,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(20px, -20px) scale(1.1); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(20px, -20px) scale(1.1);
+            }
         }
 
         .timeline-card-header h3 {
@@ -283,6 +291,7 @@
             margin-right: 12px;
             vertical-align: middle;
         }
+
         .timeline-visual-item h4 .icon svg {
             width: 100%;
             height: 100%;
@@ -290,9 +299,20 @@
         }
 
         /* specific colored icons */
-        .icon--fernberger svg { fill: #234a6d; /* deep blue for castle */ }
-        .icon--krumhuber svg { fill: #d4af37; /* gold for clocks */ }
-        .icon--kitzmantel svg { fill: #A0522D; /* leather/factory brown */ }
+        .icon--fernberger svg {
+            fill: #234a6d;
+            /* deep blue for castle */
+        }
+
+        .icon--krumhuber svg {
+            fill: #d4af37;
+            /* gold for clocks */
+        }
+
+        .icon--kitzmantel svg {
+            fill: #A0522D;
+            /* leather/factory brown */
+        }
 
         .timeline-line {
             position: absolute;
@@ -346,7 +366,8 @@
             font-size: 1.2rem;
         }
 
-        .footer p, .footer a {
+        .footer p,
+        .footer a {
             color: var(--warm-cream);
             text-decoration: none;
             line-height: 1.8;
@@ -363,7 +384,7 @@
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 2rem;
             text-align: center;
             color: var(--warm-cream);
@@ -391,7 +412,7 @@
                 padding: 2rem;
                 transition: right 0.3s ease;
                 gap: 1rem;
-                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
             }
 
             .nav-menu.active {
@@ -448,11 +469,13 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf"
+                class="logo">
             <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
         </div>
         <ul class="nav-menu" id="navMenu">
@@ -476,14 +499,14 @@
     <!-- Page Header -->
     <section class="page-header">
         <h1>⏳ Zeitreisen durch die Geschichte Vorchdorfs</h1>
-            </section>
+    </section>
 
     <!-- Main Content -->
     <section class="container">
         <div class="timeline-intro">
             <h2>Reise durch die Zeit</h2>
             <p>
-                Die Geschichte Vorchdorfs ist reich an faszinierenden Geschichten von Menschen, Handwerk und Innovation. 
+                Die Geschichte Vorchdorfs ist reich an faszinierenden Geschichten von Menschen, Handwerk und Innovation.
                 <br>Wähle eine unserer Zeitreisen und erlebe, wie die Vergangenheit zum Leben erwacht.
             </p>
         </div>
@@ -491,14 +514,14 @@
         <!-- Timeline Grid -->
         <div class="timeline-grid">
             <!-- Card 1: Krumhuber Uhren -->
-            <div class="timeline-card" onclick="window.location.href='krumhuber_uhren_final.html'">
+            <div class="timeline-card" onclick="window.location.href='krumhuber_uhren_FINAL.html'">
                 <div class="timeline-card-header">
                     <h3><span class="timeline-icon">⚙️</span>Krumhuber Uhren</h3>
                     <p class="timeline-card-subtitle">110 Jahre Handwerkskunst</p>
                 </div>
                 <div class="timeline-card-body">
                     <p>
-                        Tauche ein in die Geschichte der berühmten Uhrmacherdynastie Krumhuber. 
+                        Tauche ein in die Geschichte der berühmten Uhrmacherdynastie Krumhuber.
                         Von 1776 bis 1886 prägte diese Familie das Handwerk und die Kultur Vorchdorfs.
                     </p>
                     <div class="highlights">
@@ -506,7 +529,7 @@
                         <span class="highlight-badge">3 Generationen</span>
                         <span class="highlight-badge">Handwerk</span>
                     </div>
-                    <a href="krumhuber_uhren_final.html" class="cta-link">Zur Zeitreise →</a>
+                    <a href="krumhuber_uhren_FINAL.html" class="cta-link">Zur Zeitreise →</a>
                 </div>
             </div>
 
@@ -518,7 +541,7 @@
                 </div>
                 <div class="timeline-card-body">
                     <p>
-                        Erfahre die Geschichte der Familie Kitzmantel und ihrer legendären Fabrik, 
+                        Erfahre die Geschichte der Familie Kitzmantel und ihrer legendären Fabrik,
                         die das Wirtschaftsleben Vorchdorfs entscheidend geprägt hat.
                     </p>
                     <div class="highlights">
@@ -538,7 +561,7 @@
                 </div>
                 <div class="timeline-card-body">
                     <p>
-                        Entdecke die faszinierende Geschichte der Fernberger – eines der bedeutendsten 
+                        Entdecke die faszinierende Geschichte der Fernberger – eines der bedeutendsten
                         Adelsgeschlechter Vorchdorfs mit zwei legendären Weltreisenden.
                     </p>
                     <div class="highlights">
@@ -553,27 +576,58 @@
 
         <!-- Additional Timeline Visualization -->
         <div class="timeline-visual">
-            <h2 style="text-align: center; margin-bottom: 3rem; color: var(--primary-dark);">Kulturelle Meilensteine</h2>
+            <h2 style="text-align: center; margin-bottom: 3rem; color: var(--primary-dark);">Kulturelle Meilensteine
+            </h2>
             <div class="timeline-line"></div>
 
             <div class="timeline-visual-item">
-                <h4><span class="icon icon--fernberger" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schloss Icon"><g fill="currentColor"><rect x="6" y="30" width="52" height="18" rx="2"/><rect x="10" y="18" width="8" height="12" rx="1"/><rect x="28" y="12" width="8" height="18" rx="1"/><rect x="46" y="18" width="8" height="12" rx="1"/><path d="M20 30v-8l6-4 6 4v8"/></g></svg></span>1527 - Fernberger: Adelsgeschlecht &amp; Weltreisende</h4>
-                <p>Die Fernberger gehören zu den ältesten einflussreichen Familien in der Region. Besonders bedeutsam sind Georg Christoph (1557–1594) und Christoph Carl (um 1596–1653), deren Reiseberichte historische Einblicke in Asien und weltumspannende Routen liefern.</p>
+                <h4><span class="icon icon--fernberger" aria-hidden="true"><svg viewBox="0 0 64 64"
+                            xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schloss Icon">
+                            <g fill="currentColor">
+                                <rect x="6" y="30" width="52" height="18" rx="2" />
+                                <rect x="10" y="18" width="8" height="12" rx="1" />
+                                <rect x="28" y="12" width="8" height="18" rx="1" />
+                                <rect x="46" y="18" width="8" height="12" rx="1" />
+                                <path d="M20 30v-8l6-4 6 4v8" />
+                            </g>
+                        </svg></span>1527 - Fernberger: Adelsgeschlecht &amp; Weltreisende</h4>
+                <p>Die Fernberger gehören zu den ältesten einflussreichen Familien in der Region. Besonders bedeutsam
+                    sind Georg Christoph (1557–1594) und Christoph Carl (um 1596–1653), deren Reiseberichte historische
+                    Einblicke in Asien und weltumspannende Routen liefern.</p>
             </div>
 
             <div class="timeline-visual-item">
-                <h4><span class="icon icon--krumhuber" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Uhr Icon"><g fill="currentColor"><circle cx="32" cy="32" r="18"/><circle cx="32" cy="32" r="10" fill="#fff"/><path d="M32 20v9l7 4" fill="currentColor"/></g></svg></span>1776 - Gründung der Krumhuber Werkstatt</h4>
-                <p>Johann Michael Krumhuber gründet seine Uhrmacherwerkstatt in Vorchdorf und legt den Grundstein für eine 110-jährige Tradition.</p>
+                <h4><span class="icon icon--krumhuber" aria-hidden="true"><svg viewBox="0 0 64 64"
+                            xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Uhr Icon">
+                            <g fill="currentColor">
+                                <circle cx="32" cy="32" r="18" />
+                                <circle cx="32" cy="32" r="10" fill="#fff" />
+                                <path d="M32 20v9l7 4" fill="currentColor" />
+                            </g>
+                        </svg></span>1776 - Gründung der Krumhuber Werkstatt</h4>
+                <p>Johann Michael Krumhuber gründet seine Uhrmacherwerkstatt in Vorchdorf und legt den Grundstein für
+                    eine 110-jährige Tradition.</p>
             </div>
 
             <div class="timeline-visual-item">
-                <h4><span class="icon icon--kitzmantel" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fabrik Icon"><g fill="currentColor"><rect x="6" y="34" width="44" height="16" rx="1"/><rect x="10" y="26" width="6" height="8"/><rect x="20" y="22" width="6" height="12"/><rect x="30" y="26" width="6" height="8"/><rect x="50" y="18" width="8" height="32" rx="1"/></g></svg></span>19. Jahrhundert - Aufstieg der Kitzmantel Fabrik</h4>
-                <p>Die Familie Kitzmantel prägt die Wirtschaft Vorchdorfs mit ihrer Fabrik und schafft zahlreiche Arbeitsplätze; ihre Marke KIVO wird regional bekannt.</p>
+                <h4><span class="icon icon--kitzmantel" aria-hidden="true"><svg viewBox="0 0 64 64"
+                            xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fabrik Icon">
+                            <g fill="currentColor">
+                                <rect x="6" y="34" width="44" height="16" rx="1" />
+                                <rect x="10" y="26" width="6" height="8" />
+                                <rect x="20" y="22" width="6" height="12" />
+                                <rect x="30" y="26" width="6" height="8" />
+                                <rect x="50" y="18" width="8" height="32" rx="1" />
+                            </g>
+                        </svg></span>19. Jahrhundert - Aufstieg der Kitzmantel Fabrik</h4>
+                <p>Die Familie Kitzmantel prägt die Wirtschaft Vorchdorfs mit ihrer Fabrik und schafft zahlreiche
+                    Arbeitsplätze; ihre Marke KIVO wird regional bekannt.</p>
             </div>
 
             <div class="timeline-visual-item">
                 <h4>🏛️ Heute - Museum der Region Vorchdorf</h4>
-                <p>Das Museum bewahrt die wertvollen Schätze unserer Heimatgeschichte und macht sie für kommende Generationen zugänglich.</p>
+                <p>Das Museum bewahrt die wertvollen Schätze unserer Heimatgeschichte und macht sie für kommende
+                    Generationen zugänglich.</p>
             </div>
         </div>
     </section>
@@ -584,19 +638,19 @@
             <div>
                 <h4>Heimat- und Kulturverein Vorchdorf</h4>
                 <p>Bewahrer des kulturellen Erbes<br>
-                   der Region Vorchdorf seit vielen Jahrzehnten</p>
+                    der Region Vorchdorf seit vielen Jahrzehnten</p>
             </div>
             <div>
                 <h4>Kontakt</h4>
                 <p>Bahnhofstraße 9<br>
-                   4655 Vorchdorf<br>
-                   E-Mail: dr.claudia@westreicher.at</p>
+                    4655 Vorchdorf<br>
+                    E-Mail: dr.claudia@westreicher.at</p>
             </div>
             <div>
                 <h4>Museum der Region</h4>
                 <p>Laudachweg 17<br>
-                   4655 Vorchdorf<br>
-                   Tel: 07614/6555-578</p>
+                    4655 Vorchdorf<br>
+                    Tel: 07614/6555-578</p>
             </div>
             <div>
                 <h4>Rechtliches</h4>
@@ -629,10 +683,11 @@
 
         // Add smooth transitions on cards
         document.querySelectorAll('.timeline-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
+            card.addEventListener('mouseenter', function () {
                 this.style.transition = 'all 0.3s ease';
             });
         });
     </script>
 </body>
+
 </html>
