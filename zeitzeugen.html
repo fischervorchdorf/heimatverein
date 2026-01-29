@@ -506,7 +506,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten. | <small>v3.2</small></p>
+            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten. | <small>v3.3</small></p>
         </div>
     </footer>
     <script>
@@ -552,15 +552,17 @@
                     submitBtn.innerText = "Absenden";
                     submitBtn.disabled = false;
                 } else {
-                    status.innerHTML = "Hoppla! Da gab es ein Problem beim Absenden.";
-                    status.style.display = "block";
-                    status.style.backgroundColor = "#f8d7da";
-                    status.style.color = "#721c24";
-                    submitBtn.innerText = "Absenden";
-                    submitBtn.disabled = false;
+                    response.text().then(text => {
+                        status.innerHTML = "Hoppla! Da gab es ein Problem beim Absenden. (Status: " + response.status + ") - Details: " + text.substring(0, 100);
+                        status.style.display = "block";
+                        status.style.backgroundColor = "#f8d7da";
+                        status.style.color = "#721c24";
+                        submitBtn.innerText = "Absenden";
+                        submitBtn.disabled = false;
+                    });
                 }
             }).catch(error => {
-                status.innerHTML = "Hoppla! Da gab es ein Problem beim Absenden.";
+                status.innerHTML = "Hoppla! Da gab es ein Netzwerkproblem. Bitte prüfe deine Internetverbindung. Info: " + error.message;
                 status.style.display = "block";
                 status.style.backgroundColor = "#f8d7da";
                 status.style.color = "#721c24";
