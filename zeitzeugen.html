@@ -506,7 +506,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten. | <small>v3.3</small></p>
+            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten. | <small>v3.4</small></p>
         </div>
     </footer>
     <script>
@@ -535,13 +535,9 @@
             submitBtn.innerText = "Senden...";
 
             const data = new FormData(event.target);
-            const actionUrl = event.target.action + "?v=" + new Date().getTime(); // Cache-busting
-            fetch(actionUrl, {
-                method: form.method,
-                body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
+            fetch(form.action, {
+                method: 'POST',
+                body: data
             }).then(response => {
                 if (response.status === 201 || response.ok) {
                     status.innerHTML = "Vielen Dank! Deine Geschichte wurde erfolgreich übermittelt.";
