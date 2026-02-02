@@ -371,6 +371,31 @@
             opacity: 0.6;
         }
 
+        /* Video Section */
+        .video-container {
+            margin-top: 40px;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            background: #000;
+        }
+
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+
+        .ai-note {
+            font-size: 0.9rem;
+            color: #CD853F;
+            font-style: italic;
+            margin-top: 10px;
+            text-align: right;
+            opacity: 0.8;
+        }
+
         .detailed-timeline {
             min-height: 100vh;
             padding: 100px 50px;
@@ -753,6 +778,13 @@
                     Die Kitzmantel-Schuhe wurden nach traditionellen Verfahren in aufwendiger Handarbeit <span
                         class="highlight">holzgenagelt, durchgenäht oder flexibel genäht</span>.
                 </p>
+                <div class="video-container">
+                    <video id="kivoVideo" muted loop playsinline>
+                        <source src="video/Foto_Animation_Mit_D_Zoom_Effekt.mp4" type="video/mp4">
+                        Ihr Browser unterstützt keine Videos.
+                    </video>
+                </div>
+                <div class="ai-note">Dieses Video wurde KI-generiert (Gemini)</div>
             </div>
             <div class="story-image">
                 <img src="kitzmantel/arbeiten1.jpg" alt="Produktion: Arbeiter*innen an Maschinen" />
@@ -1105,6 +1137,22 @@
         document.querySelectorAll('.story-content, .timeline-item').forEach(el => {
             observer.observe(el);
         });
+
+        // Video scroll handling
+        const kivoVideo = document.getElementById('kivoVideo');
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    kivoVideo.play();
+                } else {
+                    kivoVideo.pause();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        if (kivoVideo) {
+            videoObserver.observe(kivoVideo);
+        }
 
         const timelineDots = document.querySelectorAll('.timeline-dot');
         const sections = document.querySelectorAll('section[id]');
