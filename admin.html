@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Heimatverein Vorchdorf</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="events_data.js"></script>
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--warm-cream);
+        }
+
+        .admin-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+
+        .event-list-item {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .event-list-item.past {
+            border-left-color: var(--light-gray);
+            opacity: 0.7;
+        }
+
+        .delete-btn {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .code-preview {
+            width: 100%;
+            height: 200px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            font-family: monospace;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .success-msg {
+            background: var(--forest-green);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🛠️ Event Manager</h1>
+            <p>Neue Veranstaltungen hinzufügen und verwalten</p>
+        </div>
+
+        <!-- Add Event Form -->
+        <div class="admin-section">
+            <h2>➕ Neue Veranstaltung hinzufügen</h2>
+            <form id="addEventForm" onsubmit="addEvent(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Titel</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ort</label>
+                        <input type="text" id="location" placeholder="z.B. Museum Vorchdorf">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Datum</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Uhrzeit</label>
+                        <input type="text" id="time" placeholder="z.B. 19:00 Uhr" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Beschreibung</label>
+                    <textarea id="description" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="cta-button" style="width: 100%">Hinzufügen</button>
+            </form>
+        </div>
+
+        <!-- Current List -->
+        <div class="admin-section">
+            <h2>📋 Aktuelle Liste (Vorschau)</h2>
+            <div id="adminEventList"></div>
+        </div>
+
+        <!-- Save Section -->
+        <div class="admin-section" style="background: #e3f2fd;">
+            <h2>💾 Speichern & Veröffentlichen</h2>
+            <p>Um die Änderungen live zu schalten, müssen Sie die aktualisierte Datei herunterladen und ersetzen.</p>
+
+            <button onclick="downloadDataFile()" class="cta-button" style="background: var(--primary-dark);">
+                ⬇️ events_data.js herunterladen
+            </button>
+
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                <strong>Anleitung:</strong><br>
+                1. Klicken Sie auf "Herunterladen"<br>
+                2. Ersetzen Sie die Datei <code>events_data.js</code> in Ihrem Projektordner mit der neuen Datei.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Use local copy of data to manipulate
+        let currentData = [...eventsData];
+
+        function renderAdminList() {
+            const list = document.getElementById('adminEventList');
+            const today = new Date().toISOString().split('T')[0];
+
+            // Sort by Date Descending
+            currentData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            list.innerHTML = currentData.map((evt, index) => `
+                <div class="event-list-item ${evt.date < today ? 'past' : ''}">
+                    <div>
+                        <strong>${evt.date} - ${evt.title}</strong><br>
+                        <small>${evt.location || ''} | ${evt.time}</small>
+                    </div>
+                    <button onclick="deleteEvent(${index})" class="delete-btn">Löschen</button>
+                </div>
+            `).join('');
+        }
+
+        function addEvent(e) {
+            e.preventDefault();
+
+            const newEvent = {
+                title: document.getElementById('title').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                description: document.getElementById('description').value,
+                location: document.getElementById('location').value
+            };
+
+            currentData.push(newEvent);
+            renderAdminList();
+            document.getElementById('addEventForm').reset();
+            alert('Event hinzugefügt! Vergessen Sie nicht, die Datei am Ende herunterzuladen.');
+        }
+
+        function deleteEvent(index) {
+            if (confirm('Wirklich löschen?')) {
+                currentData.splice(index, 1);
+                renderAdminList();
+            }
+        }
+
+        function downloadDataFile() {
+            // Generate content
+            const content = `// Zentrale Datenbank für Veranstaltungen\n// Wird von news.html, aktivitaeten_archiv.html und admin.html verwendet.\n\nconst eventsData = ${JSON.stringify(currentData, null, 4)};\n`;
+
+            // Create download link
+            const blob = new Blob([content], { type: 'text/javascript' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'events_data.js';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', renderAdminList);
+    </script>
+</body>
+
+</html>
