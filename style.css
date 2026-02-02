@@ -1516,6 +1516,8 @@ body {
 
 .timeline-card-header h3 {
     font-size: 1.8rem;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 1;
     margin-bottom: 0.5rem;
@@ -1529,6 +1531,7 @@ body {
 }
 
 .timeline-card-subtitle {
+    color: #ffffff;
     position: relative;
     z-index: 1;
     opacity: 0.95;
