@@ -203,19 +203,53 @@
         document.getElementById('contactForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
+            const form = e.target;
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.textContent;
+
+            // Simple status display
+            const showStatus = (msg, isError = false) => {
+                const statusDiv = document.createElement('div');
+                statusDiv.style.marginTop = '1rem';
+                statusDiv.style.padding = '1rem';
+                statusDiv.style.borderRadius = '5px';
+                statusDiv.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
+                statusDiv.style.color = isError ? '#721c24' : '#155724';
+                statusDiv.textContent = msg;
+
+                // Remove old status if exists
+                const oldStatus = form.querySelector('.status-msg');
+                if (oldStatus) oldStatus.remove();
+
+                statusDiv.className = 'status-msg';
+                form.appendChild(statusDiv);
             };
 
-            // Here you would normally send the form data to a server
-            // For now, we'll just show an alert
-            alert('Vielen Dank für Ihre Nachricht! Wir werden uns so bald wie möglich bei Ihnen melden.\n\nHinweis: Dies ist eine Demo. In der finalen Version würde das Formular an ' + formData.email + ' gesendet werden.');
+            submitBtn.textContent = 'Wird gesendet...';
+            submitBtn.disabled = true;
 
-            // Reset form
-            this.reset();
+            fetch('send_contact.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showStatus(data.message);
+                        form.reset();
+                    } else {
+                        showStatus('Fehler: ' + data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showStatus('Ein Netzwerkfehler ist aufgetreten. Bitte versuchen Sie es später erneut.', true);
+                })
+                .finally(() => {
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                });
         });
     </script>
 </body>
