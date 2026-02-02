@@ -2315,3 +2315,31 @@ body {
     padding-bottom: 0.5rem;
     display: inline-block;
 }
+
+.ideas-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+}
+
+.ideas-list li {
+    background: var(--warm-cream);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 5px solid var(--accent-gold);
+    transition: transform 0.3s ease;
+}
+
+.ideas-list li:hover {
+    transform: translateX(10px);
+}
+
+.ideas-list li strong {
+    display: block;
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
