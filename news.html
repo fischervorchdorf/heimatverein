@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News - Heimat- und Kulturverein Vorchdorf</title>
-    <link rel="stylesheet" href="style.css?v=6.5">
+    <link rel="stylesheet" href="style.css?v=6.6">
     <style>
         /* Page Header Specific Override if needed, currently covered by style.css but with margin-top which style.css has as 0 for main header. 
            In news.html original, page-header had margin-top: 60px.
@@ -60,12 +60,7 @@
             <h2>📢 Aktuelle Ereignisse</h2>
             <div id="aktuelle-events"></div>
             <p id="no-events" style="text-align: center; color: var(--light-gray); padding: 1rem; display: none;">
-                Derzeit keine anstehenden Veranstaltungen. <a href="aktivitaeten_archiv.html"
-                    style="color: var(--accent-gold); text-decoration: none;">Zu den vergangenen Aktivitäten →</a>
-            </p>
-            <p style="text-align: center; margin-top: 1rem;">
-                <a href="aktivitaeten_archiv.html" class="btn" style="display: inline-block; margin-top: 1rem;">📚
-                    Archiv der vergangenen Aktivitäten</a>
+                Derzeit keine anstehenden Veranstaltungen.
             </p>
         </div>
 
@@ -244,6 +239,14 @@
                 <button type="submit" class="btn btn-accent">Zum Newsletter anmelden</button>
             </form>
         </div>
+
+        <!-- Archiv Link (ganz unten) -->
+        <div style="text-align: center; margin-top: 4rem; margin-bottom: 4rem;">
+            <a href="aktivitaeten_archiv.html" class="btn"
+                style="background: var(--secondary-dark); padding: 1rem 2rem;">
+                📚 Archiv der vergangenen Aktivitäten ansehen
+            </a>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -279,8 +282,8 @@
         </div>
     </footer>
 
-    <script src="script.js?v=6.5"></script>
-    <script src="events_data.js?v=6.5"></script>
+    <script src="script.js?v=6.6"></script>
+    <script src="events_data.js?v=6.6"></script>
     <script>
         // Hilfsfunktion zur Formatierung des Datums
         function formatDate(dateString) {
