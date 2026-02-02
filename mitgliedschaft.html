@@ -1,459 +1,26 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mitgliedschaft - Heimat- und Kulturverein Vorchdorf</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-dark: #2c3e50;
-            --secondary-dark: #34495e;
-            --light-gray: #7f8c8d;
-            --accent-gold: #d4af37;
-            --accent-red: #c0392b;
-            --warm-cream: #ecf0f1;
-            --text-dark: #2c3e50;
-            --text-light: #ffffff;
-            --bg-light: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            height: 50px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .site-title {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0.6rem;
-            border-radius: 5px;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu a:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--accent-gold);
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: var(--text-light);
-            border-radius: 3px;
-        }
-
-        /* Header */
+        /* Specific header background for this page */
         .page-header {
             background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
-            padding: 10rem 2rem 5rem;
-            text-align: center;
-            color: var(--text-light);
-        }
-
-        .page-header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .page-header p {
-            font-size: 1.3rem;
-            color: var(--warm-cream);
-        }
-
-        /* Content */
-        .content {
-            padding: 4rem 2rem;
-            background: var(--bg-light);
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        /* Benefits Section */
-        .benefits {
-            background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-        }
-
-        .benefits h2 {
-            color: var(--primary-dark);
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .benefit-card:last-child:nth-child(3n + 1) {
-            grid-column: 2;
-        }
-
-        .benefit-card {
-            text-align: center;
-            padding: 1.5rem;
-            background: var(--bg-light);
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .benefit-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .benefit-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .benefit-card h3 {
-            color: var(--accent-gold);
-            margin-bottom: 0.5rem;
-        }
-
-        /* Membership Form Section */
-        .membership-section {
-            background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-        }
-
-        .membership-section h2 {
-            color: var(--primary-dark);
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .price-highlight {
-            background: linear-gradient(135deg, var(--accent-gold), #f39c12);
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .price-highlight h3 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .price-highlight p {
-            font-size: 1.2rem;
-        }
-
-        /* Payment Options */
-        .payment-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .payment-card {
-            background: var(--bg-light);
-            padding: 2rem;
-            border-radius: 10px;
-            border: 2px solid var(--warm-cream);
-        }
-
-        .payment-card h3 {
-            color: var(--primary-dark);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .bank-details {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .bank-details p {
-            margin: 0.5rem 0;
-            font-size: 1rem;
-        }
-
-        .bank-details strong {
-            color: var(--primary-dark);
-        }
-
-        .qr-code-container {
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            margin: 1rem auto;
-            background: white;
-            padding: 1rem;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .qr-code img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .qr-placeholder {
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                45deg,
-                #000,
-                #000 10px,
-                #fff 10px,
-                #fff 20px
-            );
-        }
-
-        /* Contact Form */
-        .contact-form {
-            background: var(--bg-light);
-            padding: 2rem;
-            border-radius: 10px;
-            margin-top: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--primary-dark);
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid var(--warm-cream);
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, var(--accent-gold), #f39c12);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            width: 100%;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--text-dark);
-            color: var(--text-light);
-            padding: 3rem 2rem 1rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer h4 {
-            color: var(--accent-gold);
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-
-        .footer p, .footer a {
-            color: var(--warm-cream);
-            text-decoration: none;
-            line-height: 1.8;
-        }
-
-        .footer a:hover {
-            color: var(--accent-gold);
-        }
-
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 2rem;
-            text-align: center;
-            color: var(--warm-cream);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-menu {
-                position: fixed;
-                top: 70px;
-                right: -100%;
-                flex-direction: column;
-                background: var(--primary-dark);
-                width: 100%;
-                padding: 2rem;
-                transition: right 0.3s ease;
-                gap: 1rem;
-                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-            }
-
-            .nav-menu.active {
-                right: 0;
-            }
-
-            .page-header h1 {
-                font-size: 2.5rem;
-            }
-
-            .page-header p {
-                font-size: 1.1rem;
-            }
-
-            .benefits,
-            .membership-section {
-                padding: 2rem;
-            }
-
-            .site-title {
-                font-size: 1rem;
-            }
-
-            .logo {
-                height: 40px;
-                width: auto;
-            }
-
-            .payment-options {
-                grid-template-columns: 1fr;
-            }
-
-            .benefits-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .benefit-card:last-child:nth-child(3n + 1) {
-                grid-column: 1;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .benefits-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .benefit-card:last-child:nth-child(odd) {
-                grid-column: span 2;
-                max-width: 50%;
-                margin: 0 auto;
-            }
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf"
+                class="logo">
             <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
         </div>
         <ul class="nav-menu" id="navMenu">
@@ -487,7 +54,7 @@
             <div class="benefits">
                 <h2>Ihre Unterstützung zählt!</h2>
                 <p style="text-align: center; font-size: 1.2rem; margin-bottom: 2rem; color: var(--light-gray);">
-                    Mit Ihrer Mitgliedschaft tragen Sie aktiv zur Erhaltung und Pflege unseres kulturellen Erbes bei. 
+                    Mit Ihrer Mitgliedschaft tragen Sie aktiv zur Erhaltung und Pflege unseres kulturellen Erbes bei.
                     <br>Sie müssen nicht aktiv mitarbeiten – Ihre finanzielle Unterstützung hilft uns bereits enorm!
                 </p>
 
@@ -518,14 +85,15 @@
             <!-- Membership Section -->
             <div class="membership-section">
                 <h2>Mitgliedschaft</h2>
-                
+
                 <div class="price-highlight">
                     <h3>Nur € 20,– pro Jahr</h3>
-                    <p>Ein kleiner Beitrag mit großer Wirkung!<br> Gerne kannst Du diesen Betrag natürlich mit einer Spende Deiner Wahl erhöhen!</p>
+                    <p>Ein kleiner Beitrag mit großer Wirkung!<br> Gerne kannst Du diesen Betrag natürlich mit einer
+                        Spende Deiner Wahl erhöhen!</p>
                 </div>
 
                 <p style="text-align: center; font-size: 1.1rem; margin-bottom: 2rem;">
-                    Die Mitgliedschaft richtet sich an alle Unterstützer, die an unserer Arbeit interessiert sind, 
+                    Die Mitgliedschaft richtet sich an alle Unterstützer, die an unserer Arbeit interessiert sind,
                     aber nicht aktiv mitarbeiten möchten. Jeder Beitrag hilft uns, unser kulturelles Erbe zu bewahren!
                 </p>
 
@@ -548,7 +116,8 @@
                     <!-- QR Code Payment -->
                     <div class="payment-card">
                         <h3>📱 Mobile Zahlung</h3>
-                        <p style="margin-bottom: 1rem;">Scannen Sie den QR-Code mit Ihrer Banking-App für eine schnelle Überweisung:</p>
+                        <p style="margin-bottom: 1rem;">Scannen Sie den QR-Code mit Ihrer Banking-App für eine schnelle
+                            Überweisung:</p>
                         <div class="qr-code-container">
                             <div class="qr-code">
                                 <img src="QR-Code_20Euro.png" alt="QR-Code für Mitgliedschaftszahlung">
@@ -566,8 +135,13 @@
                     <h3 style="color: var(--primary-dark); margin-bottom: 1.5rem; text-align: center;">
                         Beitrittserklärung bzw. Einwilligungserklärung laut DSGVO <br>(EU-Datenschutz-Grundverordnung)
                     </h3>
-                    <p style="text-align: center; margin-bottom: 2rem; color: var(--light-gray); font-style: italic; font-size: 0.95rem;">
-                        Ihre oben zur Verfügung gestellten Daten werden ausschließlich zu vereinsinternen Zwecken verwendet und nicht an Dritte weitergegeben. Vereinsinterne Zwecke sind v. a. die Zusendung von Informationen über Veranstaltungen und Ausstellungen, über die Museen des Heimat- und Kulturvereins Vorchdorf, sowie Einladungen zu Versammlungen und Ausflügen des Vereins oder auch die Vorschreibung des Mitgliedsbeitrags.
+                    <p
+                        style="text-align: center; margin-bottom: 2rem; color: var(--light-gray); font-style: italic; font-size: 0.95rem;">
+                        Ihre oben zur Verfügung gestellten Daten werden ausschließlich zu vereinsinternen Zwecken
+                        verwendet und nicht an Dritte weitergegeben. Vereinsinterne Zwecke sind v. a. die Zusendung von
+                        Informationen über Veranstaltungen und Ausstellungen, über die Museen des Heimat- und
+                        Kulturvereins Vorchdorf, sowie Einladungen zu Versammlungen und Ausflügen des Vereins oder auch
+                        die Vorschreibung des Mitgliedsbeitrags.
                     </p>
                     <form action="mailto:fischervorchdorf@gmx.at" method="post" enctype="text/plain">
                         <div class="form-group">
@@ -593,7 +167,8 @@
                         <div class="form-group">
                             <label for="email-confirm">E-Mail bestätigen *</label>
                             <input type="email" id="email-confirm" name="email-confirm" required>
-                            <p id="email-error" style="color: var(--accent-red); font-size: 0.85rem; margin-top: 0.5rem; display: none;">
+                            <p id="email-error"
+                                style="color: var(--accent-red); font-size: 0.85rem; margin-top: 0.5rem; display: none;">
                                 Die E-Mail-Adressen stimmen nicht überein!
                             </p>
                         </div>
@@ -607,29 +182,39 @@
                         </div>
 
                         <!-- DSGVO Consent Checkboxes -->
-                        <div class="form-group" style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 8px; border: 2px solid var(--warm-cream);">
+                        <div class="form-group"
+                            style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 8px; border: 2px solid var(--warm-cream);">
                             <div style="margin-bottom: 1rem;">
-                                <input type="checkbox" id="consent-data" name="consent-data" required style="width: auto; margin-right: 0.5rem;">
+                                <input type="checkbox" id="consent-data" name="consent-data" required
+                                    style="width: auto; margin-right: 0.5rem;">
                                 <label for="consent-data" style="display: inline; font-size: 0.95rem;">
-                                    Ich erkläre hiermit meinen Beitritt zum Heimat- und Kulturverein Vorchdorf und willige ein, dass meine personenbezogenen Daten zu den oben genannten vereinsinternen Zwecken verarbeitet werden. *
+                                    Ich erkläre hiermit meinen Beitritt zum Heimat- und Kulturverein Vorchdorf und
+                                    willige ein, dass meine personenbezogenen Daten zu den oben genannten
+                                    vereinsinternen Zwecken verarbeitet werden. *
                                 </label>
                             </div>
                             <div style="margin-bottom: 1rem;">
-                                <input type="checkbox" id="consent-revoke" name="consent-revoke" required style="width: auto; margin-right: 0.5rem;">
+                                <input type="checkbox" id="consent-revoke" name="consent-revoke" required
+                                    style="width: auto; margin-right: 0.5rem;">
                                 <label for="consent-revoke" style="display: inline; font-size: 0.95rem;">
-                                    Ich nehme zur Kenntnis, dass ich diese Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen kann. *
+                                    Ich nehme zur Kenntnis, dass ich diese Einwilligung jederzeit mit Wirkung für die
+                                    Zukunft widerrufen kann. *
                                 </label>
                             </div>
                             <div style="margin-bottom: 1rem;">
-                                <input type="checkbox" id="consent-info" name="consent-info" required style="width: auto; margin-right: 0.5rem;">
+                                <input type="checkbox" id="consent-info" name="consent-info" required
+                                    style="width: auto; margin-right: 0.5rem;">
                                 <label for="consent-info" style="display: inline; font-size: 0.95rem;">
-                                    Ich wurde darüber informiert, dass ich das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung meiner personenbezogenen Daten habe. *
+                                    Ich wurde darüber informiert, dass ich das Recht auf Auskunft, Berichtigung,
+                                    Löschung und Einschränkung der Verarbeitung meiner personenbezogenen Daten habe. *
                                 </label>
                             </div>
                             <div>
-                                <input type="checkbox" id="consent-newsletter" name="consent-newsletter" style="width: auto; margin-right: 0.5rem;">
+                                <input type="checkbox" id="consent-newsletter" name="consent-newsletter"
+                                    style="width: auto; margin-right: 0.5rem;">
                                 <label for="consent-newsletter" style="display: inline; font-size: 0.95rem;">
-                                    Ich möchte regelmäßig per E-Mail über Veranstaltungen und Neuigkeiten informiert werden (optional).
+                                    Ich möchte regelmäßig per E-Mail über Veranstaltungen und Neuigkeiten informiert
+                                    werden (optional).
                                 </label>
                             </div>
                         </div>
@@ -637,9 +222,12 @@
                         <!-- Digital Signature -->
                         <div class="form-group" style="margin-top: 1.5rem;">
                             <label for="digital-signature">Digitale Unterschrift (Vor- und Nachname) *</label>
-                            <input type="text" id="digital-signature" name="digital-signature" placeholder="Ihr vollständiger Name als digitale Unterschrift" required style="font-family: 'Brush Script MT', cursive, sans-serif; font-size: 1.2rem;">
+                            <input type="text" id="digital-signature" name="digital-signature"
+                                placeholder="Ihr vollständiger Name als digitale Unterschrift" required
+                                style="font-family: 'Brush Script MT', cursive, sans-serif; font-size: 1.2rem;">
                             <p style="font-size: 0.85rem; color: var(--light-gray); margin-top: 0.5rem;">
-                                Mit der Eingabe Ihres Namens bestätigen Sie die Richtigkeit Ihrer Angaben und erklären Ihren rechtsverbindlichen Beitritt.
+                                Mit der Eingabe Ihres Namens bestätigen Sie die Richtigkeit Ihrer Angaben und erklären
+                                Ihren rechtsverbindlichen Beitritt.
                             </p>
                         </div>
 
@@ -665,19 +253,19 @@
             <div>
                 <h4>Heimat- und Kulturverein Vorchdorf</h4>
                 <p>Bewahrer des kulturellen Erbes<br>
-                   der Region Vorchdorf seit Generationen</p>
+                    der Region Vorchdorf seit Generationen</p>
             </div>
             <div>
                 <h4>Kontakt</h4>
                 <p>Bahnhofstraße 9<br>
-                   4655 Vorchdorf<br>
-                   E-Mail: dr.claudia@westreicher.at</p>
+                    4655 Vorchdorf<br>
+                    E-Mail: dr.claudia@westreicher.at</p>
             </div>
             <div>
                 <h4>Museum der Region</h4>
                 <p>Laudachweg 17<br>
-                   4655 Vorchdorf<br>
-                   Tel: 07614/6555-578</p>
+                    4655 Vorchdorf<br>
+                    Tel: 07614/6555-578</p>
             </div>
             <div>
                 <h4>Rechtliches</h4>
@@ -693,20 +281,6 @@
     </footer>
 
     <script>
-        // Mobile Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('navMenu');
-
-        hamburger.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
         // Email validation
         const emailInput = document.getElementById('email');
         const emailConfirmInput = document.getElementById('email-confirm');
@@ -725,16 +299,19 @@
             }
         }
 
-        emailInput.addEventListener('input', validateEmails);
-        emailConfirmInput.addEventListener('input', validateEmails);
+        if (emailInput && emailConfirmInput) {
+            emailInput.addEventListener('input', validateEmails);
+            emailConfirmInput.addEventListener('input', validateEmails);
 
-        form.addEventListener('submit', function(e) {
-            if (!validateEmails()) {
-                e.preventDefault();
-                alert('Bitte stellen Sie sicher, dass beide E-Mail-Adressen übereinstimmen.');
-                return false;
-            }
-        });
+            form.addEventListener('submit', function (e) {
+                if (!validateEmails()) {
+                    e.preventDefault();
+                    alert('Bitte stellen Sie sicher, dass beide E-Mail-Adressen übereinstimmen.');
+                    return false;
+                }
+            });
+        }
     </script>
 </body>
+
 </html>

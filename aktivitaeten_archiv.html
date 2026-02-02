@@ -1,296 +1,31 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aktivitäten Archiv - Heimat- und Kulturverein Vorchdorf</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-dark: #2c3e50;
-            --secondary-dark: #34495e;
-            --light-gray: #7f8c8d;
-            --accent-gold: #d4af37;
-            --accent-red: #c0392b;
-            --warm-cream: #ecf0f1;
-            --text-dark: #2c3e50;
-            --text-light: #ffffff;
-            --bg-light: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            height: 50px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .site-title {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0.6rem;
-            border-radius: 5px;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu a:hover {
-            background-color: var(--accent-gold);
-            color: var(--primary-dark);
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background-color: var(--text-light);
-            border-radius: 2px;
-        }
-
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-menu {
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                flex-direction: column;
-                background-color: var(--secondary-dark);
-                gap: 0;
-                display: none;
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
-
-            .nav-menu a {
-                width: 100%;
-                padding: 1rem;
-                border-radius: 0;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-            }
-
-            .navbar {
-                padding: 1rem;
-            }
-        }
-
-        /* Page Header */
+        /* Specific header background for this page */
         .page-header {
             background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
             color: var(--text-light);
             padding: 8rem 2rem 3rem;
             text-align: center;
             margin-top: 60px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-header p {
-            font-size: 1.1rem;
-            color: var(--warm-cream);
-        }
-
-        /* Content Container */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: var(--bg-light);
-        }
-
-        /* Archive Block */
-        .archive-block {
-            background: var(--text-light);
-            border-left: 5px solid var(--accent-gold);
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .archive-block h2 {
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-            border-bottom: 2px solid var(--accent-gold);
-            padding-bottom: 0.5rem;
-        }
-
-        .archive-block h3 {
-            color: var(--secondary-dark);
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            font-size: 1.4rem;
-        }
-
-        .archive-block h3:first-child {
-            margin-top: 0;
-        }
-
-        .event-item {
-            background: var(--warm-cream);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-            border-left: 4px solid #95a5a6;
-            opacity: 0.8;
-        }
-
-        .event-item.past {
-            border-left-color: #95a5a6;
-        }
-
-        .event-item strong {
-            color: var(--secondary-dark);
-            font-size: 1.05rem;
-        }
-
-        .event-item p {
-            margin-top: 0.5rem;
-            color: var(--text-dark);
-        }
-
-        .year-section {
-            margin-bottom: 3rem;
-        }
-
-        .empty-message {
-            text-align: center;
-            color: var(--light-gray);
-            padding: 2rem;
-            font-style: italic;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 2rem;
-            color: var(--accent-gold);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .back-link:hover {
-            color: #f39c12;
-            transform: translateX(-5px);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--primary-dark);
-            color: var(--text-light);
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            font-size: 0.9rem;
-        }
-
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-
-        footer a {
-            color: var(--accent-gold);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-header {
-                padding: 8rem 1rem 2rem;
-                margin-top: 60px;
-            }
-
-            .page-header h1 {
-                font-size: 1.8rem;
-            }
-
-            .page-header p {
-                font-size: 1rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .archive-block {
-                padding: 1.5rem;
-            }
-
-            .archive-block h2 {
-                font-size: 1.5rem;
-            }
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf"
+                class="logo">
             <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
         </div>
         <ul class="nav-menu" id="navMenu">
@@ -310,7 +45,6 @@
             <span></span>
         </div>
     </nav>
-    </nav>
 
     <!-- Page Header -->
     <div class="page-header">
@@ -329,57 +63,37 @@
     </div>
 
     <!-- Footer -->
-    <footer>
-        <p><strong>Heimat- und Kulturverein Vorchdorf</strong></p>
-        <p>Telefon: <a href="tel:+43761465555578">07614/6555-578</a> | E-Mail: <a href="mailto:dr.claudia@westreicher.at">dr.claudia@westreicher.at</a></p>
-        <p><a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a></p>
-        <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                <p>Bewahrer des kulturellen Erbes<br>der Region Vorchdorf seit Generationen</p>
+            </div>
+            <div>
+                <h4>Kontakt</h4>
+                <p>Bahnhofstraße 9<br>4655 Vorchdorf<br>E-Mail: dr.claudia@westreicher.at</p>
+            </div>
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>4655 Vorchdorf<br>Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                    <a href="aktivitaeten_archiv.html">Archiv</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
     </footer>
 
+    <script src="script.js"></script>
+    <script src="events_data.js"></script>
     <script>
-        // Hamburger Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('nav-menu');
-
-        hamburger.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // Close menu when clicking on a link
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
-        // Event-Datenbank mit Datumsparsing (gemeinsam mit news.html)
-        const events = [
-            {
-                title: "Heimatvereinstreffen zur Fertigstellung des Bücherregals",
-                date: "2025-11-17",
-                time: "19:00 Uhr",
-                description: "Gemeinsames Treffen zur Fertigstellung des Bücherregals."
-            },
-            {
-                title: "Generalversammlung 2025",
-                date: "2025-11-14",
-                time: "19:00 Uhr",
-                description: "Ordentliche Generalversammlung des Heimat- und Kulturvereins. Wir freuen uns auf zahlreiches Erscheinen!"
-            },
-            {
-                title: "Gemeinsame Fahrt zur Burg Wels",
-                date: "2026-04-20",
-                time: "14:00 Uhr",
-                description: "Geführter Rundgang durch historische Orte unserer Nachbarstadt. Treffpunkt: Kirche Vorchdorf"
-            },
-            {
-                title: "Frühjahrsputz im Museum Vorchdorf",
-                date: "2026-05-10",
-                time: "09:00 Uhr",
-                description: "Gemeinsamer Einsatz zur Verschönerung unseres Museums und der Umgebung."
-            }
-        ];
-
         // Hilfsfunktion zur Formatierung des Datums
         function formatDate(dateString) {
             const date = new Date(dateString + 'T00:00:00');
@@ -387,12 +101,13 @@
             return date.toLocaleDateString('de-DE', options);
         }
 
-        // Funktion zum Filtern und Anzeigen der vergangenen Events
+        // Funktion zum Filtern und Anzeigen der vergangenen Events aus events_data.js
         function renderArchive() {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            const pastEvents = events.filter(event => {
+            // Verwende globale eventsData aus events_data.js
+            const pastEvents = eventsData.filter(event => {
                 const eventDate = new Date(event.date + 'T00:00:00');
                 return eventDate < today;
             }).sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -417,7 +132,7 @@
             // HTML generieren, sortiert nach Jahr (absteigend)
             let html = '';
             const years = Object.keys(eventsByYear).sort().reverse();
-            
+
             years.forEach(year => {
                 html += `<div class="year-section">
                     <h3>📅 ${year}</h3>
@@ -425,6 +140,7 @@
                         <div class="event-item past">
                             <strong>${event.title}</strong>
                             <p>🗓️ ${formatDate(event.date)} um ${event.time}</p>
+                            ${event.location ? `<p>📍 ${event.location}</p>` : ''}
                             <p>${event.description}</p>
                         </div>
                     `).join('')}
@@ -438,4 +154,5 @@
         document.addEventListener('DOMContentLoaded', renderArchive);
     </script>
 </body>
+
 </html>

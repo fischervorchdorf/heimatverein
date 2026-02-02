@@ -1,390 +1,32 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News - Heimat- und Kulturverein Vorchdorf</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-dark: #2c3e50;
-            --secondary-dark: #34495e;
-            --light-gray: #7f8c8d;
-            --accent-gold: #d4af37;
-            --accent-red: #c0392b;
-            --warm-cream: #ecf0f1;
-            --text-dark: #2c3e50;
-            --text-light: #ffffff;
-            --bg-light: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            height: 50px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .site-title {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0.6rem;
-            border-radius: 5px;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu a:hover {
-            background-color: var(--accent-gold);
-            color: var(--primary-dark);
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background-color: var(--text-light);
-            border-radius: 2px;
-        }
-
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-menu {
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                flex-direction: column;
-                background-color: var(--secondary-dark);
-                gap: 0;
-                display: none;
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
-
-            .nav-menu a {
-                width: 100%;
-                padding: 1rem;
-                border-radius: 0;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-            }
-
-            .navbar {
-                padding: 1rem;
-            }
-        }
-
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            color: var(--text-light);
-            padding: 8rem 2rem 3rem;
-            text-align: center;
-            margin-top: 60px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-header p {
-            font-size: 1.1rem;
-            color: var(--warm-cream);
-        }
-
-        /* Content Container */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: var(--bg-light);
-        }
-
-        /* News Blocks Grid */
-        .news-blocks {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .news-block {
-            background: var(--text-light);
-            border-left: 5px solid var(--accent-gold);
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .news-block:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .news-block h2 {
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-            border-bottom: 2px solid var(--accent-gold);
-            padding-bottom: 0.5rem;
-        }
-
-        .news-block h3 {
-            color: var(--secondary-dark);
-            margin-top: 1.5rem;
-            margin-bottom: 0.8rem;
-            font-size: 1.2rem;
-        }
-
-        .event-item {
-            background: var(--warm-cream);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-            border-left: 4px solid var(--accent-red);
-        }
-
-        .event-item strong {
-            color: var(--accent-red);
-            font-size: 1.05rem;
-        }
-
-        .event-item p {
-            margin-top: 0.5rem;
-            color: var(--text-dark);
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .form-group label .required {
-            color: var(--accent-red);
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* Button Styles */
-        .btn {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
-            color: var(--text-light);
-            padding: 0.9rem 2rem;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-accent {
-            background: var(--accent-gold);
-            color: var(--primary-dark);
-        }
-
-        .btn-accent:hover {
-            background: #e0c547;
-        }
-
-        /* Info Box */
-        .info-box {
-            background: #e8f4f8;
-            border-left: 4px solid #3498db;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            color: #2c5aa0;
-        }
-
-        .info-box strong {
-            color: #2c5aa0;
-        }
-
-        /* Ideas List */
-        .ideas-list {
-            list-style: none;
-            margin: 1rem 0;
-        }
-
-        .ideas-list li {
-            background: var(--warm-cream);
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            border-radius: 5px;
-            border-left: 4px solid var(--accent-gold);
-            color: var(--text-dark);
-        }
-
-        .ideas-list li:before {
-            content: "💡 ";
-            margin-right: 0.5rem;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--primary-dark);
-            color: var(--text-light);
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            font-size: 0.9rem;
-        }
-
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-
-        footer a {
-            color: var(--accent-gold);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-header {
-                padding: 8rem 1rem 2rem;
-                margin-top: 60px;
-            }
-
-            .page-header h1 {
-                font-size: 1.8rem;
-            }
-
-            .page-header p {
-                font-size: 1rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .news-block {
-                padding: 1.5rem;
-            }
-
-            .news-block h2 {
-                font-size: 1.5rem;
-            }
-        }
+        /* Page Header Specific Override if needed, currently covered by style.css but with margin-top which style.css has as 0 for main header. 
+           In news.html original, page-header had margin-top: 60px.
+           The main style.css has .page-header { margin-top: 0; } but navbar is fixed.
+           The content will be hidden behind navbar if margin-top is 0.
+           However, style.css .page-header padding top is 10rem. 
+           Let's check style.css .page-header again.
+           It has padding: 10rem 2rem 5rem.
+           This big top padding usually accounts for fixed navbar.
+           So I don't need margin-top: 60px unless I want extra space.
+           I'll rely on style.css.
+        */
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf" class="logo">
+            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf"
+                class="logo">
             <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
         </div>
         <ul class="nav-menu" id="navMenu">
@@ -404,7 +46,6 @@
             <span></span>
         </div>
     </nav>
-    </nav>
 
     <!-- Page Header -->
     <div class="page-header">
@@ -419,18 +60,21 @@
             <h2>📢 Aktuelle Ereignisse</h2>
             <div id="aktuelle-events"></div>
             <p id="no-events" style="text-align: center; color: var(--light-gray); padding: 1rem; display: none;">
-                Derzeit keine anstehenden Veranstaltungen. <a href="aktivitaeten_archiv.html" style="color: var(--accent-gold); text-decoration: none;">Zu den vergangenen Aktivitäten →</a>
+                Derzeit keine anstehenden Veranstaltungen. <a href="aktivitaeten_archiv.html"
+                    style="color: var(--accent-gold); text-decoration: none;">Zu den vergangenen Aktivitäten →</a>
             </p>
             <p style="text-align: center; margin-top: 1rem;">
-                <a href="aktivitaeten_archiv.html" class="btn" style="display: inline-block; margin-top: 1rem;">📚 Archiv der vergangenen Aktivitäten</a>
+                <a href="aktivitaeten_archiv.html" class="btn" style="display: inline-block; margin-top: 1rem;">📚
+                    Archiv der vergangenen Aktivitäten</a>
             </p>
         </div>
 
         <!-- Ausflüge mit Anmeldung -->
         <div class="news-block">
             <h2>🚌 Ausflüge & Anmeldung</h2>
-            <p>Melden Sie sich für unsere geplanten Ausflüge an! Genießen Sie gemeinsame Erlebnisse und lernen Sie interessante Orte kennen.</p>
-            
+            <p>Melden Sie sich für unsere geplanten Ausflüge an! Genießen Sie gemeinsame Erlebnisse und lernen Sie
+                interessante Orte kennen.</p>
+
             <h3>Geplante Ausflüge</h3>
             <div class="event-item">
                 <strong>Ausflug zur Burg Wels</strong>
@@ -452,7 +96,7 @@
             <form method="POST" action="https://formspree.io/f/xyzabc123" onsubmit="handleAusflugSubmit(event)">
                 <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
                 <input type="hidden" name="form_type" value="Ausflug-Anmeldung">
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="excursion_vorname">Vorname <span class="required">*</span></label>
@@ -476,17 +120,20 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="excursion_event">Für welchen Ausflug möchten Sie sich anmelden? <span class="required">*</span></label>
-                    <select id="excursion_event" name="Ausflug" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+                    <label for="excursion_event">Für welchen Ausflug möchten Sie sich anmelden? <span
+                            class="required">*</span></label>
+                    <select id="excursion_event" name="Ausflug" required>
                         <option value="">-- Bitte wählen --</option>
                         <option value="Ausflug zur Burg Wels - 20.04.2026">Ausflug zur Burg Wels - 20.04.2026</option>
-                        <option value="Besuch des Stift Kremsmünster - 06.06.2026">Besuch des Stift Kremsmünster - 06.06.2026</option>
+                        <option value="Besuch des Stift Kremsmünster - 06.06.2026">Besuch des Stift Kremsmünster -
+                            06.06.2026</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="excursion_bemerkung">Besondere Anmerkungen (z.B. Mobilitätshilfen)</label>
-                    <textarea id="excursion_bemerkung" name="Bemerkungen" placeholder="Hier können Sie besondere Wünsche oder Anforderungen angeben..."></textarea>
+                    <textarea id="excursion_bemerkung" name="Bemerkungen"
+                        placeholder="Hier können Sie besondere Wünsche oder Anforderungen angeben..."></textarea>
                 </div>
 
                 <button type="submit" class="btn">Anmeldung absenden</button>
@@ -496,15 +143,21 @@
         <!-- Ideenworkshop -->
         <div class="news-block">
             <h2>💡 Ideenworkshop</h2>
-            <p>Helfen Sie uns, die Geschichte und Kultur unserer Region zu bewahren und zu erforschen! Teilen Sie Ihre Ideen mit uns – gemeinsam können wir Großartiges schaffen.</p>
+            <p>Helfen Sie uns, die Geschichte und Kultur unserer Region zu bewahren und zu erforschen! Teilen Sie Ihre
+                Ideen mit uns – gemeinsam können wir Großartiges schaffen.</p>
 
             <h3>Themenbeispiele:</h3>
             <ul class="ideas-list">
-                <li><strong>Wirtshäuser-Projekt:</strong> Alle Wirtshäuser in der Region aufspüren, ihre Geschichte erforschen und dokumentieren</li>
-                <li><strong>Handwerk & Gewerbe:</strong> Traditionelle Handwerkstechniken und historische Gewerbe in Vorchdorf</li>
-                <li><strong>Mundart-Erhaltung:</strong> Sammlung von Dialektwörtern und Redewendungen aus unserer Region</li>
-                <li><strong>Schul- und Jugendgeschichte:</strong> Entwicklung von Schulen und Jugendvereinen im Laufe der Zeit</li>
-                <li><strong>Architektur-Dokumentation:</strong> Besondere Bauwerke und deren architekturgeschichtliche Bedeutung</li>
+                <li><strong>Wirtshäuser-Projekt:</strong> Alle Wirtshäuser in der Region aufspüren, ihre Geschichte
+                    erforschen und dokumentieren</li>
+                <li><strong>Handwerk & Gewerbe:</strong> Traditionelle Handwerkstechniken und historische Gewerbe in
+                    Vorchdorf</li>
+                <li><strong>Mundart-Erhaltung:</strong> Sammlung von Dialektwörtern und Redewendungen aus unserer Region
+                </li>
+                <li><strong>Schul- und Jugendgeschichte:</strong> Entwicklung von Schulen und Jugendvereinen im Laufe
+                    der Zeit</li>
+                <li><strong>Architektur-Dokumentation:</strong> Besondere Bauwerke und deren architekturgeschichtliche
+                    Bedeutung</li>
             </ul>
 
             <p style="margin-top: 1.5rem; font-style: italic; color: var(--secondary-dark);">
@@ -537,21 +190,25 @@
 
                 <div class="form-group">
                     <label for="idea_titel">Titel Ihrer Idee <span class="required">*</span></label>
-                    <input type="text" id="idea_titel" name="Idee-Titel" placeholder="Z.B. 'Wirtshäuser-Projekt'" required>
+                    <input type="text" id="idea_titel" name="Idee-Titel" placeholder="Z.B. 'Wirtshäuser-Projekt'"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label for="idea_beschreibung">Beschreiben Sie Ihre Idee <span class="required">*</span></label>
-                    <textarea id="idea_beschreibung" name="Idee-Beschreibung" placeholder="Teilen Sie Ihre Gedanken, Vorschläge und Visionen mit uns..." required></textarea>
+                    <textarea id="idea_beschreibung" name="Idee-Beschreibung"
+                        placeholder="Teilen Sie Ihre Gedanken, Vorschläge und Visionen mit uns..." required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="idea_mitarbeit">Würden Sie gerne bei der Umsetzung mithelfen?</label>
-                    <select id="idea_mitarbeit" name="Mitarbeit" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+                    <select id="idea_mitarbeit" name="Mitarbeit"
+                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
                         <option value="">-- Bitte wählen --</option>
                         <option value="Ja, ich möchte mithelfen">Ja, ich möchte mithelfen</option>
                         <option value="Nein, nur die Idee beitragen">Nein, nur die Idee beitragen</option>
-                        <option value="Vielleicht, je nach Zeit und Aufwand">Vielleicht, je nach Zeit und Aufwand</option>
+                        <option value="Vielleicht, je nach Zeit und Aufwand">Vielleicht, je nach Zeit und Aufwand
+                        </option>
                     </select>
                 </div>
 
@@ -563,7 +220,7 @@
         <div class="news-block">
             <h2>📧 Bleiben Sie auf dem Laufenden</h2>
             <p>Möchten Sie über neue Veranstaltungen, Ausflüge und Ideen-Workshops benachrichtigt werden?</p>
-            
+
             <form method="POST" action="https://formspree.io/f/mnopqr789">
                 <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
                 <input type="hidden" name="form_type" value="Newsletter-Anmeldung">
@@ -590,59 +247,41 @@
     </div>
 
     <!-- Footer -->
-    <footer>
-        <p><strong>Heimat- und Kulturverein Vorchdorf</strong></p>
-        <p>Telefon: <a href="tel:+43761465555578">07614/6555-578</a> | E-Mail: <a href="mailto:dr.claudia@westreicher.at">dr.claudia@westreicher.at</a></p>
-        <p><a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a></p>
-        <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                <p>Bewahrer des kulturellen Erbes<br>
+                    der Region Vorchdorf seit vielen Jahrzehnten</p>
+            </div>
+            <div>
+                <h4>Kontakt</h4>
+                <p>Bahnhofstraße 9<br>
+                    4655 Vorchdorf<br>
+                    E-Mail: dr.claudia@westreicher.at</p>
+            </div>
+            <div>
+                <h4>Museum der Region</h4>
+                <p>Laudachweg 17<br>
+                    4655 Vorchdorf<br>
+                    Tel: 07614/6555-578</p>
+            </div>
+            <div>
+                <h4>Rechtliches</h4>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten.</p>
+        </div>
     </footer>
 
+    <script src="script.js"></script>
+    <script src="events_data.js"></script>
     <script>
-        // Hamburger Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('navMenu');
-
-        if (hamburger && navMenu) {
-            hamburger.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-            });
-        }
-
-        // Close menu when clicking on a link
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
-        // Event-Datenbank mit Datumsparsing
-        const events = [
-            {
-                title: "Heimatvereinstreffen zur Fertigstellung des Bücherregals",
-                date: "2025-11-17",
-                time: "19:00 Uhr",
-                description: "Gemeinsames Treffen zur Fertigstellung des Bücherregals."
-            },
-            {
-                title: "Generalversammlung 2025",
-                date: "2025-11-14",
-                time: "19:00 Uhr",
-                description: "Ordentliche Generalversammlung des Heimat- und Kulturvereins. Wir freuen uns auf zahlreiches Erscheinen!"
-            },
-            {
-                title: "Gemeinsame Fahrt zur Burg Wels",
-                date: "2026-04-20",
-                time: "14:00 Uhr",
-                description: "Geführter Rundgang durch historische Orte unserer Nachbarstadt. Treffpunkt: Kirche Vorchdorf"
-            },
-            {
-                title: "Frühjahrsputz im Museum Vorchdorf",
-                date: "2026-05-10",
-                time: "09:00 Uhr",
-                description: "Gemeinsamer Einsatz zur Verschönerung unseres Museums und der Umgebung."
-            }
-        ];
-
         // Hilfsfunktion zur Formatierung des Datums
         function formatDate(dateString) {
             const date = new Date(dateString + 'T00:00:00');
@@ -655,10 +294,11 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            const aktuelleEvents = events.filter(event => {
+            // Verwende globale eventsData aus events_data.js
+            const aktuelleEvents = eventsData.filter(event => {
                 const eventDate = new Date(event.date + 'T00:00:00');
                 return eventDate >= today;
-            });
+            }).sort((a, b) => new Date(a.date) - new Date(b.date)); // Sortiert: Nächstes Event zuerst
 
             const container = document.getElementById('aktuelle-events');
             const noEventsMsg = document.getElementById('no-events');
@@ -672,6 +312,7 @@
                     <div class="event-item">
                         <strong>${event.title}</strong>
                         <p>🗓️ ${formatDate(event.date)} um ${event.time}</p>
+                        ${event.location ? `<p>📍 ${event.location}</p>` : ''}
                         <p>${event.description}</p>
                     </div>
                 `).join('');
@@ -685,7 +326,7 @@
         function handleAusflugSubmit(event) {
             const vorname = document.getElementById('excursion_vorname').value.trim();
             const nachname = document.getElementById('excursion_nachname').value.trim();
-            
+
             if (!vorname || !nachname) {
                 alert('Bitte füllen Sie mindestens Vorname und Nachname aus.');
                 event.preventDefault();
@@ -694,4 +335,5 @@
         }
     </script>
 </body>
+
 </html>
