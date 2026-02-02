@@ -447,8 +447,8 @@ body {
 @media (max-width: 768px) {
     .hero {
         height: auto;
-        min-height: 100vh;
-        padding-top: 80px;
+        min-height: auto;
+        padding: 5rem 1rem 3rem 1rem;
     }
 
     .hero-logo {
@@ -491,7 +491,7 @@ body {
 
 /* About Section */
 .about {
-    padding: 6rem 2rem;
+    padding: 3rem 2rem;
     background: var(--bg-light);
 }
 
@@ -549,6 +549,10 @@ body {
 
     .about-image {
         min-height: 250px;
+    }
+
+    .about {
+        padding: 3rem 1rem;
     }
 }
 
@@ -701,6 +705,14 @@ body {
 
     .benefit-card:last-child:nth-child(3n + 1) {
         grid-column: 1;
+    }
+
+    .volunteer-section {
+        padding: 3rem 1rem;
+    }
+
+    .features {
+        padding: 3rem 1rem;
     }
 }
 
