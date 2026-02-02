@@ -1514,10 +1514,10 @@ body {
     }
 }
 
-.timeline-card-header h3 {
-    font-size: 1.8rem;
-    color: #ffffff;
+.timeline-card .timeline-card-header h3 {
+    color: #ffffff !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    font-size: 1.8rem;
     position: relative;
     z-index: 1;
     margin-bottom: 0.5rem;
@@ -1530,8 +1530,8 @@ body {
     font-size: 2.5rem;
 }
 
-.timeline-card-subtitle {
-    color: #ffffff;
+.timeline-card .timeline-card-header .timeline-card-subtitle {
+    color: #ffffff !important;
     position: relative;
     z-index: 1;
     opacity: 0.95;
