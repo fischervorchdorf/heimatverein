@@ -422,7 +422,7 @@ body {
 .hero-logo {
     width: 250px;
     height: auto;
-    margin-bottom: 2rem;
+    /* margin-bottom handled by flex gap */
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     opacity: 0.85;
     animation: wobble 3s ease-in-out infinite;
@@ -436,6 +436,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 2rem;
 }
 
 .hero h1 {
