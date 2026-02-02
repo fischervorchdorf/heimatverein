@@ -17,7 +17,7 @@ const eventsData = [
         "location": "Kirche Vorchdorf"
     },
     {
-        "title": "Vorabinfo für unseren neuen Sonderausstellung \"Museum meets KI\"",
+        "title": "Vorabinfo für unsere neue Sonderausstellung \"Museum meets KI\"",
         "date": "2026-03-26",
         "time": "19:00 Uhr",
         "description": "Wir versuchen mit dieser Ausstellung allen Interessierten zu zeigen, was KI ist und kann und vor allem was KI \"noch nicht\" kann. Zusätzlich haben wir eigene KI-Apps geschrieben, die alle möglichen Artefakte durchchecken und nach unseren \"Prompts\" eine umfassende Information ausspucken. Lassen Sie sich überraschen und probieren Sie es selbst aus - sie werden staunen!",
