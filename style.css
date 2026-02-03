@@ -1305,17 +1305,15 @@ body {
     text-transform: uppercase;
 }
 
-.play-icon {
-    font-size: 4rem;
+.media-icon {
+    font-size: 5rem;
+    color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.media-card:hover .media-icon {
+    transform: scale(1.1);
     color: var(--accent-gold);
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 5px;
 }
 
 .media-content {

@@ -115,7 +115,7 @@
                 <div class="media-card">
                     <div class="media-placeholder">
                         <span class="media-type-badge">Video</span>
-                        <div class="play-icon">▶</div>
+                        <div class="media-icon">🎬</div>
                     </div>
                     <div class="media-content">
                         <h3>Krumhuber Taschenuhren</h3>
@@ -143,15 +143,17 @@
                 <div class="media-card">
                     <div class="media-placeholder">
                         <span class="media-type-badge">Audio</span>
-                        <div class="play-icon">▶</div>
+                        <div class="media-icon">🎧</div>
                     </div>
                     <div class="media-content">
                         <h3>Tabakpfeifensammlung</h3>
                         <p>Tauchen Sie ein in die Geschichte der einzigartigen Pfeifensammlung und erfahren Sie
                             spannende Details über die einzelnen Exponate.</p>
-                        <audio controls preload="metadata" style="width: 100%; margin: 1rem 0;">
+                        <audio controls preload="auto" style="width: 100%; margin: 1rem 0;">
                             <source src="audio/Saubladern.mp3" type="audio/mpeg">
+                            <source src="audio/Saubladern.mp3" type="audio/mp3">
                             Ihr Browser unterstützt das Audio-Element nicht.
+                            <a href="audio/Saubladern.mp3" target="_blank">Hier klicken zum Abspielen/Download</a>
                         </audio>
                         <div class="media-meta">
                             <div class="meta-item">
@@ -170,7 +172,7 @@
                 <div class="media-card">
                     <div class="media-placeholder">
                         <span class="media-type-badge">Video</span>
-                        <div class="play-icon">▶</div>
+                        <div class="media-icon">🎬</div>
                     </div>
                     <div class="media-content">
                         <h3>Kitzmantelfabrik Geschichte</h3>
@@ -253,10 +255,24 @@
                 placeholder.style.cursor = 'pointer';
                 placeholder.addEventListener('click', () => {
                     if (media.paused) {
-                        media.play();
+                        media.play().catch(e => {
+                            console.error("Playback failed:", e);
+                            // Only alert if it's not a background-play restriction
+                            if (e.name !== 'NotAllowedError') {
+                                alert("Das Abspielen wurde blockiert oder die Datei wurde nicht gefunden.");
+                            }
+                        });
                     } else {
                         media.pause();
                     }
+                });
+
+                // Visual feedback
+                media.addEventListener('play', () => {
+                    placeholder.style.opacity = '0.5';
+                });
+                media.addEventListener('pause', () => {
+                    placeholder.style.opacity = '1';
                 });
             }
         });
