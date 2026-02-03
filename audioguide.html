@@ -149,8 +149,8 @@
                         <h3>Tabakpfeifensammlung</h3>
                         <p>Tauchen Sie ein in die Geschichte der einzigartigen Pfeifensammlung und erfahren Sie
                             spannende Details über die einzelnen Exponate.</p>
-                        <audio controls style="width: 100%; margin: 1rem 0;">
-                            <source src="Audio/Saubladern.mp3" type="audio/mpeg">
+                        <audio controls preload="metadata" style="width: 100%; margin: 1rem 0;">
+                            <source src="audio/Saubladern.mp3" type="audio/mpeg">
                             Ihr Browser unterstützt das Audio-Element nicht.
                         </audio>
                         <div class="media-meta">
@@ -243,6 +243,24 @@
             <p>&copy; 2024 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten. | <small>v7.3</small></p>
         </div>
     </footer>
+    <script>
+        // Make media placeholders clickable to play the media
+        document.querySelectorAll('.media-card').forEach(card => {
+            const placeholder = card.querySelector('.media-placeholder');
+            const media = card.querySelector('video, audio');
+
+            if (placeholder && media) {
+                placeholder.style.cursor = 'pointer';
+                placeholder.addEventListener('click', () => {
+                    if (media.paused) {
+                        media.play();
+                    } else {
+                        media.pause();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
