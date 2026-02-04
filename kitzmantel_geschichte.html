@@ -380,11 +380,51 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border: 2px solid rgba(139, 69, 19, 0.3);
             background: #000;
+            position: relative;
+            cursor: pointer;
         }
 
         .video-container video {
             width: 100%;
             display: block;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            color: #CD853F;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 5;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .video-overlay span {
+            font-size: 3rem;
+            background: rgba(139, 69, 19, 0.8);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            padding-left: 5px;
+            border: 2px solid #CD853F;
+            box-shadow: 0 0 20px rgba(205, 133, 63, 0.4);
+        }
+
+        .video-container.playing .video-overlay {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .ai-note {
@@ -778,11 +818,15 @@
                     Die Kitzmantel-Schuhe wurden nach traditionellen Verfahren in aufwendiger Handarbeit <span
                         class="highlight">holzgenagelt, durchgenäht oder flexibel genäht</span>.
                 </p>
-                <div class="video-container">
-                    <video id="kivoVideo" muted loop playsinline preload="metadata">
+                <div class="video-container" id="kivoVideoContainer" onclick="toggleKivoVideo()">
+                    <video id="kivoVideo" muted loop playsinline preload="auto">
                         <source src="video/Foto_Animation_Mit_D_Zoom_Effekt.mp4" type="video/mp4">
                         Ihr Browser unterstützt keine Videos.
                     </video>
+                    <div id="videoPlayBtn" class="video-overlay">
+                        <span>▶</span>
+                        <div>Video abspielen</div>
+                    </div>
                 </div>
                 <div class="ai-note">Dieses Video wurde KI-generiert (Gemini)</div>
             </div>
@@ -1113,6 +1157,8 @@
         </div>
     </section>
 
+    <div id="main-footer-placeholder"></div>
+
     <script>
         window.addEventListener('scroll', () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -1140,18 +1186,48 @@
 
         // Video scroll handling
         const kivoVideo = document.getElementById('kivoVideo');
+        const kivoVideoContainer = document.getElementById('kivoVideoContainer');
+        const videoPlayBtn = document.getElementById('videoPlayBtn');
+
+        function toggleKivoVideo() {
+            if (kivoVideo.paused) {
+                const playPromise = kivoVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        kivoVideoContainer.classList.add('playing');
+                    }).catch(error => {
+                        console.log("Autoplay rejected or failed:", error);
+                    });
+                }
+            } else {
+                kivoVideo.pause();
+                kivoVideoContainer.classList.remove('playing');
+            }
+        }
+
         const videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    kivoVideo.play();
+                    const playPromise = kivoVideo.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            kivoVideoContainer.classList.add('playing');
+                        }).catch(error => {
+                            // Autoplay was prevented
+                            kivoVideoContainer.classList.remove('playing');
+                        });
+                    }
                 } else {
                     kivoVideo.pause();
+                    kivoVideoContainer.classList.remove('playing');
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.3 });
 
         if (kivoVideo) {
-            videoObserver.observe(kivoVideo);
+            videoObserver.observe(kivoVideo)   // Sync UI if video state changes independently
+            kivoVideo.onplay = () => kivoVideoContainer.classList.add('playing');
+            kivoVideo.onpause = () => kivoVideoContainer.classList.remove('playing');
         }
 
         const timelineDots = document.querySelectorAll('.timeline-dot');
@@ -1191,6 +1267,7 @@
             });
         }
     </script>
+    <script src="script.js?v=7.5"></script>
 </body>
 
 </html>

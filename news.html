@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News - Heimat- und Kulturverein Vorchdorf</title>
-    <link rel="stylesheet" href="style.css?v=7.4">
+    <link rel="stylesheet" href="style.css?v=7.5">
     <style>
         /* Page Header Specific Override if needed, currently covered by style.css but with margin-top which style.css has as 0 for main header. 
            In news.html original, page-header had margin-top: 60px.
@@ -24,11 +24,7 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="logo-container">
-            <img src="Bilder/Logo-Heimat-Kulturverein-Vorchdorf_4c.jpg" alt="Heimat- und Kulturverein Vorchdorf"
-                class="logo">
-            <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
-        </div>
+        <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
         <ul class="nav-menu" id="navMenu">
             <li><a href="index.html">Home</a></li>
             <li><a href="news.html">News</a></li>
@@ -64,153 +60,188 @@
             </p>
         </div>
 
-        <!-- Ausflüge mit Anmeldung -->
-        <div class="news-block">
-            <h2>🚌 Ausflüge & Anmeldung</h2>
-            <p>Melden Sie sich für unsere geplanten Ausflüge an! Genießen Sie gemeinsame Erlebnisse und lernen Sie
-                interessante Orte kennen.</p>
+        <!-- Accordion Folders -->
+        <div class="news-accordion">
+            <!-- Ausflüge mit Anmeldung -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h2><span>🚌</span> Ausflüge & Anmeldung</h2>
+                    <div class="accordion-icon">▼</div>
+                </div>
+                <div class="accordion-content">
+                    <p>Melden Sie sich für unsere geplanten Ausflüge an! Genießen Sie gemeinsame Erlebnisse und lernen
+                        Sie interessante Orte kennen.</p>
 
-            <h3>Geplante Ausflüge</h3>
-            <div class="event-item">
-                <strong>Ausflug zur Burg Wels</strong>
-                <p>🗓️ Mittwoch, 20. April 2026</p>
-                <p>Treffpunkt Kirche Vorchdorf, Abfahrt 14:00 Uhr.</p>
+                    <h3 style="margin-top: 1.5rem; color: var(--primary-dark);">Geplante Ausflüge</h3>
+                    <div class="event-item">
+                        <strong>Ausflug zur Burg Wels</strong>
+                        <p>🗓️ Mittwoch, 20. April 2026</p>
+                        <p>Treffpunkt Kirche Vorchdorf, Abfahrt 14:00 Uhr.</p>
+                    </div>
+                    <div class="event-item" style="margin-top: 1rem;">
+                        <strong>Besuch des Stift Kremsmünster</strong>
+                        <p>🗓️ Donnerstag, 6. Juni 2026</p>
+                        <p>Kulturelle Exkursion mit Führung durch das beeindruckende Benediktinerstift.</p>
+                    </div>
+
+                    <h3 style="margin-top: 2rem; color: var(--primary-dark);">Zur Anmeldung</h3>
+                    <div class="info-box"
+                        style="background: var(--warm-cream); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid var(--accent-gold);">
+                        <strong>Pflichtfelder:</strong> Vorname, Nachname<br>
+                        <strong>Optional:</strong> Telefon, E-Mail
+                    </div>
+
+                    <form method="POST" action="https://formspree.io/f/mbdygrvn" onsubmit="handleAusflugSubmit(event)">
+                        <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
+                        <input type="hidden" name="form_type" value="Ausflug-Anmeldung">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="excursion_vorname">Vorname <span class="required">*</span></label>
+                                <input type="text" id="excursion_vorname" name="Vorname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="excursion_nachname">Nachname <span class="required">*</span></label>
+                                <input type="text" id="excursion_nachname" name="Nachname" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="excursion_telefon">Telefon</label>
+                                <input type="tel" id="excursion_telefon" name="Telefon">
+                            </div>
+                            <div class="form-group">
+                                <label for="excursion_email">E-Mail</label>
+                                <input type="email" id="excursion_email" name="E-Mail">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="excursion_event">Für welchen Ausflug möchten Sie sich anmelden? <span
+                                    class="required">*</span></label>
+                            <select id="excursion_event" name="Ausflug" required>
+                                <option value="">-- Bitte wählen --</option>
+                                <option value="Ausflug zur Burg Wels - 20.04.2026">Ausflug zur Burg Wels - 20.04.2026
+                                </option>
+                                <option value="Besuch des Stift Kremsmünster - 06.06.2026">Besuch des Stift Kremsmünster
+                                    - 06.06.2026</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="excursion_bemerkung">Besondere Anmerkungen (z.B. Mobilitätshilfen)</label>
+                            <textarea id="excursion_bemerkung" name="Bemerkungen"
+                                placeholder="Hier können Sie besondere Wünsche oder Anforderungen angeben..."></textarea>
+                        </div>
+
+                        <button type="submit" class="cta-button" style="width: 100%;">Anmeldung absenden</button>
+                    </form>
+                </div>
             </div>
-            <div class="event-item">
-                <strong>Besuch des Stift Kremsmünster</strong>
-                <p>🗓️ Donnerstag, 6. Juni 2026</p>
-                <p>Kulturelle Exkursion mit Führung durch das beeindruckende Benediktinerstift.</p>
+
+            <!-- Ideenworkshop -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h2><span>💡</span> Ideenworkshop</h2>
+                    <div class="accordion-icon">▼</div>
+                </div>
+                <div class="accordion-content">
+                    <p>Helfen Sie uns, die Geschichte und Kultur unserer Region zu bewahren und zu erforschen! Teilen
+                        Sie Ihre Ideen mit uns – gemeinsam können wir Großartiges schaffen.</p>
+
+                    <h3 style="margin-top: 1.5rem; color: var(--primary-dark);">Themenbeispiele:</h3>
+                    <ul class="ideas-list">
+                        <li><strong>Wirtshäuser-Projekt:</strong> Alle Wirtshäuser in der Region aufspüren, ihre
+                            Geschichte erforschen und dokumentieren</li>
+                        <li><strong>Handwerk & Gewerbe:</strong> Traditionelle Handwerkstechniken und historische
+                            Gewerbe in Vorchdorf</li>
+                        <li><strong>Mundart-Erhaltung:</strong> Sammlung von Dialektwörtern und Redewendungen aus
+                            unserer Region</li>
+                        <li><strong>Flurnamen & Marterl:</strong> Erfassung alter Feldbezeichnungen und die Geschichte
+                            der Kleindenkmäler in unserer Umgebung</li>
+                        <li><strong>Schul- & Jugendgeschichte:</strong> Entwicklung von Schulen und Jugendvereinen im
+                            Laufe der Zeit</li>
+                        <li><strong>Digitales Zeitarchiv:</strong> Digitalisierung von privaten historischen Fotos und
+                            Dokumenten für die Nachwelt</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem; font-style: italic; color: var(--secondary-dark);">
+                        <strong>Ihre Idee:</strong> Falls Sie ein anderes spannendes Thema haben – teilen Sie es mit
+                        uns!
+                    </p>
+
+                    <form method="POST" action="https://formspree.io/f/mbdygrvn" style="margin-top: 2rem;">
+                        <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
+                        <input type="hidden" name="form_type" value="Ideenworkshop">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="idea_vorname">Vorname <span class="required">*</span></label>
+                                <input type="text" id="idea_vorname" name="Vorname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="idea_nachname">Nachname <span class="required">*</span></label>
+                                <input type="text" id="idea_nachname" name="Nachname" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="idea_email">E-Mail</label>
+                                <input type="email" id="idea_email" name="E-Mail">
+                            </div>
+                            <div class="form-group">
+                                <label for="idea_telefon">Telefon</label>
+                                <input type="tel" id="idea_telefon" name="Telefon">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="idea_titel">Titel Ihrer Idee <span class="required">*</span></label>
+                            <input type="text" id="idea_titel" name="Idee-Titel"
+                                placeholder="Z.B. 'Wirtshäuser-Projekt'" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="idea_beschreibung">Beschreiben Sie Ihre Idee <span
+                                    class="required">*</span></label>
+                            <textarea id="idea_beschreibung" name="Idee-Beschreibung"
+                                placeholder="Teilen Sie Ihre Gedanken, Vorschläge und Visionen mit uns..."
+                                required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="idea_mitarbeit">Würden Sie gerne bei der Umsetzung mithelfen?</label>
+                            <select id="idea_mitarbeit" name="Mitarbeit"
+                                style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+                                <option value="">-- Bitte wählen --</option>
+                                <option value="Ja, ich möchte mithelfen">Ja, ich möchte mithelfen</option>
+                                <option value="Nein, nur die Idee beitragen">Nein, nur die Idee beitragen</option>
+                                <option value="Vielleicht, je nach Zeit und Aufwand">Vielleicht, je nach Zeit und
+                                    Aufwand</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="cta-button" style="width: 100%;">Idee einreichen</button>
+                    </form>
+                </div>
             </div>
 
-            <h3 style="margin-top: 2rem;">Zur Anmeldung</h3>
-            <div class="info-box">
-                <strong>Pflichtfelder:</strong> Vorname, Nachname<br>
-                <strong>Optional:</strong> Telefon, E-Mail
+            <!-- Vergangene Aktivitäten -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h2><span>📚</span> Vergangene Aktivitäten</h2>
+                    <div class="accordion-icon">▼</div>
+                </div>
+                <div class="accordion-content" style="text-align: center;">
+                    <p style="margin-bottom: 2rem;">Werfen Sie einen Blick auf unsere bisherigen Projekte,
+                        Veranstaltungen und Ausflüge. Unsere Geschichte ist lebendig!</p>
+                    <a href="aktivitaeten_archiv.html" class="cta-button" style="background: var(--secondary-dark);">
+                        Zum Archiv der Aktivitäten
+                    </a>
+                </div>
             </div>
-
-            <form method="POST" action="https://formspree.io/f/mbdygrvn" onsubmit="handleAusflugSubmit(event)">
-                <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                <input type="hidden" name="form_type" value="Ausflug-Anmeldung">
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="excursion_vorname">Vorname <span class="required">*</span></label>
-                        <input type="text" id="excursion_vorname" name="Vorname" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="excursion_nachname">Nachname <span class="required">*</span></label>
-                        <input type="text" id="excursion_nachname" name="Nachname" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="excursion_telefon">Telefon</label>
-                        <input type="tel" id="excursion_telefon" name="Telefon">
-                    </div>
-                    <div class="form-group">
-                        <label for="excursion_email">E-Mail</label>
-                        <input type="email" id="excursion_email" name="E-Mail">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="excursion_event">Für welchen Ausflug möchten Sie sich anmelden? <span
-                            class="required">*</span></label>
-                    <select id="excursion_event" name="Ausflug" required>
-                        <option value="">-- Bitte wählen --</option>
-                        <option value="Ausflug zur Burg Wels - 20.04.2026">Ausflug zur Burg Wels - 20.04.2026</option>
-                        <option value="Besuch des Stift Kremsmünster - 06.06.2026">Besuch des Stift Kremsmünster -
-                            06.06.2026</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="excursion_bemerkung">Besondere Anmerkungen (z.B. Mobilitätshilfen)</label>
-                    <textarea id="excursion_bemerkung" name="Bemerkungen"
-                        placeholder="Hier können Sie besondere Wünsche oder Anforderungen angeben..."></textarea>
-                </div>
-
-                <button type="submit" class="btn">Anmeldung absenden</button>
-            </form>
-        </div>
-
-        <!-- Ideenworkshop -->
-        <div class="news-block">
-            <h2>💡 Ideenworkshop</h2>
-            <p>Helfen Sie uns, die Geschichte und Kultur unserer Region zu bewahren und zu erforschen! Teilen Sie Ihre
-                Ideen mit uns – gemeinsam können wir Großartiges schaffen.</p>
-
-            <h3>Themenbeispiele:</h3>
-            <ul class="ideas-list">
-                <li><strong>Wirtshäuser-Projekt:</strong> Alle Wirtshäuser in der Region aufspüren, ihre Geschichte
-                    erforschen und dokumentieren</li>
-                <li><strong>Handwerk & Gewerbe:</strong> Traditionelle Handwerkstechniken und historische Gewerbe in
-                    Vorchdorf</li>
-                <li><strong>Mundart-Erhaltung:</strong> Sammlung von Dialektwörtern und Redewendungen aus unserer Region
-                </li>
-                <li><strong>Flurnamen & Marterl:</strong> Erfassung alter Feldbezeichnungen und die Geschichte der
-                    Kleindenkmäler in unserer Umgebung</li>
-                <li><strong>Schul- & Jugendgeschichte:</strong> Entwicklung von Schulen und Jugendvereinen im Laufe
-                    der Zeit</li>
-                <li><strong>Digitales Zeitarchiv:</strong> Digitalisierung von privaten historischen Fotos und
-                    Dokumenten für die Nachwelt</li>
-            </ul>
-
-            <p style="margin-top: 1.5rem; font-style: italic; color: var(--secondary-dark);">
-                <strong>Ihre Idee:</strong> Falls Sie ein anderes spannendes Thema haben – teilen Sie es mit uns!
-            </p>
-
-            <form method="POST" action="https://formspree.io/f/mbdygrvn" style="margin-top: 2rem;">
-                <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                <input type="hidden" name="form_type" value="Ideenworkshop">
-
-                <div class="form-group">
-                    <label for="idea_vorname">Vorname <span class="required">*</span></label>
-                    <input type="text" id="idea_vorname" name="Vorname" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_nachname">Nachname <span class="required">*</span></label>
-                    <input type="text" id="idea_nachname" name="Nachname" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_email">E-Mail</label>
-                    <input type="email" id="idea_email" name="E-Mail">
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_telefon">Telefon</label>
-                    <input type="tel" id="idea_telefon" name="Telefon">
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_titel">Titel Ihrer Idee <span class="required">*</span></label>
-                    <input type="text" id="idea_titel" name="Idee-Titel" placeholder="Z.B. 'Wirtshäuser-Projekt'"
-                        required>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_beschreibung">Beschreiben Sie Ihre Idee <span class="required">*</span></label>
-                    <textarea id="idea_beschreibung" name="Idee-Beschreibung"
-                        placeholder="Teilen Sie Ihre Gedanken, Vorschläge und Visionen mit uns..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="idea_mitarbeit">Würden Sie gerne bei der Umsetzung mithelfen?</label>
-                    <select id="idea_mitarbeit" name="Mitarbeit"
-                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
-                        <option value="">-- Bitte wählen --</option>
-                        <option value="Ja, ich möchte mithelfen">Ja, ich möchte mithelfen</option>
-                        <option value="Nein, nur die Idee beitragen">Nein, nur die Idee beitragen</option>
-                        <option value="Vielleicht, je nach Zeit und Aufwand">Vielleicht, je nach Zeit und Aufwand
-                        </option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn">Idee einreichen</button>
-            </form>
         </div>
 
         <!-- Newsletter/Kontakt Block -->
@@ -238,54 +269,17 @@
                     <input type="email" id="newsletter_email" name="E-Mail" required>
                 </div>
 
-                <button type="submit" class="btn btn-accent">Zum Newsletter anmelden</button>
+                <button type="submit" class="cta-button" style="width: 100%; background: var(--forest-green);">Zum
+                    Newsletter anmelden</button>
             </form>
         </div>
 
-        <!-- Archiv Link (ganz unten) -->
-        <div style="text-align: center; margin-top: 4rem; margin-bottom: 4rem;">
-            <a href="aktivitaeten_archiv.html" class="btn"
-                style="background: var(--secondary-dark); padding: 1rem 2rem;">
-                📚 Archiv der vergangenen Aktivitäten ansehen
-            </a>
-        </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div>
-                <h4>Heimat- und Kulturverein Vorchdorf</h4>
-                <p>Bewahrer des kulturellen Erbes<br>
-                    der Region Vorchdorf seit vielen Jahrzehnten</p>
-            </div>
-            <div>
-                <h4>Kontakt</h4>
-                <p>Bahnhofstraße 9<br>
-                    4655 Vorchdorf<br>
-                    E-Mail: dr.claudia@westreicher.at</p>
-            </div>
-            <div>
-                <h4>Museum der Region</h4>
-                <p>Laudachweg 17<br>
-                    4655 Vorchdorf<br>
-                    Tel: 07614/6555-578</p>
-            </div>
-            <div>
-                <h4>Rechtliches</h4>
-                <div class="footer-links">
-                    <a href="impressum.html">Impressum</a>
-                    <a href="datenschutz.html">Datenschutz</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten. | <small>v7.4</small></p>
-        </div>
-    </footer>
+    <div id="main-footer-placeholder"></div>
 
-    <script src="script.js?v=7.4"></script>
-    <script src="events_data.js?v=7.4"></script>
+    <script src="script.js?v=7.5"></script>
+    <script src="events_data.js?v=7.5"></script>
     <script>
         // Hilfsfunktion zur Formatierung des Datums
         function formatDate(dateString) {
@@ -326,6 +320,22 @@
 
         // Events beim Laden rendern
         document.addEventListener('DOMContentLoaded', renderEvents);
+
+        // Accordion Toggle function
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const isActive = item.classList.contains('active');
+
+            // Close all other items to keep it clean and non-confusing
+            document.querySelectorAll('.accordion-item').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Toggle current item
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
 
         // Handle form submissions with validation
         function handleAusflugSubmit(event) {

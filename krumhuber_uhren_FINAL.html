@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,15 +48,22 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(201,169,97,0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(244,229,194,0.08) 0%, transparent 40%);
+            background:
+                radial-gradient(circle at 20% 30%, rgba(201, 169, 97, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(244, 229, 194, 0.08) 0%, transparent 40%);
             animation: pulseGold 8s ease-in-out infinite;
         }
 
         @keyframes pulseGold {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
         }
 
         .hero-content {
@@ -69,19 +77,24 @@
             font-size: 8rem;
             margin-bottom: 30px;
             animation: clockRotate 20s linear infinite;
-            filter: drop-shadow(0 0 30px rgba(201,169,97,0.6));
+            filter: drop-shadow(0 0 30px rgba(201, 169, 97, 0.6));
         }
 
         @keyframes clockRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .hero h1 {
             font-size: clamp(2.5rem, 8vw, 5.5rem);
             margin-bottom: 20px;
             color: #c9a961;
-            text-shadow: 0 0 40px rgba(201,169,97,0.5);
+            text-shadow: 0 0 40px rgba(201, 169, 97, 0.5);
             animation: fadeInDown 1.5s ease;
             letter-spacing: 3px;
         }
@@ -115,19 +128,46 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-20px); }
-            60% { transform: translateX(-50%) translateY(-10px); }
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-20px);
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(-10px);
+            }
         }
 
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Timeline Navigation */
@@ -215,7 +255,7 @@
             direction: rtl;
         }
 
-        .story-content.reverse > * {
+        .story-content.reverse>* {
             direction: ltr;
         }
 
@@ -360,7 +400,7 @@
         }
 
         .timeline-content {
-            background: linear-gradient(135deg, rgba(45,36,22,0.9) 0%, rgba(26,20,16,0.9) 100%);
+            background: linear-gradient(135deg, rgba(45, 36, 22, 0.9) 0%, rgba(26, 20, 16, 0.9) 100%);
             padding: 40px;
             border-radius: 20px;
             border: 2px solid rgba(201, 169, 97, 0.3);
@@ -420,13 +460,20 @@
             position: absolute;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(201,169,97,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(201, 169, 97, 0.1) 0%, transparent 70%);
             animation: ctaPulse 10s ease-in-out infinite;
         }
 
         @keyframes ctaPulse {
-            0%, 100% { transform: scale(1) translate(-25%, -25%); }
-            50% { transform: scale(1.2) translate(-25%, -25%); }
+
+            0%,
+            100% {
+                transform: scale(1) translate(-25%, -25%);
+            }
+
+            50% {
+                transform: scale(1.2) translate(-25%, -25%);
+            }
         }
 
         .cta-content {
@@ -502,6 +549,7 @@
                 transform: none;
             }
         }
+
         /* Home quick button */
         .home-button {
             position: fixed;
@@ -512,7 +560,7 @@
             color: #111;
             padding: 8px 12px;
             border-radius: 999px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
             text-decoration: none;
             font-weight: 700;
             display: inline-flex;
@@ -523,10 +571,11 @@
 
         .home-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
         }
     </style>
 </head>
+
 <body>
     <!-- Progress Bar -->
     <div class="progress-bar" id="progressBar"></div>
@@ -559,17 +608,25 @@
             <div class="story-text">
                 <h2>Die Krumhuber Familie</h2>
                 <p>
-                    Vorchdorf hatte das Glück, eine bekannte Uhrmacherfamilie zu beherbergen. Über einen Zeitraum von <span class="highlight">110 Jahren</span>, von 1776 bis 1886, war diese Familie in drei Generationen in Vorchdorf tätig.
+                    Vorchdorf hatte das Glück, eine bekannte Uhrmacherfamilie zu beherbergen. Über einen Zeitraum von
+                    <span class="highlight">110 Jahren</span>, von 1776 bis 1886, war diese Familie in drei Generationen
+                    in Vorchdorf tätig.
                 </p>
                 <p>
-                    Die Familie hatte ihre Wurzeln ursprünglich in Steinerkirchen, wo der Vater <span class="highlight">Georg</span> bereits als Uhrmacher arbeitete. Zwei seiner Söhne, <span class="highlight">Bartholomäus</span> und <span class="highlight">Johann Michael</span>, kamen nach Vorchdorf und begründeten hier die berühmte Uhrmacherdynastie. Ein dritter Sohn zog nach Kremsmünster und eröffnete dort ebenfalls eine Uhrmacherwerkstatt.
+                    Die Familie hatte ihre Wurzeln ursprünglich in Steinerkirchen, wo der Vater <span
+                        class="highlight">Georg</span> bereits als Uhrmacher arbeitete. Zwei seiner Söhne, <span
+                        class="highlight">Bartholomäus</span> und <span class="highlight">Johann Michael</span>, kamen
+                    nach Vorchdorf und begründeten hier die berühmte Uhrmacherdynastie. Ein dritter Sohn zog nach
+                    Kremsmünster und eröffnete dort ebenfalls eine Uhrmacherwerkstatt.
                 </p>
                 <div class="quote">
-                    "Von 1790 bis 1860 waren die Krumhuber für Vorchdorf von großer wirtschaftlicher Bedeutung. Die Qualität ihrer Taschenuhren machte sie weit über die Grenzen der Gemeinde hinaus bekannt und berühmt."
+                    "Von 1790 bis 1860 waren die Krumhuber für Vorchdorf von großer wirtschaftlicher Bedeutung. Die
+                    Qualität ihrer Taschenuhren machte sie weit über die Grenzen der Gemeinde hinaus bekannt und
+                    berühmt."
                 </div>
             </div>
             <div class="story-image">
-            <img src="Krumhuber/foto1.jpg" alt="Krumhuber Taschenuhr - Frontansicht">
+                <img src="Krumhuber/foto1.jpg" alt="Krumhuber Taschenuhr - Frontansicht">
             </div>
         </div>
     </section>
@@ -580,13 +637,19 @@
             <div class="story-text">
                 <h2>Die Brüder Krumhuber</h2>
                 <p>
-                    <span class="highlight">Bartholomäus</span> hatte das Glück, in eine bestehende Kramerei am Tangelberg einzuheiraten und gründete dort seine Uhrmacherwerkstatt. Leider starben Bartholomäus und seine Frau kurz nach 1800.
+                    <span class="highlight">Bartholomäus</span> hatte das Glück, in eine bestehende Kramerei am
+                    Tangelberg einzuheiraten und gründete dort seine Uhrmacherwerkstatt. Leider starben Bartholomäus und
+                    seine Frau kurz nach 1800.
                 </p>
                 <p>
-                    Sein Bruder <span class="highlight">Johann Michael</span> übernahm daraufhin die Werkstatt und führte sie <span class="highlight">40 Jahre</span> weiter. Obwohl Johann Michael sieben eigene Kinder hatte, die alle vor ihm verstarben, bildete er die Kinder von Bartholomäus zu Uhrmachern aus.
+                    Sein Bruder <span class="highlight">Johann Michael</span> übernahm daraufhin die Werkstatt und
+                    führte sie <span class="highlight">40 Jahre</span> weiter. Obwohl Johann Michael sieben eigene
+                    Kinder hatte, die alle vor ihm verstarben, bildete er die Kinder von Bartholomäus zu Uhrmachern aus.
                 </p>
                 <p>
-                    Vier seiner Söhne erlernten das Handwerk, und einer von ihnen, <span class="highlight">Johann</span>, übernahm die Werkstatt nach Johann Michaels Tod im Jahr <span class="highlight">1840</span>.
+                    Vier seiner Söhne erlernten das Handwerk, und einer von ihnen, <span
+                        class="highlight">Johann</span>, übernahm die Werkstatt nach Johann Michaels Tod im Jahr <span
+                        class="highlight">1840</span>.
                 </p>
             </div>
             <div class="story-image">
@@ -601,13 +664,19 @@
             <div class="story-text">
                 <h2>Meisterwerke der Feinmechanik</h2>
                 <p>
-                    Die Uhren selbst sind aus mehreren Gründen interessant: Zum einen basieren sie auf einem <span class="highlight">Spindelwerk</span>, einer Mechanik, die schon seit 300 Jahren bekannt ist und sich durch ihre Zuverlässigkeit und Genauigkeit auszeichnet.
+                    Die Uhren selbst sind aus mehreren Gründen interessant: Zum einen basieren sie auf einem <span
+                        class="highlight">Spindelwerk</span>, einer Mechanik, die schon seit 300 Jahren bekannt ist und
+                    sich durch ihre Zuverlässigkeit und Genauigkeit auszeichnet.
                 </p>
                 <p>
-                    Die Uhrengehäuse und Übergehäuse sind oft kunstvoll gestaltet, beispielsweise mit <span class="highlight">Schildpatt</span> überzogen. Die inneren Platten sind kunstvoll ziseliert, gesägt und vergoldet, oft mit schönen Ornamenten und Tiermotiven verziert.
+                    Die Uhrengehäuse und Übergehäuse sind oft kunstvoll gestaltet, beispielsweise mit <span
+                        class="highlight">Schildpatt</span> überzogen. Die inneren Platten sind kunstvoll ziseliert,
+                    gesägt und vergoldet, oft mit schönen Ornamenten und Tiermotiven verziert.
                 </p>
                 <p>
-                    Besonders interessant ist auch der Aufzug der Uhren: Sie verwendeten eine sogenannte <span class="highlight">Schnecke und ein Federhaus</span>. Eine kleine Kette wurde aufgewickelt, und wenn die Uhr ablief, vergrößerte sich der Konus – dies funktionierte wie eine Gangschaltung.
+                    Besonders interessant ist auch der Aufzug der Uhren: Sie verwendeten eine sogenannte <span
+                        class="highlight">Schnecke und ein Federhaus</span>. Eine kleine Kette wurde aufgewickelt, und
+                    wenn die Uhr ablief, vergrößerte sich der Konus – dies funktionierte wie eine Gangschaltung.
                 </p>
             </div>
             <div class="story-image">
@@ -622,13 +691,18 @@
             <div class="story-text">
                 <h2>Das mechanische Wunderwerk</h2>
                 <p>
-                    Im Inneren verbirgt sich ein mechanisches Meisterwerk: Das <span class="highlight">Spindeluhrwerk</span> besteht aus über hundert winzigen Komponenten, die alle mit höchster Präzision gefertigt und zusammengesetzt wurden.
+                    Im Inneren verbirgt sich ein mechanisches Meisterwerk: Das <span
+                        class="highlight">Spindeluhrwerk</span> besteht aus über hundert winzigen Komponenten, die alle
+                    mit höchster Präzision gefertigt und zusammengesetzt wurden.
                 </p>
                 <p>
-                    Die <span class="highlight">Unruhbrücke</span> ist kunstvoll durchbrochen und zeigt feinste Akanthusblätter. Die Zierplatten enthalten neben reichhaltigen Rankenmotiven auch stilisierte Tierdarstellungen – Vögel, Hirsche und andere Motive.
+                    Die <span class="highlight">Unruhbrücke</span> ist kunstvoll durchbrochen und zeigt feinste
+                    Akanthusblätter. Die Zierplatten enthalten neben reichhaltigen Rankenmotiven auch stilisierte
+                    Tierdarstellungen – Vögel, Hirsche und andere Motive.
                 </p>
                 <div class="quote">
-                    "Eine Krumhuberuhr kostete um 1800 bereits 50 Gulden. Zum Vergleich: Der Jahreslohn eines Knechtes betrug damals 15 Gulden."
+                    "Eine Krumhuberuhr kostete um 1800 bereits 50 Gulden. Zum Vergleich: Der Jahreslohn eines Knechtes
+                    betrug damals 15 Gulden."
                 </div>
             </div>
             <div class="story-image">
@@ -644,13 +718,18 @@
                 <h2>Johann Krumhuber</h2>
                 <p class="speaker">1846 — 1913</p>
                 <p>
-                    Dieser <span class="highlight">Johann</span> hatte wiederum einen Sohn, ebenfalls namens Johann, der die Werkstatt erbte. Doch in dieser Zeit erlebte das Uhrmachergewerbe eine Krise.
+                    Dieser <span class="highlight">Johann</span> hatte wiederum einen Sohn, ebenfalls namens Johann, der
+                    die Werkstatt erbte. Doch in dieser Zeit erlebte das Uhrmachergewerbe eine Krise.
                 </p>
                 <p>
-                    Fabrikmäßig hergestellte Uhren aus <span class="highlight">Amerika und der Schweiz</span> wurden importiert und waren wesentlich günstiger als handgefertigte Uhren. Dadurch verlor das Uhrmacherhandwerk an Bedeutung.
+                    Fabrikmäßig hergestellte Uhren aus <span class="highlight">Amerika und der Schweiz</span> wurden
+                    importiert und waren wesentlich günstiger als handgefertigte Uhren. Dadurch verlor das
+                    Uhrmacherhandwerk an Bedeutung.
                 </p>
                 <p>
-                    1886 verkaufte Johann Krumhuber das Anwesen und zog weg. Die Familie hatte noch zwei Kinder, die jedoch im Jugendalter starben. Mit dem Tod von Johann Krumhuber im Jahr <span class="highlight">1913</span> erlosch die Dynastie.
+                    1886 verkaufte Johann Krumhuber das Anwesen und zog weg. Die Familie hatte noch zwei Kinder, die
+                    jedoch im Jugendalter starben. Mit dem Tod von Johann Krumhuber im Jahr <span
+                        class="highlight">1913</span> erlosch die Dynastie.
                 </p>
             </div>
             <div class="story-image">
@@ -667,12 +746,14 @@
         </div>
         <div class="timeline-container">
             <div class="timeline-line"></div>
-            
+
             <div class="timeline-item">
                 <div class="timeline-year">1725</div>
                 <div class="timeline-content">
                     <h3>Georg Krumhuber</h3>
-                    <p>Georg Krumhuber wird 1725 in Steinerkirchen geboren und begründet die Uhrmacherdynastie. Er erwirbt die Wintersölde in Spereck und hat in zwei Ehen insgesamt 16 Kinder. Drei seiner Söhne werden Uhrmacher.</p>
+                    <p>Georg Krumhuber wird 1725 in Steinerkirchen geboren und begründet die Uhrmacherdynastie. Er
+                        erwirbt die Wintersölde in Spereck und hat in zwei Ehen insgesamt 16 Kinder. Drei seiner Söhne
+                        werden Uhrmacher.</p>
                 </div>
             </div>
 
@@ -680,7 +761,8 @@
                 <div class="timeline-year">1757</div>
                 <div class="timeline-content">
                     <h3>Geburt von Johann Michael</h3>
-                    <p>Johann Michael Krumhuber wird am 27. Januar 1757 geboren. Er wird später zum Hauptvertreter der Familie und zum berühmtesten Uhrmacher der Krumhuber-Dynastie.</p>
+                    <p>Johann Michael Krumhuber wird am 27. Januar 1757 geboren. Er wird später zum Hauptvertreter der
+                        Familie und zum berühmtesten Uhrmacher der Krumhuber-Dynastie.</p>
                 </div>
             </div>
 
@@ -688,7 +770,8 @@
                 <div class="timeline-year">1764</div>
                 <div class="timeline-content">
                     <h3>Geburt von Bartholomäus</h3>
-                    <p>Bartholomäus Krumhuber wird am 24. August 1764 geboren. Er wird durch Heirat Besitzer des Kramerhauses in Vorchdorf und gründet seine eigene Uhrmacherwerkstatt.</p>
+                    <p>Bartholomäus Krumhuber wird am 24. August 1764 geboren. Er wird durch Heirat Besitzer des
+                        Kramerhauses in Vorchdorf und gründet seine eigene Uhrmacherwerkstatt.</p>
                 </div>
             </div>
 
@@ -696,7 +779,8 @@
                 <div class="timeline-year">1776</div>
                 <div class="timeline-content">
                     <h3>Werkstatt in Vorchdorf</h3>
-                    <p>Johann Michael Krumhuber erwirbt die Holzbauernsölde in Messenbach (Vorchdorf 62) und lässt sich als Kleinuhrmacher nieder. Dies markiert den Beginn der Uhrmacherdynastie in Vorchdorf.</p>
+                    <p>Johann Michael Krumhuber erwirbt die Holzbauernsölde in Messenbach (Vorchdorf 62) und lässt sich
+                        als Kleinuhrmacher nieder. Dies markiert den Beginn der Uhrmacherdynastie in Vorchdorf.</p>
                 </div>
             </div>
 
@@ -704,7 +788,8 @@
                 <div class="timeline-year">1787</div>
                 <div class="timeline-content">
                     <h3>Bartholomäus heiratet</h3>
-                    <p>Bartholomäus kommt durch die Heirat mit der Kaufmannstochter Theresia Bergmann nach Vorchdorf und damit in den Besitz des Kramerhauses, des Werkstättenhäusels und weiterer Immobilien.</p>
+                    <p>Bartholomäus kommt durch die Heirat mit der Kaufmannstochter Theresia Bergmann nach Vorchdorf und
+                        damit in den Besitz des Kramerhauses, des Werkstättenhäusels und weiterer Immobilien.</p>
                 </div>
             </div>
 
@@ -712,7 +797,9 @@
                 <div class="timeline-year">1793</div>
                 <div class="timeline-content">
                     <h3>Mathias in Kremsmünster</h3>
-                    <p>Mathias Krumhuber (1767-1816), ein weiterer Sohn von Georg, wird Kleinuhrmacher in Kremsmünster. Sein Sohn Mathias (1796-1879) fertigt später für das Stift mehrere Pendeluhren von hervorragender Qualität.</p>
+                    <p>Mathias Krumhuber (1767-1816), ein weiterer Sohn von Georg, wird Kleinuhrmacher in Kremsmünster.
+                        Sein Sohn Mathias (1796-1879) fertigt später für das Stift mehrere Pendeluhren von
+                        hervorragender Qualität.</p>
                 </div>
             </div>
 
@@ -720,7 +807,9 @@
                 <div class="timeline-year">1800-1801</div>
                 <div class="timeline-content">
                     <h3>Schicksalsschläge</h3>
-                    <p>Am 20. November 1800 stirbt Theresia, die Frau von Bartholomäus. Vier Monate später, am 18. März 1801, stirbt auch Bartholomäus. Die vier Söhne Franz, Joseph, Cajetan und Johann werden zu Vollwaisen.</p>
+                    <p>Am 20. November 1800 stirbt Theresia, die Frau von Bartholomäus. Vier Monate später, am 18. März
+                        1801, stirbt auch Bartholomäus. Die vier Söhne Franz, Joseph, Cajetan und Johann werden zu
+                        Vollwaisen.</p>
                 </div>
             </div>
 
@@ -728,7 +817,9 @@
                 <div class="timeline-year">1801</div>
                 <div class="timeline-content">
                     <h3>Johann Michael übernimmt</h3>
-                    <p>Onkel Johann Michael übernimmt die Vormundschaft über die vier Waisen und bildet alle zu Uhrmachern aus. Er übernimmt auch das Kramerhaus und die Werkstatt seines Bruders und gelangt zu großem Wohlstand.</p>
+                    <p>Onkel Johann Michael übernimmt die Vormundschaft über die vier Waisen und bildet alle zu
+                        Uhrmachern aus. Er übernimmt auch das Kramerhaus und die Werkstatt seines Bruders und gelangt zu
+                        großem Wohlstand.</p>
                 </div>
             </div>
 
@@ -736,7 +827,9 @@
                 <div class="timeline-year">1790-1820</div>
                 <div class="timeline-content">
                     <h3>Blütezeit der Werkstatt</h3>
-                    <p>Die Krumhuber-Uhren werden weit über Vorchdorf hinaus bekannt. Johann Michael beschäftigt mehrere Gesellen und Lehrlinge. Die kunstvolle Gestaltung der Uhren mit Schildpatt-Übergehäusen und vergoldeten Zierplatten erreicht ihren Höhepunkt.</p>
+                    <p>Die Krumhuber-Uhren werden weit über Vorchdorf hinaus bekannt. Johann Michael beschäftigt mehrere
+                        Gesellen und Lehrlinge. Die kunstvolle Gestaltung der Uhren mit Schildpatt-Übergehäusen und
+                        vergoldeten Zierplatten erreicht ihren Höhepunkt.</p>
                 </div>
             </div>
 
@@ -744,7 +837,8 @@
                 <div class="timeline-year">1820</div>
                 <div class="timeline-content">
                     <h3>Cajetan in Wels</h3>
-                    <p>Cajetan Krumhuber erwirbt von der Uhrmacherswitwe Elisabeth Schäflerin in Wels um 2950 Gulden das Haus Vorstadt 52 (Kaiser Josef-Platz 15) und damit auch die Uhrmachergerechtigkeit.</p>
+                    <p>Cajetan Krumhuber erwirbt von der Uhrmacherswitwe Elisabeth Schäflerin in Wels um 2950 Gulden das
+                        Haus Vorstadt 52 (Kaiser Josef-Platz 15) und damit auch die Uhrmachergerechtigkeit.</p>
                 </div>
             </div>
 
@@ -752,7 +846,8 @@
                 <div class="timeline-year">1821</div>
                 <div class="timeline-content">
                     <h3>Die Weißenwiesen</h3>
-                    <p>Johann Michael kauft die Weißenwiesen, die bis 1887 im Besitz der Familie bleiben. Er ist nun Besitzer des Kramerhauses, der Holzbauernsölde, des Werkstatthäusels und der Weißenwiesen.</p>
+                    <p>Johann Michael kauft die Weißenwiesen, die bis 1887 im Besitz der Familie bleiben. Er ist nun
+                        Besitzer des Kramerhauses, der Holzbauernsölde, des Werkstatthäusels und der Weißenwiesen.</p>
                 </div>
             </div>
 
@@ -760,7 +855,9 @@
                 <div class="timeline-year">1840</div>
                 <div class="timeline-content">
                     <h3>Tod von Johann Michael</h3>
-                    <p>Nach dem Tod von Johann Michael im Jahr 1840 übernimmt sein Neffe Johann (geb. 1798) die Werkstätte und damit auch den gesamten Besitz. Bei seiner Hochzeit 1842 wird er als "Uhrenfabrikant und Handelsmann" bezeichnet.</p>
+                    <p>Nach dem Tod von Johann Michael im Jahr 1840 übernimmt sein Neffe Johann (geb. 1798) die
+                        Werkstätte und damit auch den gesamten Besitz. Bei seiner Hochzeit 1842 wird er als
+                        "Uhrenfabrikant und Handelsmann" bezeichnet.</p>
                 </div>
             </div>
 
@@ -768,7 +865,8 @@
                 <div class="timeline-year">1846</div>
                 <div class="timeline-content">
                     <h3>Geburt von Johann (junior)</h3>
-                    <p>Am 8. September 1846 wird Johann Krumhuber (junior) geboren, der letzte Uhrmacher der Dynastie. Er wird das Erbe der Familie fortführen, aber auch ihren Niedergang erleben.</p>
+                    <p>Am 8. September 1846 wird Johann Krumhuber (junior) geboren, der letzte Uhrmacher der Dynastie.
+                        Er wird das Erbe der Familie fortführen, aber auch ihren Niedergang erleben.</p>
                 </div>
             </div>
 
@@ -776,7 +874,9 @@
                 <div class="timeline-year">1850-1870</div>
                 <div class="timeline-content">
                     <h3>Die Krise beginnt</h3>
-                    <p>Billige Fabriksuhren aus der Schweiz und den USA überschwemmen den europäischen Markt. Den handwerklich erzeugten Spindeluhren wird die Existenzgrundlage entzogen. Viele Kleinuhrmacher geraten an den Rand des Ruins.</p>
+                    <p>Billige Fabriksuhren aus der Schweiz und den USA überschwemmen den europäischen Markt. Den
+                        handwerklich erzeugten Spindeluhren wird die Existenzgrundlage entzogen. Viele Kleinuhrmacher
+                        geraten an den Rand des Ruins.</p>
                 </div>
             </div>
 
@@ -784,7 +884,9 @@
                 <div class="timeline-year">1851</div>
                 <div class="timeline-content">
                     <h3>Tod des Vaters</h3>
-                    <p>Johann (senior) stirbt am 1. Juli 1851. Seine Witwe Cäcilia schafft es, das Geschäft und den Betrieb mit Hilfe tüchtiger Gesellen weiterzuführen. Einer von ihnen ist Josef Jenner, Urgroßonkel des Vorchdorfer Uhrmachermeisters Karl Jenner.</p>
+                    <p>Johann (senior) stirbt am 1. Juli 1851. Seine Witwe Cäcilia schafft es, das Geschäft und den
+                        Betrieb mit Hilfe tüchtiger Gesellen weiterzuführen. Einer von ihnen ist Josef Jenner,
+                        Urgroßonkel des Vorchdorfer Uhrmachermeisters Karl Jenner.</p>
                 </div>
             </div>
 
@@ -792,7 +894,8 @@
                 <div class="timeline-year">1869</div>
                 <div class="timeline-content">
                     <h3>Johann übernimmt</h3>
-                    <p>Johann Krumhuber (junior) übernimmt den Besitz nach dem Tod seiner Mutter am 8. Dezember 1869. Seine Schwester Theresia führt ihm bis zu ihrem Tod 1885 die Wirtschaft.</p>
+                    <p>Johann Krumhuber (junior) übernimmt den Besitz nach dem Tod seiner Mutter am 8. Dezember 1869.
+                        Seine Schwester Theresia führt ihm bis zu ihrem Tod 1885 die Wirtschaft.</p>
                 </div>
             </div>
 
@@ -800,7 +903,9 @@
                 <div class="timeline-year">1870-1886</div>
                 <div class="timeline-content">
                     <h3>Verkauf des Besitzes</h3>
-                    <p>Johann dürfte nicht sehr gut gewirtschaftet haben. Er verkauft nach und nach seinen Besitz: 1870 das Werkstättenhäusel, 1886 das Kramerhaus, das Stiegenhäusel und schließlich 1887 die Weißenwiesen.</p>
+                    <p>Johann dürfte nicht sehr gut gewirtschaftet haben. Er verkauft nach und nach seinen Besitz: 1870
+                        das Werkstättenhäusel, 1886 das Kramerhaus, das Stiegenhäusel und schließlich 1887 die
+                        Weißenwiesen.</p>
                 </div>
             </div>
 
@@ -808,7 +913,9 @@
                 <div class="timeline-year">1886</div>
                 <div class="timeline-content">
                     <h3>Ende in Vorchdorf</h3>
-                    <p>1886 verkauft Johann Krumhuber den letzten Besitz in Vorchdorf und verlässt den Ort. Die 110-jährige Geschichte der Uhrmacherdynastie in Vorchdorf endet. Damit erlosch die Tradition der Krumhuber-Uhren.</p>
+                    <p>1886 verkauft Johann Krumhuber den letzten Besitz in Vorchdorf und verlässt den Ort. Die
+                        110-jährige Geschichte der Uhrmacherdynastie in Vorchdorf endet. Damit erlosch die Tradition der
+                        Krumhuber-Uhren.</p>
                 </div>
             </div>
 
@@ -816,7 +923,8 @@
                 <div class="timeline-year">1887</div>
                 <div class="timeline-content">
                     <h3>Neuanfang in Sierning</h3>
-                    <p>Johann kauft sich ein Haus in Sierning (Nr. 67) und heiratet am 19. Juli 1887 Theresia Eiersebner. Dem Paar werden zwei Kinder geboren: Johann (1888) und Cäcilia Anna (1889).</p>
+                    <p>Johann kauft sich ein Haus in Sierning (Nr. 67) und heiratet am 19. Juli 1887 Theresia
+                        Eiersebner. Dem Paar werden zwei Kinder geboren: Johann (1888) und Cäcilia Anna (1889).</p>
                 </div>
             </div>
 
@@ -824,7 +932,8 @@
                 <div class="timeline-year">1897</div>
                 <div class="timeline-content">
                     <h3>Umzug nach Wels</h3>
-                    <p>Am 18. Mai 1897 wird das Haus in Sierning verkauft und die Familie zieht nach Wels, Hans Sachs-Straße 7. Dort werden die letzten Jahre der Familie verbracht.</p>
+                    <p>Am 18. Mai 1897 wird das Haus in Sierning verkauft und die Familie zieht nach Wels, Hans
+                        Sachs-Straße 7. Dort werden die letzten Jahre der Familie verbracht.</p>
                 </div>
             </div>
 
@@ -832,7 +941,8 @@
                 <div class="timeline-year">1904-1911</div>
                 <div class="timeline-content">
                     <h3>Tod der Kinder</h3>
-                    <p>Die beiden Kinder von Johann sterben jung: Sohn Johann stirbt 1904 mit nur 16 Jahren, Tochter Cäcilia 1911 mit 22 Jahren. Die Hoffnung auf eine Fortsetzung der Dynastie erlischt.</p>
+                    <p>Die beiden Kinder von Johann sterben jung: Sohn Johann stirbt 1904 mit nur 16 Jahren, Tochter
+                        Cäcilia 1911 mit 22 Jahren. Die Hoffnung auf eine Fortsetzung der Dynastie erlischt.</p>
                 </div>
             </div>
 
@@ -840,7 +950,9 @@
                 <div class="timeline-year">1913</div>
                 <div class="timeline-content">
                     <h3>Ende der Dynastie</h3>
-                    <p>Johann Krumhuber stirbt am 25. Dezember 1913 in Wels. Seine Frau Theresia überlebt ihn um 22 Jahre und stirbt am 3. Dezember 1935. Mit ihrem Tod erlischt die Vorchdorfer Uhrmacherdynastie endgültig.</p>
+                    <p>Johann Krumhuber stirbt am 25. Dezember 1913 in Wels. Seine Frau Theresia überlebt ihn um 22
+                        Jahre und stirbt am 3. Dezember 1935. Mit ihrem Tod erlischt die Vorchdorfer Uhrmacherdynastie
+                        endgültig.</p>
                 </div>
             </div>
         </div>
@@ -850,10 +962,13 @@
     <section class="cta-section" id="cta">
         <div class="cta-content">
             <h2>Erleben Sie Geschichte hautnah</h2>
-            <p>Besuchen Sie das Museum Vorchdorf und entdecken Sie die Krumhuber-Uhren und viele weitere Schätze unserer regionalen Geschichte.</p>
+            <p>Besuchen Sie das Museum Vorchdorf und entdecken Sie die Krumhuber-Uhren und viele weitere Schätze unserer
+                regionalen Geschichte.</p>
             <a href="index.html" class="cta-button">Museum besuchen</a>
         </div>
     </section>
+
+    <div id="main-footer-placeholder"></div>
 
     <script>
         // Progress Bar
@@ -921,5 +1036,7 @@
             });
         }
     </script>
+    <script src="script.js?v=7.5"></script>
 </body>
+
 </html>

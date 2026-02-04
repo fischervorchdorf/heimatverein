@@ -45,13 +45,10 @@ body {
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 1rem;
 }
 
 .logo {
-    height: 40px;
-    width: auto;
-    object-fit: contain;
+    display: none;
 }
 
 .site-title {
@@ -99,7 +96,7 @@ body {
 }
 
 /* Responsive Navigation */
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
     .navbar {
         padding: 0.75rem 1rem;
     }
@@ -111,7 +108,6 @@ body {
     .nav-menu {
         position: fixed;
         top: 60px;
-        /* Adjusted to match navbar height properly */
         right: -100%;
         flex-direction: column;
         background: var(--primary-dark);
@@ -133,8 +129,20 @@ body {
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .logo {
-        height: 40px;
+    .site-title {
+        font-size: 1rem;
+    }
+}
+
+/* Compact desktop menu for standard laptops */
+@media (min-width: 1101px) and (max-width: 1300px) {
+    .nav-menu {
+        gap: 0.8rem;
+    }
+
+    .nav-menu a {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.5rem;
     }
 
     .site-title {
@@ -144,20 +152,51 @@ body {
 
 /* Page Headers */
 .page-header {
-    background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95)),
+    background: linear-gradient(135deg, rgba(44, 62, 80, 0.92), rgba(52, 73, 94, 0.92)),
         url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%2334495e" width="1200" height="400"/></svg>');
     background-size: cover;
     background-position: center;
-    padding: 10rem 2rem 5rem;
+    padding: 12rem 2rem 6rem;
     text-align: center;
     color: var(--text-light);
     margin-top: 0;
-    /* Removing negative margin issues if any */
+    position: relative;
+    overflow: hidden;
 }
 
 .page-header h1 {
-    font-size: 2.2rem;
+    font-size: 2.8rem;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.page-header h1::before,
+.page-header h1::after {
+    content: '';
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    background: url('Bilder/Logo_Heimatverein_Neu.png') no-repeat center;
+    background-size: contain;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
+    animation: pulseLogo 4s ease-in-out infinite;
+}
+
+@media (max-width: 900px) {
+    .page-header h1 {
+        flex-direction: column;
+        gap: 1rem;
+        font-size: 2rem;
+    }
+
+    .page-header h1::before,
+    .page-header h1::after {
+        width: 80px;
+        height: 80px;
+    }
 }
 
 .page-header p {
@@ -417,16 +456,64 @@ body {
     color: var(--text-light);
     padding: 2rem;
     position: relative;
-    /* Background will be set inline or via specific class if varies */
+    overflow: hidden;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw;
+    height: 60vh;
+    background: url('Bilder/Logo_Heimatverein_Neu.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.04;
+    z-index: 1;
+    pointer-events: none;
+    filter: blur(2px);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
 }
 
 .hero-logo {
-    width: 250px;
+    width: 500px;
+    max-width: 90vw;
     height: auto;
-    /* margin-bottom handled by flex gap */
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-    opacity: 0.85;
-    animation: wobble 3s ease-in-out infinite;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+    opacity: 1;
+    animation: floatingLogo 6s ease-in-out infinite;
+    margin-bottom: 2rem;
+}
+
+@keyframes floatingLogo {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-20px) scale(1.02);
+    }
+}
+
+@keyframes pulseLogo {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
 }
 
 .hero-content {
@@ -2343,4 +2430,100 @@ body {
     color: var(--primary-dark);
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
+}
+
+/* News Accordion / Folders */
+.news-accordion {
+    margin: 2rem 0 4rem;
+}
+
+.accordion-item {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.accordion-item:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-gold);
+}
+
+.accordion-header {
+    padding: 1.2rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    user-select: none;
+}
+
+.accordion-header h2 {
+    margin: 0 !important;
+    padding: 0 !important;
+    border-bottom: none !important;
+    font-size: 1.25rem;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.accordion-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--accent-gold);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.accordion-item.active {
+    border-color: var(--accent-gold);
+}
+
+.accordion-item.active .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
+    padding: 0 2rem;
+    background: #fff;
+}
+
+.accordion-item.active .accordion-content {
+    max-height: 2500px;
+    padding: 2rem;
+    border-top: 1px solid var(--warm-cream);
+}
+
+/* Noble/Premium Folder Look */
+.accordion-header::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: var(--accent-gold);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.accordion-item.active .accordion-header::before {
+    opacity: 1;
+}
+
+.accordion-header {
+    position: relative;
 }

@@ -114,5 +114,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Centralized Footer Injection
+    const footerPlaceholder = document.getElementById('main-footer-placeholder');
+    if (footerPlaceholder) {
+        footerPlaceholder.innerHTML = `
+            <footer class="footer">
+                <div class="footer-content">
+                    <div>
+                        <h4>Heimat- und Kulturverein Vorchdorf</h4>
+                        <p>Bewahrer des kulturellen Erbes<br>
+                            der Region Vorchdorf seit vielen Jahrzehnten</p>
+                    </div>
+                    <div>
+                        <h4>Kontakt</h4>
+                        <p>Bahnhofstraße 9<br>
+                            4655 Vorchdorf<br>
+                            E-Mail: dr.claudia@westreicher.at</p>
+                    </div>
+                    <div>
+                        <h4>Museum der Region</h4>
+                        <p>Laudachweg 17<br>
+                            4655 Vorchdorf<br>
+                            Tel: 07614/6555-578</p>
+                    </div>
+                    <div>
+                        <h4>Rechtliches</h4>
+                        <div class="footer-links">
+                            <a href="impressum.html">Impressum</a>
+                            <a href="datenschutz.html">Datenschutz</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Heimat- und Kulturverein Vorchdorf. Alle Rechte vorbehalten. | <small>v7.5</small></p>
+                </div>
+            </footer>
+        `;
+    }
 });
 
