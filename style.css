@@ -1722,7 +1722,7 @@ body {
     fill: #A0522D;
 }
 
-.timeline-line {
+/* .timeline-line {
     position: absolute;
     top: 0;
     left: 50%;
@@ -1730,7 +1730,7 @@ body {
     width: 4px;
     height: 100%;
     background: linear-gradient(180deg, var(--accent-gold), transparent);
-}
+} */
 
 .timeline-visual-item {
     position: relative;
