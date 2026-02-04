@@ -400,31 +400,46 @@
             justify-content: center;
             background: rgba(0, 0, 0, 0.4);
             color: #CD853F;
-            font-size: 1.5rem;
-            font-weight: bold;
             transition: all 0.3s ease;
-            z-index: 5;
+            z-index: 10;
             flex-direction: column;
             gap: 15px;
         }
 
-        .video-overlay span {
+        .play-icon-circle {
             font-size: 3rem;
-            background: rgba(139, 69, 19, 0.8);
-            width: 80px;
-            height: 80px;
+            background: rgba(139, 69, 19, 0.9);
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            padding-left: 5px;
-            border: 2px solid #CD853F;
-            box-shadow: 0 0 20px rgba(205, 133, 63, 0.4);
+            padding-left: 8px;
+            border: 3px solid #CD853F;
+            box-shadow: 0 0 30px rgba(205, 133, 63, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .play-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-container:hover .play-icon-circle {
+            transform: scale(1.1);
         }
 
         .video-container.playing .video-overlay {
             opacity: 0;
             pointer-events: none;
+        }
+
+        .fallback-link:hover {
+            color: #deb887 !important;
         }
 
         .ai-note {
@@ -819,14 +834,20 @@
                         class="highlight">holzgenagelt, durchgenäht oder flexibel genäht</span>.
                 </p>
                 <div class="video-container" id="kivoVideoContainer" onclick="toggleKivoVideo()">
-                    <video id="kivoVideo" muted loop playsinline preload="auto">
+                    <video id="kivoVideo" muted loop playsinline preload="auto" poster="kitzmantel/arbeiten1.jpg">
                         <source src="video/Foto_Animation_Mit_D_Zoom_Effekt.mp4" type="video/mp4">
                         Ihr Browser unterstützt keine Videos.
                     </video>
                     <div id="videoPlayBtn" class="video-overlay">
-                        <span>▶</span>
-                        <div>Video abspielen</div>
+                        <div class="play-icon-circle">▶</div>
+                        <div class="play-text">Video abspielen</div>
                     </div>
+                </div>
+                <div class="video-fallback" style="margin-top: 15px; text-align: center;">
+                    <a href="video/Foto_Animation_Mit_D_Zoom_Effekt.mp4" target="_blank" class="fallback-link"
+                        style="color: #CD853F; text-decoration: underline; font-size: 0.9rem;">
+                        Probleme beim Abspielen? Video in neuem Fenster öffnen
+                    </a>
                 </div>
                 <div class="ai-note">Dieses Video wurde KI-generiert (Gemini)</div>
             </div>
@@ -1267,7 +1288,7 @@
             });
         }
     </script>
-    <script src="script.js?v=7.5"></script>
+    <script src="script.js?v=7.6"></script>
 </body>
 
 </html>
