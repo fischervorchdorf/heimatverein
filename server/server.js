@@ -86,18 +86,20 @@ app.use(helmet({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Session store (needs non-promise pool)
-const sessionStoreOptions = {
-    clearExpired: true,
-    checkExpirationInterval: 900000,
-    expiration: 86400000,
+// Session store - use a non-promise mysql2 pool with SSL
+const mysql2 = require('mysql2');
+const sessionPool = mysql2.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'heimatverein',
     ssl: { rejectUnauthorized: false }
-};
-const sessionStore = new MySQLStore(sessionStoreOptions);
+});
+const sessionStore = new MySQLStore({
+    clearExpired: true,
+    checkExpirationInterval: 900000,
+    expiration: 86400000
+}, sessionPool);
 
 // Trust proxy (Coolify reverse proxy terminates SSL)
 app.set('trust proxy', 1);
