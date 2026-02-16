@@ -276,7 +276,9 @@
     <script src="events_data.js?v=7.6"></script>
     <script>
         function formatDate(dateString) {
-            const date = new Date(dateString + 'T00:00:00');
+            // Handle both "2026-03-26" and "2026-03-26T00:00:00.000Z" formats
+            const dateOnly = dateString.split('T')[0];
+            const date = new Date(dateOnly + 'T00:00:00');
             return date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
 
