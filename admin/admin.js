@@ -116,13 +116,14 @@ async function loadDashboard() {
         if (subs.submissions && subs.submissions.length > 0) {
             document.getElementById('dashboard-recent').innerHTML = `
                 <table class="data-table">
-                    <thead><tr><th>Typ</th><th>Name</th><th>E-Mail</th><th>Datum</th></tr></thead>
+                    <thead><tr><th>Typ</th><th>Name</th><th>E-Mail</th><th>Details</th><th>Datum</th></tr></thead>
                     <tbody>
                         ${subs.submissions.map(s => `
                             <tr class="${s.is_read ? '' : 'unread'}">
                                 <td><span class="type-badge ${s.form_type}">${typeLabel(s.form_type)}</span></td>
-                                <td>${esc(s.name || '-')}</td>
-                                <td>${esc(s.email || '-')}</td>
+                                <td>${esc(extractName(s) || '-')}</td>
+                                <td>${esc(extractEmail(s) || '-')}</td>
+                                <td class="preview-cell">${dataPreview(s) || '<span style="color:var(--light-gray);">—</span>'}</td>
                                 <td>${formatDate(s.created_at)}</td>
                             </tr>
                         `).join('')}
@@ -159,15 +160,19 @@ async function loadSubmissions() {
         }
 
         let html = `<table class="data-table">
-            <thead><tr><th>Typ</th><th>Name</th><th>E-Mail</th><th>Datum</th><th>Aktionen</th></tr></thead>
+            <thead><tr><th>Typ</th><th>Name</th><th>E-Mail</th><th>Details</th><th>Datum</th><th>Aktionen</th></tr></thead>
             <tbody>`;
 
         for (const s of data.submissions) {
+            const name = extractName(s) || '-';
+            const email = extractEmail(s) || '-';
+            const preview = dataPreview(s);
             html += `
                 <tr class="${s.is_read ? '' : 'unread'}" onclick="toggleDetail(${s.id})" style="cursor:pointer;">
                     <td><span class="type-badge ${s.form_type}">${typeLabel(s.form_type)}</span></td>
-                    <td>${esc(s.name || '-')}</td>
-                    <td>${esc(s.email || '-')}</td>
+                    <td>${esc(name)}</td>
+                    <td>${esc(email)}</td>
+                    <td class="preview-cell">${preview || '<span style="color:var(--light-gray);">—</span>'}</td>
                     <td>${formatDate(s.created_at)}</td>
                     <td>
                         <div class="btn-group">
@@ -177,7 +182,7 @@ async function loadSubmissions() {
                     </td>
                 </tr>
                 <tr class="detail-row" id="detail-${s.id}">
-                    <td colspan="5">
+                    <td colspan="6">
                         <div class="detail-content">
                             ${Object.entries(s.data).map(([k, v]) => `
                                 <div class="field"><span class="field-label">${esc(k)}:</span> ${esc(String(v))}</div>
@@ -519,6 +524,47 @@ function typeLabel(type) {
         newsletter: 'Newsletter'
     };
     return labels[type] || type;
+}
+
+// Extract name from submission - fallback to data JSON if DB field is empty
+function extractName(s) {
+    if (s.name) return s.name;
+    if (!s.data || typeof s.data !== 'object') return null;
+    const d = s.data;
+    const getField = (...keys) => {
+        for (const key of keys) {
+            for (const [k, v] of Object.entries(d)) {
+                if (k.toLowerCase() === key.toLowerCase()) return v;
+            }
+        }
+        return null;
+    };
+    const parts = [getField('vorname'), getField('nachname', 'familienname'), getField('name')].filter(Boolean);
+    return parts.length > 0 ? parts.join(' ') : null;
+}
+
+// Extract email from submission - fallback to data JSON if DB field is empty
+function extractEmail(s) {
+    if (s.email) return s.email;
+    if (!s.data || typeof s.data !== 'object') return null;
+    for (const [k, v] of Object.entries(s.data)) {
+        if (k.toLowerCase() === 'e-mail' || k.toLowerCase() === 'email') return v;
+    }
+    return null;
+}
+
+// Get a short preview of the most important data fields (skip name/email since shown in columns)
+function dataPreview(s) {
+    if (!s.data || typeof s.data !== 'object') return '';
+    const skipKeys = ['vorname', 'nachname', 'familienname', 'name', 'e-mail', 'email'];
+    const entries = Object.entries(s.data)
+        .filter(([k]) => !skipKeys.includes(k.toLowerCase()))
+        .slice(0, 3);
+    if (entries.length === 0) return '';
+    return entries.map(([k, v]) => {
+        const val = String(v).length > 50 ? String(v).substring(0, 50) + '...' : String(v);
+        return `<span class="field-label">${esc(k)}:</span> ${esc(val)}`;
+    }).join(' · ');
 }
 
 function statusLabel(status) {

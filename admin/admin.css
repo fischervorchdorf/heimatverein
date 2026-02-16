@@ -286,6 +286,22 @@ body {
 .type-badge.ideenworkshop { background: #e67e22; }
 .type-badge.newsletter { background: var(--light-gray); }
 
+/* Preview cell in table */
+.preview-cell {
+    font-size: 0.8rem;
+    color: var(--primary-medium);
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.preview-cell .field-label {
+    font-weight: 600;
+    color: var(--primary-dark);
+    font-size: 0.75rem;
+}
+
 .detail-row {
     display: none;
 }
