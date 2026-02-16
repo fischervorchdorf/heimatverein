@@ -43,8 +43,18 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Keine Daten übermittelt' });
         }
 
-        const email = data.email || data['e-mail'] || data.Email || null;
-        const name = [data.vorname, data.nachname, data.familienname, data.name]
+        // Case-insensitive field lookup (forms send "Vorname", "E-Mail", etc.)
+        const getField = (...keys) => {
+            for (const key of keys) {
+                for (const [k, v] of Object.entries(data)) {
+                    if (k.toLowerCase() === key.toLowerCase()) return v;
+                }
+            }
+            return null;
+        };
+
+        const email = getField('email', 'e-mail', 'Email', 'E-Mail') || null;
+        const name = [getField('vorname', 'Vorname'), getField('nachname', 'Nachname', 'familienname', 'Familienname'), getField('name', 'Name')]
             .filter(Boolean)
             .join(' ')
             .trim() || null;
