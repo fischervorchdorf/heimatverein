@@ -116,16 +116,16 @@ router.get('/stats', requireAdmin, async (req, res) => {
     try {
         const [counts] = await pool.execute(
             `SELECT form_type, COUNT(*) as total,
-             SUM(CASE WHEN is_read = FALSE THEN 1 ELSE 0 END) as unread
-             FROM form_submissions WHERE is_archived = FALSE
+             SUM(CASE WHEN is_read = 0 THEN 1 ELSE 0 END) as unread
+             FROM form_submissions WHERE is_archived = 0
              GROUP BY form_type`
         );
         const [totalUnread] = await pool.execute(
-            'SELECT COUNT(*) as count FROM form_submissions WHERE is_read = FALSE AND is_archived = FALSE'
+            'SELECT COUNT(*) as count FROM form_submissions WHERE is_read = 0 AND is_archived = 0'
         );
         res.json({
-            by_type: counts,
-            total_unread: totalUnread[0].count
+            by_type: counts || [],
+            total_unread: (totalUnread && totalUnread[0]) ? totalUnread[0].count : 0
         });
     } catch (err) {
         console.error('Error fetching stats:', err);
@@ -137,7 +137,7 @@ router.get('/stats', requireAdmin, async (req, res) => {
 router.get('/export', requireAdmin, async (req, res) => {
     try {
         const { type } = req.query;
-        let query = 'SELECT * FROM form_submissions WHERE is_archived = FALSE';
+        let query = 'SELECT * FROM form_submissions WHERE is_archived = 0';
         const params = [];
         if (type && VALID_TYPES.includes(type)) {
             query += ' AND form_type = ?';
@@ -177,7 +177,7 @@ router.get('/export', requireAdmin, async (req, res) => {
 router.get('/', requireAdmin, async (req, res) => {
     try {
         const { type, search, unread, page = 1, limit = 25 } = req.query;
-        let query = 'SELECT * FROM form_submissions WHERE is_archived = FALSE';
+        let query = 'SELECT * FROM form_submissions WHERE is_archived = 0';
         const params = [];
 
         if (type && VALID_TYPES.includes(type)) {
@@ -185,7 +185,7 @@ router.get('/', requireAdmin, async (req, res) => {
             params.push(type);
         }
         if (unread === 'true') {
-            query += ' AND is_read = FALSE';
+            query += ' AND is_read = 0';
         }
         if (search) {
             query += ' AND (name LIKE ? OR email LIKE ? OR JSON_EXTRACT(data, "$") LIKE ?)';
@@ -199,9 +199,9 @@ router.get('/', requireAdmin, async (req, res) => {
         const total = countResult[0].total;
 
         // Paginate
-        const offset = (parseInt(page) - 1) * parseInt(limit);
-        query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
-        params.push(parseInt(limit), offset);
+        const limitInt = parseInt(limit);
+        const offset = (parseInt(page) - 1) * limitInt;
+        query += ` ORDER BY created_at DESC LIMIT ${limitInt} OFFSET ${offset}`;
 
         const [rows] = await pool.execute(query, params);
 
