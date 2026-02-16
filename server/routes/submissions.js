@@ -88,6 +88,12 @@ router.post('/zeitzeugen', upload.single('bild'), async (req, res) => {
             [JSON.stringify(data), data.kontakt || null, filePath]
         );
 
+        // Email notification
+        try {
+            const mailer = require('../config/mailer');
+            await mailer.notifyAdmin('zeitzeugen', data.kontakt, null, data);
+        } catch (e) { /* Email is optional */ }
+
         res.status(201).json({ success: true, message: 'Vielen Dank für Ihre Zeitzeugen-Geschichte!' });
     } catch (err) {
         console.error('Error saving zeitzeugen:', err);
