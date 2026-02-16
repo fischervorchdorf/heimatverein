@@ -10,12 +10,21 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'Passwort erforderlich' });
         }
 
+        // Support both: plain ADMIN_PASSWORD or pre-hashed ADMIN_PASSWORD_HASH
+        const plainPassword = process.env.ADMIN_PASSWORD;
         const hash = process.env.ADMIN_PASSWORD_HASH;
-        if (!hash) {
+
+        let match = false;
+        if (plainPassword) {
+            // Direct comparison with plain text password
+            match = (password === plainPassword);
+        } else if (hash) {
+            // bcrypt comparison with hash
+            match = await bcrypt.compare(password, hash);
+        } else {
             return res.status(500).json({ error: 'Admin-Passwort nicht konfiguriert' });
         }
 
-        const match = await bcrypt.compare(password, hash);
         if (match) {
             req.session.isAdmin = true;
             return res.json({ success: true });
