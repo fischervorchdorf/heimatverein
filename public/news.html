@@ -91,9 +91,7 @@
                         <strong>Optional:</strong> Telefon, E-Mail
                     </div>
 
-                    <form method="POST" action="https://formspree.io/f/mbdygrvn" onsubmit="handleAusflugSubmit(event)">
-                        <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                        <input type="hidden" name="form_type" value="Ausflug-Anmeldung">
+                    <form id="ausflugForm" onsubmit="handleFormSubmit(event, 'ausflug', this)">
 
                         <div class="form-row">
                             <div class="form-group">
@@ -171,9 +169,7 @@
                         uns!
                     </p>
 
-                    <form method="POST" action="https://formspree.io/f/mbdygrvn" style="margin-top: 2rem;">
-                        <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                        <input type="hidden" name="form_type" value="Ideenworkshop">
+                    <form id="ideenForm" onsubmit="handleFormSubmit(event, 'ideenworkshop', this)" style="margin-top: 2rem;">
 
                         <div class="form-row">
                             <div class="form-group">
@@ -249,9 +245,7 @@
             <h2>📧 Bleiben Sie auf dem Laufenden</h2>
             <p>Möchten Sie über neue Veranstaltungen, Ausflüge und Ideen-Workshops benachrichtigt werden?</p>
 
-            <form method="POST" action="https://formspree.io/f/mbdygrvn">
-                <input type="hidden" name="_cc" value="fischervorchdorf@gmx.at">
-                <input type="hidden" name="form_type" value="Newsletter-Anmeldung">
+            <form id="newsletterForm" onsubmit="handleFormSubmit(event, 'newsletter', this)">
 
                 <div class="form-row">
                     <div class="form-group">
@@ -281,72 +275,107 @@
     <script src="script.js?v=7.6"></script>
     <script src="events_data.js?v=7.6"></script>
     <script>
-        // Hilfsfunktion zur Formatierung des Datums
         function formatDate(dateString) {
             const date = new Date(dateString + 'T00:00:00');
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            return date.toLocaleDateString('de-DE', options);
+            return date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
 
-        // Funktion zum Filtern und Anzeigen der Events
-        function renderEvents() {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Verwende globale eventsData aus events_data.js
-            const aktuelleEvents = eventsData.filter(event => {
-                const eventDate = new Date(event.date + 'T00:00:00');
-                return eventDate >= today;
-            }).sort((a, b) => new Date(a.date) - new Date(b.date)); // Sortiert: Nächstes Event zuerst
-
+        async function renderEvents() {
             const container = document.getElementById('aktuelle-events');
             const noEventsMsg = document.getElementById('no-events');
 
-            if (aktuelleEvents.length === 0) {
-                noEventsMsg.style.display = 'block';
-                container.innerHTML = '';
-            } else {
-                noEventsMsg.style.display = 'none';
-                container.innerHTML = aktuelleEvents.map(event => `
-                    <div class="event-item">
-                        <strong>${event.title}</strong>
-                        <p>🗓️ ${formatDate(event.date)} um ${event.time}</p>
-                        ${event.location ? `<p>📍 ${event.location}</p>` : ''}
-                        <p>${event.description}</p>
-                    </div>
-                `).join('');
+            try {
+                const response = await fetch('/api/events/upcoming');
+                const aktuelleEvents = await response.json();
+
+                if (aktuelleEvents.length === 0) {
+                    noEventsMsg.style.display = 'block';
+                    container.innerHTML = '';
+                } else {
+                    noEventsMsg.style.display = 'none';
+                    container.innerHTML = aktuelleEvents.map(event => `
+                        <div class="event-item">
+                            <strong>${event.title}</strong>
+                            <p>🗓️ ${formatDate(event.date)} um ${event.time}</p>
+                            ${event.location ? `<p>📍 ${event.location}</p>` : ''}
+                            <p>${event.description}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                // Fallback to eventsData from JS file
+                if (typeof eventsData !== 'undefined') {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const aktuelleEvents = eventsData.filter(event => new Date(event.date + 'T00:00:00') >= today)
+                        .sort((a, b) => new Date(a.date) - new Date(b.date));
+                    if (aktuelleEvents.length === 0) {
+                        noEventsMsg.style.display = 'block';
+                        container.innerHTML = '';
+                    } else {
+                        noEventsMsg.style.display = 'none';
+                        container.innerHTML = aktuelleEvents.map(event => `
+                            <div class="event-item">
+                                <strong>${event.title}</strong>
+                                <p>🗓️ ${formatDate(event.date)} um ${event.time}</p>
+                                ${event.location ? `<p>📍 ${event.location}</p>` : ''}
+                                <p>${event.description}</p>
+                            </div>
+                        `).join('');
+                    }
+                }
             }
         }
 
-        // Events beim Laden rendern
         document.addEventListener('DOMContentLoaded', renderEvents);
 
-        // Accordion Toggle function
         function toggleAccordion(header) {
             const item = header.parentElement;
             const isActive = item.classList.contains('active');
-
-            // Close all other items to keep it clean and non-confusing
-            document.querySelectorAll('.accordion-item').forEach(el => {
-                el.classList.remove('active');
-            });
-
-            // Toggle current item
-            if (!isActive) {
-                item.classList.add('active');
-            }
+            document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('active'));
+            if (!isActive) item.classList.add('active');
         }
 
-        // Handle form submissions with validation
-        function handleAusflugSubmit(event) {
-            const vorname = document.getElementById('excursion_vorname').value.trim();
-            const nachname = document.getElementById('excursion_nachname').value.trim();
+        // Generic form submission handler for all news.html forms
+        async function handleFormSubmit(event, formType, formEl) {
+            event.preventDefault();
+            const submitBtn = formEl.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Wird gesendet...';
+            submitBtn.disabled = true;
 
-            if (!vorname || !nachname) {
-                alert('Bitte füllen Sie mindestens Vorname und Nachname aus.');
-                event.preventDefault();
-                return false;
+            // Collect all named inputs
+            const data = {};
+            new FormData(formEl).forEach((value, key) => { data[key] = value; });
+
+            const showFormStatus = (msg, isError) => {
+                let statusDiv = formEl.querySelector('.form-status-msg');
+                if (!statusDiv) {
+                    statusDiv = document.createElement('div');
+                    statusDiv.className = 'form-status-msg';
+                    formEl.appendChild(statusDiv);
+                }
+                statusDiv.style.cssText = `margin-top:1rem;padding:1rem;border-radius:5px;background:${isError ? '#f8d7da' : '#d4edda'};color:${isError ? '#721c24' : '#155724'}`;
+                statusDiv.textContent = msg;
+            };
+
+            try {
+                const response = await fetch('/api/submissions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ form_type: formType, data })
+                });
+                if (response.ok) {
+                    showFormStatus('Vielen Dank! Ihre Einreichung wurde erfolgreich übermittelt.', false);
+                    formEl.reset();
+                } else {
+                    showFormStatus('Fehler beim Absenden. Bitte versuchen Sie es erneut.', true);
+                }
+            } catch (e) {
+                showFormStatus('Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung.', true);
             }
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
         }
     </script>
 </body>

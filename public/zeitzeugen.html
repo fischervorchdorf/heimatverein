@@ -45,8 +45,7 @@
     <section class="content">
         <div class="container"
             style="max-width: 900px; margin-top: -3rem; background: white; border-radius: 15px; padding: 3rem 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.07);">
-            <form id="zeitzeugen-form" class="zeitzeugen-form" action="send_zeitzeugen.php" method="POST"
-                enctype="multipart/form-data">
+            <form id="zeitzeugen-form" class="zeitzeugen-form">
                 <h2>Deine Zeitzeugen-Geschichte einreichen</h2>
                 <div class="form-group">
                     <label for="bild">Bild hochladen (JPG, PNG)</label>
@@ -95,49 +94,47 @@
     <div id="main-footer-placeholder"></div>
 
     <script>
-        // Formspree Submission Handling
         const form = document.getElementById("zeitzeugen-form");
         const status = document.getElementById("form-status");
         const submitBtn = document.getElementById("submit-btn");
 
-        async function handleSubmit(event) {
+        form.addEventListener("submit", async function(event) {
             event.preventDefault();
             submitBtn.disabled = true;
             submitBtn.innerText = "Senden...";
 
-            const data = new FormData(event.target);
-            fetch(form.action, {
-                method: 'POST',
-                body: data
-            }).then(response => {
-                if (response.status === 201 || response.ok) {
+            const formData = new FormData(form);
+            // Rename 'file' field to 'bild' for our API
+            const file = formData.get('file');
+            formData.delete('file');
+            if (file && file.size > 0) formData.append('bild', file);
+
+            try {
+                const response = await fetch('/api/submissions/zeitzeugen', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
                     status.innerHTML = "Vielen Dank! Deine Geschichte wurde erfolgreich übermittelt.";
                     status.style.display = "block";
                     status.style.backgroundColor = "#d4edda";
                     status.style.color = "#155724";
                     form.reset();
-                    submitBtn.innerText = "Absenden";
-                    submitBtn.disabled = false;
                 } else {
-                    response.text().then(text => {
-                        status.innerHTML = "Hoppla! Da gab es ein Problem beim Absenden. (Status: " + response.status + ") - Details: " + text.substring(0, 100);
-                        status.style.display = "block";
-                        status.style.backgroundColor = "#f8d7da";
-                        status.style.color = "#721c24";
-                        submitBtn.innerText = "Absenden";
-                        submitBtn.disabled = false;
-                    });
+                    status.innerHTML = "Hoppla! Da gab es ein Problem beim Absenden.";
+                    status.style.display = "block";
+                    status.style.backgroundColor = "#f8d7da";
+                    status.style.color = "#721c24";
                 }
-            }).catch(error => {
-                status.innerHTML = "Hoppla! Da gab es ein Netzwerkproblem. Bitte prüfe deine Internetverbindung. Info: " + error.message;
+            } catch (error) {
+                status.innerHTML = "Netzwerkfehler. Bitte prüfe deine Internetverbindung.";
                 status.style.display = "block";
                 status.style.backgroundColor = "#f8d7da";
                 status.style.color = "#721c24";
-                submitBtn.innerText = "Absenden";
-                submitBtn.disabled = false;
-            });
-        }
-        form.addEventListener("submit", handleSubmit)
+            }
+            submitBtn.innerText = "Absenden";
+            submitBtn.disabled = false;
+        });
     </script>
 </body>
 

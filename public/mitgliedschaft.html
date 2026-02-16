@@ -149,7 +149,7 @@
                         Kulturvereins Vorchdorf, sowie Einladungen zu Versammlungen und Ausflügen des Vereins oder auch
                         die Vorschreibung des Mitgliedsbeitrags.
                     </p>
-                    <form action="mailto:fischervorchdorf@gmx.at" method="post" enctype="text/plain">
+                    <form id="membershipForm">
                         <div class="form-group">
                             <label for="vorname">Vorname *</label>
                             <input type="text" id="vorname" name="vorname" required>
@@ -256,11 +256,10 @@
     <div id="main-footer-placeholder"></div>
 
     <script>
-        // Email validation
         const emailInput = document.getElementById('email');
         const emailConfirmInput = document.getElementById('email-confirm');
         const emailError = document.getElementById('email-error');
-        const form = document.querySelector('form');
+        const form = document.getElementById('membershipForm');
 
         function validateEmails() {
             if (emailConfirmInput.value && emailInput.value !== emailConfirmInput.value) {
@@ -277,15 +276,67 @@
         if (emailInput && emailConfirmInput) {
             emailInput.addEventListener('input', validateEmails);
             emailConfirmInput.addEventListener('input', validateEmails);
-
-            form.addEventListener('submit', function (e) {
-                if (!validateEmails()) {
-                    e.preventDefault();
-                    alert('Bitte stellen Sie sicher, dass beide E-Mail-Adressen übereinstimmen.');
-                    return false;
-                }
-            });
         }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validateEmails()) {
+                alert('Bitte stellen Sie sicher, dass beide E-Mail-Adressen übereinstimmen.');
+                return;
+            }
+
+            const submitBtn = form.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = 'Wird gesendet...';
+            submitBtn.disabled = true;
+
+            const showStatus = (msg, isError = false) => {
+                const statusDiv = document.createElement('div');
+                statusDiv.style.cssText = `margin-top:1rem;padding:1rem;border-radius:5px;background:${isError ? '#f8d7da' : '#d4edda'};color:${isError ? '#721c24' : '#155724'}`;
+                const oldStatus = form.querySelector('.status-msg');
+                if (oldStatus) oldStatus.remove();
+                statusDiv.className = 'status-msg';
+                statusDiv.textContent = msg;
+                form.appendChild(statusDiv);
+            };
+
+            const data = {
+                vorname: document.getElementById('vorname').value,
+                familienname: document.getElementById('familienname').value,
+                adresse: document.getElementById('adresse').value,
+                plz: document.getElementById('plz').value,
+                email: document.getElementById('email').value,
+                telefon: document.getElementById('phone').value,
+                geburtsdatum: document.getElementById('geburtsdatum').value,
+                beitritt_einwilligung: document.getElementById('consent-data').checked ? 'Ja' : 'Nein',
+                widerruf_kenntnis: document.getElementById('consent-revoke').checked ? 'Ja' : 'Nein',
+                datenrechte_info: document.getElementById('consent-info').checked ? 'Ja' : 'Nein',
+                newsletter: document.getElementById('consent-newsletter').checked ? 'Ja' : 'Nein',
+                digitale_unterschrift: document.getElementById('digital-signature').value,
+                datum: document.getElementById('datum').value
+            };
+
+            fetch('/api/submissions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ form_type: 'mitgliedschaft', data })
+            })
+            .then(response => {
+                if (response.ok) {
+                    showStatus('Vielen Dank für Ihre Beitrittserklärung! Wir werden uns bei Ihnen melden.');
+                    form.reset();
+                } else {
+                    showStatus('Fehler beim Absenden. Bitte versuchen Sie es erneut.', true);
+                }
+            })
+            .catch(() => {
+                showStatus('Ein Netzwerkfehler ist aufgetreten.', true);
+            })
+            .finally(() => {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
     </script>
 </body>
 

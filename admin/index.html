@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Heimatverein Vorchdorf</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-card">
+            <h1>Heimatverein Admin</h1>
+            <p>Zugang nur für Administratoren</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="login-error" id="login-error">Falsches Passwort</div>
+                <input type="password" id="login-password" placeholder="Passwort eingeben" required autocomplete="current-password">
+                <button type="submit" class="btn btn-primary" style="width:100%; padding: 0.8rem; font-size: 1rem;">Anmelden</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Layout -->
+    <div id="admin-layout" class="admin-layout">
+        <!-- Top Bar -->
+        <div class="admin-topbar">
+            <h1>Heimatverein Vorchdorf — Admin</h1>
+            <div class="topbar-right">
+                <a href="/" class="btn-site-link" target="_blank">Zur Website</a>
+                <button class="btn-logout" onclick="handleLogout()">Abmelden</button>
+            </div>
+        </div>
+
+        <div class="admin-body">
+            <!-- Sidebar -->
+            <nav class="admin-sidebar">
+                <div class="sidebar-item active" data-page="dashboard" onclick="showPage('dashboard')">
+                    <span>📊</span> Übersicht
+                </div>
+                <div class="sidebar-item" data-page="submissions" onclick="showPage('submissions')">
+                    <span>📬</span> Formulareingänge
+                    <span class="sidebar-badge" id="unread-badge" style="display:none">0</span>
+                </div>
+                <div class="sidebar-item" data-page="exhibitions" onclick="showPage('exhibitions')">
+                    <span>🖼️</span> Ausstellungen
+                </div>
+                <div class="sidebar-item" data-page="events" onclick="showPage('events')">
+                    <span>📅</span> Veranstaltungen
+                </div>
+            </nav>
+
+            <!-- Content -->
+            <main class="admin-content">
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="admin-page">
+                    <h2 class="page-title">Übersicht</h2>
+                    <div class="stats-grid" id="dashboard-stats"></div>
+                    <h3 style="margin-bottom:1rem;">Letzte Eingänge</h3>
+                    <div id="dashboard-recent"></div>
+                </div>
+
+                <!-- Submissions Page -->
+                <div id="page-submissions" class="admin-page" style="display:none">
+                    <h2 class="page-title">Formulareingänge</h2>
+                    <div class="filter-bar">
+                        <select id="filter-type" onchange="loadSubmissions()">
+                            <option value="">Alle Typen</option>
+                            <option value="kontakt">Kontakt</option>
+                            <option value="mitgliedschaft">Mitgliedschaft</option>
+                            <option value="zeitzeugen">Zeitzeugen</option>
+                            <option value="ausflug">Ausflug</option>
+                            <option value="ideenworkshop">Ideenworkshop</option>
+                            <option value="newsletter">Newsletter</option>
+                        </select>
+                        <select id="filter-unread" onchange="loadSubmissions()">
+                            <option value="">Alle</option>
+                            <option value="true">Nur ungelesen</option>
+                        </select>
+                        <input type="text" id="filter-search" placeholder="Suche nach Name, E-Mail..." onkeyup="debounce(loadSubmissions, 400)()">
+                        <button class="btn btn-secondary" onclick="exportCSV()">CSV Export</button>
+                    </div>
+                    <div id="submissions-table-container"></div>
+                    <div class="pagination" id="submissions-pagination"></div>
+                </div>
+
+                <!-- Exhibitions Page -->
+                <div id="page-exhibitions" class="admin-page" style="display:none">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <h2 class="page-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Sonderausstellungen</h2>
+                        <button class="btn btn-primary" onclick="openExhibitionModal()">+ Neue Ausstellung</button>
+                    </div>
+                    <div class="exhibition-admin-grid" id="exhibitions-grid"></div>
+                </div>
+
+                <!-- Events Page -->
+                <div id="page-events" class="admin-page" style="display:none">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <h2 class="page-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Veranstaltungen</h2>
+                        <button class="btn btn-primary" onclick="openEventModal()">+ Neue Veranstaltung</button>
+                    </div>
+                    <div id="events-list"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Exhibition Modal -->
+    <div class="admin-modal" id="exhibition-modal">
+        <div class="modal-dialog">
+            <div class="modal-dialog-header">
+                <h2 id="exhibition-modal-title">Neue Ausstellung</h2>
+                <button class="modal-close" onclick="closeExhibitionModal()">&times;</button>
+            </div>
+            <div class="modal-dialog-body">
+                <form onsubmit="saveExhibition(event)">
+                    <input type="hidden" id="ex-id">
+                    <div class="form-group">
+                        <label>Titel *</label>
+                        <input type="text" id="ex-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Beschreibung *</label>
+                        <textarea id="ex-description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Datumsanzeige *</label>
+                        <input type="text" id="ex-date-display" placeholder="z.B. 24. April - 30. Juni 2025" required>
+                        <div class="form-hint">Wird als Text angezeigt</div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Startdatum</label>
+                            <input type="date" id="ex-date-start">
+                            <div class="form-hint">Für Status-Berechnung</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Enddatum</label>
+                            <input type="date" id="ex-date-end">
+                            <div class="form-hint">Leer = offen/laufend</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ort</label>
+                            <input type="text" id="ex-location" value="Museum der Region Vorchdorf">
+                        </div>
+                        <div class="form-group">
+                            <label>Kurator/in</label>
+                            <input type="text" id="ex-curator" placeholder="optional">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Bild</label>
+                        <input type="file" id="ex-image" accept="image/jpeg,image/png,image/webp">
+                        <div class="form-hint">JPG, PNG oder WebP, max. 5 MB</div>
+                        <div id="ex-image-preview" style="margin-top:0.5rem;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Reihenfolge</label>
+                        <input type="number" id="ex-sort-order" value="0" min="0">
+                        <div class="form-hint">Niedrigere Zahl = weiter oben</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Detail-Einträge</label>
+                        <div id="ex-detail-items"></div>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="addDetailItem()">+ Eintrag</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Galerie-Links</label>
+                        <div id="ex-gallery-links"></div>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="addGalleryLink()">+ Link</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Detail-Inhalt (HTML, für Modal)</label>
+                        <textarea id="ex-modal-content" style="min-height:150px; font-family:monospace; font-size:0.8rem;" placeholder="Optional: HTML für ausführliche Beschreibung"></textarea>
+                        <div class="form-hint">Wird im Popup auf der Website angezeigt, wenn ausgefüllt</div>
+                    </div>
+
+                    <div class="btn-group" style="margin-top:1.5rem;">
+                        <button type="submit" class="btn btn-primary" style="flex:1;">Speichern</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeExhibitionModal()">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div class="admin-modal" id="event-modal">
+        <div class="modal-dialog" style="max-width:500px;">
+            <div class="modal-dialog-header">
+                <h2 id="event-modal-title">Neue Veranstaltung</h2>
+                <button class="modal-close" onclick="closeEventModal()">&times;</button>
+            </div>
+            <div class="modal-dialog-body">
+                <form onsubmit="saveEvent(event)">
+                    <input type="hidden" id="evt-id">
+                    <div class="form-group">
+                        <label>Titel *</label>
+                        <input type="text" id="evt-title" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Datum *</label>
+                            <input type="date" id="evt-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Uhrzeit *</label>
+                            <input type="text" id="evt-time" placeholder="z.B. 19:00 Uhr" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ort</label>
+                        <input type="text" id="evt-location" placeholder="z.B. Museum Vorchdorf">
+                    </div>
+                    <div class="form-group">
+                        <label>Beschreibung *</label>
+                        <textarea id="evt-description" required></textarea>
+                    </div>
+                    <div class="btn-group" style="margin-top:1.5rem;">
+                        <button type="submit" class="btn btn-primary" style="flex:1;">Speichern</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEventModal()">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

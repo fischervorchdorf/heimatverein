@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonderausstellungen - Heimat- und Kulturverein Vorchdorf</title>
+    <link rel="stylesheet" href="style.css?v=7.6">
+    <script src="script.js?v=7.6" defer></script>
+    <style>
+        /* Specific header background for this page */
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%2334495e" width="1200" height="400"/></svg>');
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <span class="site-title">Heimat- und Kulturverein Vorchdorf</span>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="sonderausstellungen.html">Sonderausstellungen</a></li>
+            <li><a href="audioguide.html">Audioguide</a></li>
+            <li><a href="exponate.html">Exponate</a></li>
+            <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+            <li><a href="timeline.html">Zeitlinie</a></li>
+            <li><a href="zeitzeugen.html">Zeitzeugen</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Sonderausstellungen</h1>
+        <p>Entdecken Sie besondere Einblicke in die Geschichte unserer Region <br> durch wechselnde thematische
+            Ausstellungen</p>
+    </header>
+
+    <!-- Content -->
+    <section class="content">
+        <div class="container">
+            <div class="exhibitions-grid" id="exhibitions-container">
+                <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                    <p>Ausstellungen werden geladen...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dynamic Modal -->
+    <div id="exhibitionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="closeExhibitionModal()">&times;</span>
+                <h2 id="modal-title"></h2>
+                <div class="modal-date" id="modal-date"></div>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="main-footer-placeholder"></div>
+
+    <script>
+        let exhibitionsCache = [];
+
+        async function loadExhibitions() {
+            try {
+                const response = await fetch('/api/exhibitions');
+                exhibitionsCache = await response.json();
+                renderExhibitions(exhibitionsCache);
+            } catch (error) {
+                document.getElementById('exhibitions-container').innerHTML =
+                    '<p style="text-align:center; padding:3rem; grid-column:1/-1; color: var(--accent-red);">Fehler beim Laden der Ausstellungen.</p>';
+            }
+        }
+
+        function renderExhibitions(exhibitions) {
+            const container = document.getElementById('exhibitions-container');
+            container.innerHTML = exhibitions.map(ex => {
+                const statusClass = ex.status === 'aktuell' ? 'status-current'
+                    : ex.status === 'naechste' ? 'status-upcoming'
+                    : 'status-past';
+                const statusText = ex.status === 'aktuell' ? 'Aktuell'
+                    : ex.status === 'naechste' ? 'Nächste'
+                    : 'Abgelaufen';
+                const hasModal = ex.modal_content ? true : false;
+                const clickClass = hasModal ? 'clickable-card' : '';
+                const onclick = hasModal ? `onclick="openExhibitionModal(${ex.id})"` : '';
+
+                const galleryLinks = (ex.gallery_links || [])
+                    .map(g => `<a href="${escAttr(g.url)}" target="_blank" style="color: var(--accent-gold); text-decoration: none; font-weight: 500;">${esc(g.label)} &rarr;</a>`)
+                    .join(' | ');
+
+                const detailItems = (ex.detail_items || [])
+                    .map(d => `<div class="detail-item"><span class="detail-icon">${d.icon}</span><span>${esc(d.text)}</span></div>`)
+                    .join('');
+
+                return `
+                    <div class="exhibition-card ${clickClass}" ${onclick}>
+                        <div class="exhibition-image">
+                            <span class="exhibition-status ${statusClass}">${statusText}</span>
+                            ${ex.image_url ? `<img src="${escAttr(ex.image_url)}" alt="${escAttr(ex.image_alt || ex.title)}">` : ''}
+                        </div>
+                        <div class="exhibition-content">
+                            <div class="exhibition-date">${esc(ex.date_display)}</div>
+                            <h3>${esc(ex.title)}</h3>
+                            <p>${esc(ex.description)}${galleryLinks ? ' ' + galleryLinks : ''}</p>
+                            ${ex.curator ? `<p><strong>Kuratiert von ${esc(ex.curator)}</strong></p>` : ''}
+                            <div class="exhibition-details">${detailItems}</div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function openExhibitionModal(id) {
+            const ex = exhibitionsCache.find(e => e.id === id);
+            if (!ex || !ex.modal_content) return;
+            document.getElementById('modal-title').textContent = ex.title;
+            document.getElementById('modal-date').textContent = ex.date_display;
+            document.getElementById('modal-body').innerHTML = ex.modal_content;
+            document.getElementById('exhibitionModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeExhibitionModal() {
+            document.getElementById('exhibitionModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.addEventListener('click', function (event) {
+            if (event.target === document.getElementById('exhibitionModal')) {
+                closeExhibitionModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeExhibitionModal();
+        });
+
+        function esc(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function escAttr(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadExhibitions);
+    </script>
+</body>
+
+</html>

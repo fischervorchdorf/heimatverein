@@ -3,3 +3,7 @@
 Thumbs.db
 .antigravity/
 .gemini/
+node_modules/
+.env
+public/uploads/*
+!public/uploads/.gitkeep
