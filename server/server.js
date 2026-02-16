@@ -99,6 +99,9 @@ const sessionStoreOptions = {
 };
 const sessionStore = new MySQLStore(sessionStoreOptions);
 
+// Trust proxy (Coolify reverse proxy terminates SSL)
+app.set('trust proxy', 1);
+
 app.use(session({
     key: 'heimatverein_admin_sid',
     secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
@@ -108,7 +111,7 @@ app.use(session({
     cookie: {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production'
     }
 }));
