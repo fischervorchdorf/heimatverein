@@ -2541,3 +2541,184 @@ body {
 .accordion-header {
     position: relative;
 }
+
+/* --- TIMELINE STYLES --- */
+.timeline {
+    position: relative;
+    margin: 3rem auto;
+    padding: 0;
+    max-width: 800px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Vertical dividing line */
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 160px; /* Line position */
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #c5a880; /* Goldish-brown */
+}
+
+.timeline-month-group {
+    position: relative;
+    margin-bottom: 3rem;
+}
+
+.timeline-month-label {
+    position: absolute;
+    left: 0;
+    top: -5px;
+    background: #8e7a61; /* Brown from image */
+    color: #fff;
+    font-weight: bold;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    width: 130px;
+    text-align: center;
+    font-size: 1.05rem;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 200px;
+    padding-bottom: 2rem;
+}
+
+/* Timeline dot */
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 153px; /* 160px (line) - 7px (radius) */
+    top: 15px; 
+    width: 16px;
+    height: 16px;
+    background: #c5a880;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+/* Horizontal line under title */
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 169px; /* Starting right after the dot */
+    right: 0;
+    top: 22px; /* Center of dot */
+    height: 1px;
+    background: #c5a880;
+    z-index: 1;
+}
+
+.timeline-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.timeline-text {
+    flex: 1;
+}
+
+.timeline-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    background: var(--bg-light); /* Or white depending on parent */
+    padding-right: 15px;
+    display: inline-block;
+    position: relative;
+    top: 0;
+    z-index: 3;
+    letter-spacing: 0.5px;
+}
+
+.timeline-meta {
+    font-weight: bold;
+    color: #555;
+    margin: 0.8rem 0 0.4rem;
+    font-size: 0.95rem;
+}
+
+.timeline-desc {
+    font-style: italic;
+    color: var(--secondary-dark);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.timeline-loc {
+    color: var(--light-gray);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+}
+
+.timeline-icon {
+    font-size: 3rem;
+    line-height: 1;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    background: var(--bg-light); 
+    padding-left: 10px;
+    z-index: 3;
+    animation: fadeInIcon 0.5s ease-out forwards;
+}
+
+@keyframes fadeInIcon {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Overriding background for news.html */
+.container .news-block {
+    background: var(--bg-light); 
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+.container .news-block .timeline-title,
+.container .news-block .timeline-icon {
+    background: var(--bg-light);
+}
+
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 30px;
+    }
+    .timeline-month-label {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin-bottom: 1rem;
+        width: auto;
+        display: inline-block;
+    }
+    .timeline-item {
+        padding-left: 60px;
+    }
+    .timeline-item::before {
+        left: 23px;
+    }
+    .timeline-item::after {
+        left: 39px;
+        right: 0;
+    }
+    .timeline-content {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+    .timeline-icon {
+        font-size: 2rem;
+        padding-left: 0;
+        padding-bottom: 10px;
+    }
+}

@@ -282,50 +282,83 @@
             return date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
 
+        function getEventIcon(title, desc) {
+            const text = (title + ' ' + desc).toLowerCase();
+            if (text.includes('kreativ') || text.includes('design') || text.includes('malen') || text.includes('kunst') || text.includes('workshop')) return '🎨';
+            if (text.includes('forschung') || text.includes('entdecken') || text.includes('wissen')) return '🔍';
+            if (text.includes('museumstag') || text.includes('museum')) return '🏛️';
+            if (text.includes('ferien') || text.includes('kinder') || text.includes('spiel')) return '🪁';
+            if (text.includes('industrie') || text.includes('fabrik') || text.includes('technik')) return '🏭';
+            if (text.includes('ausstellung') || text.includes('lesen') || text.includes('buch')) return '📖';
+            if (text.includes('musik') || text.includes('konzert') || text.includes('chor')) return '🎵';
+            if (text.includes('vortrag') || text.includes('lesung')) return '🗣️';
+            return '📍'; // default fallback icon
+        }
+
+        function formatEventDate(dateString) {
+            const dateOnly = dateString.split('T')[0];
+            const date = new Date(dateOnly + 'T00:00:00');
+            return date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }).replace(' ', '. '); // e.g. 24. April 2026
+        }
+
         async function renderEvents() {
             const container = document.getElementById('aktuelle-events');
             const noEventsMsg = document.getElementById('no-events');
 
+            let aktuelleEvents = [];
             try {
                 const response = await fetch('/api/events/upcoming');
-                const aktuelleEvents = await response.json();
-
-                if (aktuelleEvents.length === 0) {
-                    noEventsMsg.style.display = 'block';
-                    container.innerHTML = '';
-                } else {
-                    noEventsMsg.style.display = 'none';
-                    container.innerHTML = aktuelleEvents.map(event => `
-                        <div class="event-item">
-                            <strong>${event.title}</strong>
-                            <p>🗓️ ${formatDate(event.date)} um ${event.time}</p>
-                            ${event.location ? `<p>📍 ${event.location}</p>` : ''}
-                            <p>${event.description}</p>
-                        </div>
-                    `).join('');
-                }
+                aktuelleEvents = await response.json();
             } catch (e) {
                 // Fallback to eventsData from JS file
                 if (typeof eventsData !== 'undefined') {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
-                    const aktuelleEvents = eventsData.filter(event => new Date(event.date + 'T00:00:00') >= today)
+                    aktuelleEvents = eventsData.filter(event => new Date(event.date + 'T00:00:00') >= today)
                         .sort((a, b) => new Date(a.date) - new Date(b.date));
-                    if (aktuelleEvents.length === 0) {
-                        noEventsMsg.style.display = 'block';
-                        container.innerHTML = '';
-                    } else {
-                        noEventsMsg.style.display = 'none';
-                        container.innerHTML = aktuelleEvents.map(event => `
-                            <div class="event-item">
-                                <strong>${event.title}</strong>
-                                <p>🗓️ ${formatDate(event.date)} um ${event.time}</p>
-                                ${event.location ? `<p>📍 ${event.location}</p>` : ''}
-                                <p>${event.description}</p>
-                            </div>
-                        `).join('');
-                    }
                 }
+            }
+
+            if (aktuelleEvents.length === 0) {
+                noEventsMsg.style.display = 'block';
+                container.innerHTML = '';
+            } else {
+                noEventsMsg.style.display = 'none';
+
+                // Group events by Month and Year
+                const grouped = {};
+                aktuelleEvents.forEach(evt => {
+                    const d = new Date(evt.date.split('T')[0] + 'T00:00:00');
+                    const monthYear = d.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+                    if (!grouped[monthYear]) grouped[monthYear] = [];
+                    grouped[monthYear].push(evt);
+                });
+
+                let html = '<div class="timeline">';
+                for (const [monthYear, events] of Object.entries(grouped)) {
+                    html += `
+                        <div class="timeline-month-group">
+                            <div class="timeline-month-label">${monthYear}</div>`;
+                    
+                    events.forEach(evt => {
+                        html += `
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-text">
+                                        <div class="timeline-title">${evt.title}</div>
+                                        <div class="timeline-meta">🗓️ ${formatEventDate(evt.date)} | ${evt.time}</div>
+                                        <div class="timeline-desc">${evt.description}</div>
+                                        ${evt.location ? `<div class="timeline-loc">📍 ${evt.location}</div>` : ''}
+                                    </div>
+                                    <div class="timeline-icon">${getEventIcon(evt.title, evt.description)}</div>
+                                </div>
+                            </div>`;
+                    });
+
+                    html += `</div>`;
+                }
+                html += '</div>';
+                container.innerHTML = html;
             }
         }
 
