@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Heimatverein Vorchdorf</title>
     <link rel="stylesheet" href="admin.css">
 </head>
+
 <body>
     <!-- Login Screen -->
     <div id="login-screen" class="login-screen">
@@ -14,8 +16,10 @@
             <p>Zugang nur für Administratoren</p>
             <form onsubmit="handleLogin(event)">
                 <div class="login-error" id="login-error">Falsches Passwort</div>
-                <input type="password" id="login-password" placeholder="Passwort eingeben" required autocomplete="current-password">
-                <button type="submit" class="btn btn-primary" style="width:100%; padding: 0.8rem; font-size: 1rem;">Anmelden</button>
+                <input type="password" id="login-password" placeholder="Passwort eingeben" required
+                    autocomplete="current-password">
+                <button type="submit" class="btn btn-primary"
+                    style="width:100%; padding: 0.8rem; font-size: 1rem;">Anmelden</button>
             </form>
         </div>
     </div>
@@ -63,7 +67,7 @@
                 <div id="page-submissions" class="admin-page" style="display:none">
                     <h2 class="page-title">Formulareingänge</h2>
                     <div class="filter-bar">
-                        <select id="filter-type" onchange="loadSubmissions()">
+                        <select id="filter-type" onchange="submissionsPage=1; loadSubmissions()">
                             <option value="">Alle Typen</option>
                             <option value="kontakt">Kontakt</option>
                             <option value="mitgliedschaft">Mitgliedschaft</option>
@@ -72,11 +76,12 @@
                             <option value="ideenworkshop">Ideenworkshop</option>
                             <option value="newsletter">Newsletter</option>
                         </select>
-                        <select id="filter-unread" onchange="loadSubmissions()">
+                        <select id="filter-unread" onchange="submissionsPage=1; loadSubmissions()">
                             <option value="">Alle</option>
                             <option value="true">Nur ungelesen</option>
                         </select>
-                        <input type="text" id="filter-search" placeholder="Suche nach Name, E-Mail..." onkeyup="debounce(loadSubmissions, 400)()">
+                        <input type="text" id="filter-search" placeholder="Suche nach Name, E-Mail..."
+                            onkeyup="submissionsPage=1; debounce(loadSubmissions, 400)()">
                         <button class="btn btn-secondary" onclick="exportCSV()">CSV Export</button>
                     </div>
                     <div id="submissions-table-container"></div>
@@ -86,7 +91,8 @@
                 <!-- Exhibitions Page -->
                 <div id="page-exhibitions" class="admin-page" style="display:none">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                        <h2 class="page-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Sonderausstellungen</h2>
+                        <h2 class="page-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">
+                            Sonderausstellungen</h2>
                         <button class="btn btn-primary" onclick="openExhibitionModal()">+ Neue Ausstellung</button>
                     </div>
                     <div class="exhibition-admin-grid" id="exhibitions-grid"></div>
@@ -95,7 +101,8 @@
                 <!-- Events Page -->
                 <div id="page-events" class="admin-page" style="display:none">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                        <h2 class="page-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Veranstaltungen</h2>
+                        <h2 class="page-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">
+                            Veranstaltungen</h2>
                         <button class="btn btn-primary" onclick="openEventModal()">+ Neue Veranstaltung</button>
                     </div>
                     <div id="events-list"></div>
@@ -164,24 +171,29 @@
                     <div class="form-group">
                         <label>Detail-Einträge</label>
                         <div id="ex-detail-items"></div>
-                        <button type="button" class="btn btn-secondary btn-small" onclick="addDetailItem()">+ Eintrag</button>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="addDetailItem()">+
+                            Eintrag</button>
                     </div>
 
                     <div class="form-group">
                         <label>Galerie-Links</label>
                         <div id="ex-gallery-links"></div>
-                        <button type="button" class="btn btn-secondary btn-small" onclick="addGalleryLink()">+ Link</button>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="addGalleryLink()">+
+                            Link</button>
                     </div>
 
                     <div class="form-group">
                         <label>Detail-Inhalt (HTML, für Modal)</label>
-                        <textarea id="ex-modal-content" style="min-height:150px; font-family:monospace; font-size:0.8rem;" placeholder="Optional: HTML für ausführliche Beschreibung"></textarea>
+                        <textarea id="ex-modal-content"
+                            style="min-height:150px; font-family:monospace; font-size:0.8rem;"
+                            placeholder="Optional: HTML für ausführliche Beschreibung"></textarea>
                         <div class="form-hint">Wird im Popup auf der Website angezeigt, wenn ausgefüllt</div>
                     </div>
 
                     <div class="btn-group" style="margin-top:1.5rem;">
                         <button type="submit" class="btn btn-primary" style="flex:1;">Speichern</button>
-                        <button type="button" class="btn btn-secondary" onclick="closeExhibitionModal()">Abbrechen</button>
+                        <button type="button" class="btn btn-secondary"
+                            onclick="closeExhibitionModal()">Abbrechen</button>
                     </div>
                 </form>
             </div>
@@ -229,6 +241,7 @@
         </div>
     </div>
 
-    <script src="admin.js"></script>
+    <script src="admin.js?v=2.0"></script>
 </body>
+
 </html>
