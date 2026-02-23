@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News - Heimat- und Kulturverein Vorchdorf</title>
-    <link rel="stylesheet" href="style.css?v=7.6">
+    <link rel="stylesheet" href="style.css?v=7.8">
     <style>
         /* Page Header Specific Override if needed, currently covered by style.css but with margin-top which style.css has as 0 for main header. 
            In news.html original, page-header had margin-top: 60px.
@@ -169,7 +169,8 @@
                         uns!
                     </p>
 
-                    <form id="ideenForm" onsubmit="handleFormSubmit(event, 'ideenworkshop', this)" style="margin-top: 2rem;">
+                    <form id="ideenForm" onsubmit="handleFormSubmit(event, 'ideenworkshop', this)"
+                        style="margin-top: 2rem;">
 
                         <div class="form-row">
                             <div class="form-group">
@@ -272,16 +273,9 @@
 
     <div id="main-footer-placeholder"></div>
 
-    <script src="script.js?v=7.6"></script>
-    <script src="events_data.js?v=7.6"></script>
+    <script src="script.js?v=7.8"></script>
+    <script src="events_data.js?v=7.8"></script>
     <script>
-        function formatDate(dateString) {
-            // Handle both "2026-03-26" and "2026-03-26T00:00:00.000Z" formats
-            const dateOnly = dateString.split('T')[0];
-            const date = new Date(dateOnly + 'T00:00:00');
-            return date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        }
-
         function getEventIcon(title, desc) {
             const text = (title + ' ' + desc).toLowerCase();
             if (text.includes('kreativ') || text.includes('design') || text.includes('malen') || text.includes('kunst') || text.includes('workshop')) return '🎨';
@@ -298,7 +292,7 @@
         function formatEventDate(dateString) {
             const dateOnly = dateString.split('T')[0];
             const date = new Date(dateOnly + 'T00:00:00');
-            return date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }).replace(' ', '. '); // e.g. 24. April 2026
+            return date.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
         async function renderEvents() {
@@ -334,28 +328,31 @@
                     grouped[monthYear].push(evt);
                 });
 
-                let html = '<div class="timeline">';
+                let html = '<div class="timeline-container">';
                 for (const [monthYear, events] of Object.entries(grouped)) {
                     html += `
                         <div class="timeline-month-group">
-                            <div class="timeline-month-label">${monthYear}</div>`;
-                    
+                            <div class="timeline-month-label">${monthYear}</div>
+                            <div class="timeline-items-wrapper">`;
+
                     events.forEach(evt => {
                         html += `
-                            <div class="timeline-item">
-                                <div class="timeline-content">
-                                    <div class="timeline-text">
-                                        <div class="timeline-title">${evt.title}</div>
-                                        <div class="timeline-meta">🗓️ ${formatEventDate(evt.date)} | ${evt.time}</div>
-                                        <div class="timeline-desc">${evt.description}</div>
-                                        ${evt.location ? `<div class="timeline-loc">📍 ${evt.location}</div>` : ''}
-                                    </div>
+                                <div class="timeline-item">
                                     <div class="timeline-icon">${getEventIcon(evt.title, evt.description)}</div>
-                                </div>
-                            </div>`;
+                                    <div class="timeline-title-row">
+                                        <div class="timeline-title">${evt.title}</div>
+                                        <div class="timeline-rule"></div>
+                                    </div>
+                                    <div class="timeline-content-body">
+                                        <div class="timeline-date">🗓️ ${formatEventDate(evt.date)} | ${evt.time}</div>
+                                        ${evt.location ? `<div class="timeline-loc">📍 ${evt.location}</div>` : ''}
+                                        <div class="timeline-desc">${evt.description}</div>
+                                    </div>
+                                </div>`;
                     });
 
-                    html += `</div>`;
+                    html += `       </div>
+                        </div>`;
                 }
                 html += '</div>';
                 container.innerHTML = html;

@@ -54,7 +54,9 @@ router.post('/', async (req, res) => {
         };
 
         const email = getField('email', 'e-mail', 'Email', 'E-Mail') || null;
-        const name = [getField('vorname', 'Vorname'), getField('nachname', 'Nachname', 'familienname', 'Familienname'), getField('name', 'Name')]
+        const firstName = getField('vorname', 'Vorname');
+        const lastName = getField('nachname', 'Nachname', 'familienname', 'Familienname');
+        const name = [firstName, lastName, getField('name', 'Name')]
             .filter(Boolean)
             .join(' ')
             .trim() || null;
@@ -64,6 +66,38 @@ router.post('/', async (req, res) => {
              VALUES (?, ?, ?, ?)`,
             [form_type, JSON.stringify(data), email, name]
         );
+
+        // --- Brevo Newsletter Integration ---
+        if (form_type === 'newsletter' && process.env.BREVO_API_KEY && email) {
+            try {
+                const brevoRes = await fetch('https://api.brevo.com/v3/contacts', {
+                    method: 'POST',
+                    headers: {
+                        'accept': 'application/json',
+                        'content-type': 'application/json',
+                        'api-key': process.env.BREVO_API_KEY
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        updateEnabled: true,
+                        attributes: {
+                            FIRSTNAME: firstName || '',
+                            LASTNAME: lastName || ''
+                        },
+                        listIds: process.env.BREVO_LIST_ID ? [parseInt(process.env.BREVO_LIST_ID)] : []
+                    })
+                });
+                
+                if (!brevoRes.ok) {
+                    const errorText = await brevoRes.text();
+                    console.error('Brevo API Error:', errorText);
+                } else {
+                    console.log('✅ Erfolgreich zu Brevo hinzugefügt:', email);
+                }
+            } catch (brevoErr) {
+                console.error('Brevo Request Failed:', brevoErr);
+            }
+        }
 
         // Optional: send email notification
         try {
