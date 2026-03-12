@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Museum meets KI - Vorchdorf</title>  
     <style>  
-        :root { --gold: #d4af37; --bg: #1a1a1a; --text: #fdf5e6; --red: #b22222; }  
+        :root { --gold: #d4af37; --bg: #1a1a1a; --text: #fdf5e6; }  
         body { font-family: 'Segoe UI', serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 20px; margin: 0; }  
         .container { max-width: 600px; margin: 20px auto; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; background: #262626; box-shadow: 0 0 30px rgba(0,0,0,0.5); }  
         h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.5em; }  
-        .btn { background: var(--gold); color: #1a1a1a; border: none; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 8px; text-transform: uppercase; font-size: 1em; }  
-        .btn:hover { background: white; }  
+        .btn { background: var(--gold); color: #1a1a1a; border: none; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 8px; text-transform: uppercase; }  
         .audio-player { width: 100%; margin: 20px 0; filter: invert(1); }  
         .info-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin: 20px 0; text-align: left; border-left: 4px solid var(--gold); }  
         .game-area { border: 2px dashed var(--gold); padding: 20px; margin: 20px 0; border-radius: 10px; background: #111; }  
-        #voltage-display { font-size: 2.5em; color: var(--gold); margin: 10px 0; }  
+        #voltage-display { font-size: 2.5em; color: var(--gold); }  
         .error-msg { color: #ff6347; font-size: 0.8em; margin-top: 5px; display: none; }  
     </style>  
 </head>  
@@ -25,34 +24,31 @@
 </div>  
   
 <script>  
-    // --- DATENBANK DER ARTEFAKTE ---  
     const artefakte = {  
         "zigaretten": {  
             titel: "Zeitkapsel 1944",  
             schritte: [  
-                { typ: "audio", titel: "Teil 1: Das Schweigen", file: "teil1.m4a", beschreibung: "Betrachte die Packung. 'Feind hört mit' war Gesetz." },  
-                { typ: "audio", titel: "Teil 2: Der Mangel", file: "teil2.m4a", beschreibung: "Papier war wertvoller als Tabak. Ohne Leerpackung kein Kauf." },  
-                { typ: "audio", titel: "Teil 3: Das Mahnmal", file: "teil3.m4a", beschreibung: "Ein Zeugnis menschlicher Entbehrung." }  
+                { typ: "audio", titel: "Teil 1: Das Schweigen", file: "teil 1.m4a", beschreibung: "Betrachte die Packung. 'Feind hört mit' war Gesetz." },  
+                { typ: "audio", titel: "Teil 2: Der Mangel", file: "teil 2.m4a", beschreibung: "Papier war wertvoller als Tabak. Ohne Leerpackung kein Kauf." },  
+                { typ: "audio", titel: "Teil 3: Das Mahnmal", file: "teil 3.m4a", beschreibung: "Ein Zeugnis menschlicher Entbehrung." }  
             ]  
         },  
         "roehre": {  
             titel: "Die GRS 1 Challenge",  
             schritte: [  
                 { typ: "info", titel: "Die Mission", beschreibung: "Hilf Dr. Anton Gruber im Jahr 1912. Wir müssen Wien mit Linz verbinden!" },  
-                { typ: "game", titel: "Spannung zähmen", beschreibung: "Regle die Spannung auf ca. 112 Volt, damit die GRS 1 stabil glüht." },  
+                { typ: "game", titel: "Spannung zähmen", beschreibung: "Regle die Spannung auf ca. 112 Volt (Datum 11/12), damit die GRS 1 stabil glüht." },  
                 { typ: "info", titel: "Sieg der Technik", beschreibung: "ERFOLG! Die Nachricht wurde empfangen." }  
             ]  
         }  
     };  
   
-    // --- LOGIK ---  
     const urlParams = new URLSearchParams(window.location.search);  
     const objektKey = urlParams.get('objekt');  
     let aktuellerSchritt = 0;  
   
     function render() {  
         const app = document.getElementById('app');  
-          
         if (!objektKey || !artefakte[objektKey]) {  
             app.innerHTML = `<h1>Museums-Portal</h1><p>Bitte scanne einen QR-Code.</p>  
                              <button class="btn" onclick="window.location.search='?objekt=roehre'">Siemens GRS 1 Röhre</button>  
@@ -62,62 +58,31 @@
   
         const daten = artefakte[objektKey];  
         const schritt = daten.schritte[aktuellerSchritt];  
-          
-        let html = `<h1>${daten.titel}</h1>`;  
-        html += `<div class="info-box"><strong>${schritt.titel}</strong><br>${schritt.beschreibung}</div>`;  
+        let html = `<h1>${daten.titel}</h1><div class="info-box"><strong>${schritt.titel}</strong><br>${schritt.beschreibung}</div>`;  
   
         if (schritt.typ === "audio") {  
-            // Die verbesserte Audio-Logik  
-            html += `  
-                <audio controls class="audio-player" id="mainPlayer">  
-                    <source src="${schritt.file}" type="audio/mp4">  
-                    <source src="${schritt.file}" type="audio/x-m4a">  
-                    Ihr Browser unterstützt kein Audio.  
-                </audio>  
-                <div id="audioError" class="error-msg">Datei ${schritt.file} konnte nicht geladen werden. Bitte Dateinamen prüfen!</div>  
-            `;  
+            html += `<audio controls class="audio-player" id="mainPlayer"><source src="${encodeURIComponent(schritt.file)}" type="audio/mp4">Ihr Browser unterstützt kein Audio.</audio>  
+                     <div id="audioError" class="error-msg">Datei konnte nicht geladen werden.</div>`;  
         } else if (schritt.typ === "game") {  
-            html += `<div class="game-area">  
-                        <input type="range" min="0" max="220" value="0" style="width:100%" oninput="checkVolt(this.value)">  
-                        <div id="voltage-display">0 V</div>  
-                        <p id="feedback">Drehe am Regler...</p>  
-                     </div>`;  
+            html += `<div class="game-area"><input type="range" min="0" max="220" value="0" style="width:100%" oninput="checkVolt(this.value)"><div id="voltage-display">0 V</div><p id="feedback">Drehe am Regler...</p></div>`;  
         }  
   
         if (aktuellerSchritt < daten.schritte.length - 1) {  
-            html += `<button class="btn" id="nextBtn" onclick="next()">Weiter</button>`;  
+            html += `<button class="btn" onclick="next()">Weiter</button>`;  
         } else {  
             html += `<button class="btn" onclick="window.location.search=''">Zur Übersicht</button>`;  
         }  
-  
         app.innerHTML = html;  
-  
-        // Fehlerprüfung für Audio nach dem Rendern  
-        if (schritt.typ === "audio") {  
-            const p = document.getElementById('mainPlayer');  
-            p.onerror = () => { document.getElementById('audioError').style.display = 'block'; };  
-        }  
     }  
   
-    function next() {  
-        aktuellerSchritt++;  
-        render();  
-    }  
-  
+    function next() { aktuellerSchritt++; render(); }  
     function checkVolt(val) {  
         document.getElementById('voltage-display').innerText = val + " V";  
         const fb = document.getElementById('feedback');  
-        if(val >= 108 && val <= 116) {  
-            fb.innerText = "PERFEKT! Die Energie fließt stabil!";  
-            fb.style.color = "lime";  
-        } else {  
-            fb.innerText = "Suche die richtige Spannung (ca. 112V)...";  
-            fb.style.color = "white";  
-        }  
+        fb.innerText = (val >= 108 && val <= 116) ? "PERFEKT! Die Energie fließt stabil!" : "Suche die richtige Spannung (ca. 112V)...";  
+        fb.style.color = (val >= 108 && val <= 116) ? "lime" : "white";  
     }  
-  
     render();  
 </script>  
-  
 </body>  
 </html>  
