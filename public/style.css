@@ -487,13 +487,14 @@ body {
 }
 
 .hero-logo {
-    width: 500px;
-    max-width: 90vw;
+    width: 320px;
+    max-width: 70vw;
     height: auto;
     filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
     opacity: 1;
     animation: floatingLogo 6s ease-in-out infinite;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
 }
 
 @keyframes floatingLogo {
