@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI trainieren – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: #00e5ff; }
+
+        .back-link svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #00e5ff;
+            letter-spacing: 2px;
+        }
+
+        /* Main content */
+        .main {
+            padding: 5rem 1.5rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-desc {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Progress bar */
+        .progress-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        #accuracy-text {
+            color: #00e5ff;
+            font-weight: 600;
+        }
+
+        #epoch-text {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00e5ff, #ff6b6b);
+            border-radius: 4px;
+            transition: width 0.5s ease, background 0.5s ease;
+        }
+
+        /* Image display */
+        #image-display {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 1rem;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(0, 229, 255, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            background: #0e2233;
+        }
+
+        #image-display svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        #image-display.fade-in {
+            animation: fadeIn 0.4s ease;
+        }
+
+        #sample-counter {
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 1.5rem;
+            font-family: monospace;
+        }
+
+        /* Buttons */
+        .button-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .option-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border: 2px solid rgba(0, 229, 255, 0.4);
+            border-radius: 12px;
+            background: rgba(14, 34, 51, 0.8);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: #00e5ff;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .option-btn:active {
+            transform: translateY(0);
+        }
+
+        .option-btn .icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Feedback */
+        .feedback {
+            display: none;
+            text-align: center;
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+
+        .feedback.wrong {
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+
+        /* Result area */
+        #result-area {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        #final-accuracy {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #00e5ff;
+            margin-bottom: 0.5rem;
+        }
+
+        #final-correct {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #result-message {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .explanation-box {
+            background: rgba(14, 34, 51, 0.8);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .explanation-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #00e5ff;
+            margin-bottom: 0.8rem;
+        }
+
+        .explanation-box p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+
+        .explanation-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        #btn-restart {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-decoration: none;
+            border: 2px solid #00e5ff;
+            border-radius: 50px;
+            background: rgba(0, 229, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #btn-restart:hover {
+            background: rgba(0, 229, 255, 0.25);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Page transitions */
+        .page-transition {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020b14; z-index: 1000; opacity: 0;
+            pointer-events: none; transition: opacity 0.4s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .page-transition.active { opacity: 1; pointer-events: auto; }
+        .transition-ring {
+            width: 40px; height: 40px; border: 2px solid rgba(0,229,255,0.1);
+            border-top-color: #00e5ff; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .touch-ripple {
+            position: absolute; width: 60px; height: 60px; border-radius: 50%;
+            background: rgba(0,229,255,0.2); transform: translate(-50%,-50%) scale(0);
+            animation: ripple 0.6s ease-out forwards; pointer-events: none;
+        }
+        @keyframes ripple { to { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
+
+        @media (max-width: 768px) {
+            .header { padding: 0.8rem 1rem; }
+            .page-title { font-size: 0.7rem; }
+            .section-title { font-size: 1.1rem; }
+            #image-display { max-width: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zurück
+        </a>
+        <span class="page-title">KI TRAINIEREN</span>
+    </div>
+
+    <div class="main">
+        <h1 class="section-title">Trainiere eine KI</h1>
+        <p class="section-desc">Hilf der KI, Hunde von Katzen zu unterscheiden!</p>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span id="accuracy-text">Trainingsgenauigkeit: 0%</span>
+                <span id="epoch-text">Epoche 1</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="game-area">
+            <div id="image-display"></div>
+            <div id="sample-counter">Datensatz 1 / 12</div>
+
+            <div class="button-row">
+                <button class="option-btn" id="btn-dog">
+                    <span class="icon">🐕</span>
+                    Hund
+                </button>
+                <button class="option-btn" id="btn-cat">
+                    <span class="icon">🐈</span>
+                    Katze
+                </button>
+            </div>
+
+            <div id="feedback" class="feedback"></div>
+        </div>
+
+        <!-- Result Area -->
+        <div id="result-area">
+            <div class="result-icon">🧠</div>
+            <div id="final-accuracy">0%</div>
+            <div id="final-correct">0 von 0 richtig</div>
+            <p id="result-message"></p>
+
+            <div class="explanation-box">
+                <h3>So funktioniert Machine Learning</h3>
+                <p>Du hast gerade den Grundprozess des maschinellen Lernens nachgemacht: Ein Modell bekommt Daten gezeigt, macht eine Vorhersage, und lernt aus dem Ergebnis.</p>
+                <p>Echte KI-Systeme wie GPT oder Bilderkennungs-Software durchlaufen diesen Prozess mit Millionen von Beispielen. Je mehr Daten, desto besser wird die KI.</p>
+                <p>Der Unterschied: Du erkennst Muster intuitiv – die KI muss sie mathematisch aus Pixelwerten berechnen.</p>
+            </div>
+
+            <button id="btn-restart">Nochmal trainieren</button>
+        </div>
+    </div>
+
+    <script src="js/ai-training.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>

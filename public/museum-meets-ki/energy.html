@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energieverbrauch – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .back-link {
+            color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s;
+        }
+        .back-link:hover { color: #00e5ff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+            font-weight: 700; color: #00e5ff; letter-spacing: 2px;
+        }
+
+        .main {
+            padding: 5rem 1.5rem 2rem;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem; font-weight: 700;
+            text-align: center; margin-bottom: 0.3rem;
+        }
+
+        .section-desc {
+            text-align: center; color: rgba(255,255,255,0.5);
+            font-size: 0.85rem; margin-bottom: 2rem;
+        }
+
+        /* Slider section */
+        .slider-section {
+            background: rgba(14, 34, 51, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1rem;
+        }
+
+        .slider-label span {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        #query-count {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #00e5ff;
+        }
+
+        #scale-label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.35);
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        /* Custom slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 229, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #00e5ff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #00e5ff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+        }
+
+        /* KWH display */
+        .kwh-display {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 229, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .kwh-display .label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        #kwh-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #d4af37;
+        }
+
+        .kwh-unit {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Comparison cards */
+        .comparison-card {
+            background: rgba(14, 34, 51, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .comparison-icon {
+            font-size: 1.5rem;
+        }
+
+        .comparison-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 1px;
+        }
+
+        .comparison-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00e5ff;
+        }
+
+        /* Bulb grid */
+        #bulb-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .bulb {
+            font-size: 1.1rem;
+            opacity: 0.15;
+            transition: opacity 0.3s;
+        }
+
+        .bulb.on {
+            opacity: 1;
+            animation: bulbGlow 0.3s ease forwards;
+        }
+
+        @keyframes bulbGlow {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Progress bars */
+        .bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            min-width: 2px;
+        }
+
+        #home-bar { background: linear-gradient(90deg, #00e5ff, #00ff88); width: 0%; }
+        #city-bar { background: linear-gradient(90deg, #d4af37, #ff6b6b); width: 0%; }
+
+        .bar-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+            margin-top: 0.3rem;
+        }
+
+        /* Fact box */
+        .fact-box {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .fact-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: #d4af37;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        #fact-text {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .page-transition {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020b14; z-index: 1000; opacity: 0;
+            pointer-events: none; transition: opacity 0.4s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .page-transition.active { opacity: 1; pointer-events: auto; }
+        .transition-ring {
+            width: 40px; height: 40px; border: 2px solid rgba(0,229,255,0.1);
+            border-top-color: #00e5ff; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .touch-ripple {
+            position: absolute; width: 60px; height: 60px; border-radius: 50%;
+            background: rgba(0,229,255,0.2); transform: translate(-50%,-50%) scale(0);
+            animation: ripple 0.6s ease-out forwards; pointer-events: none;
+        }
+        @keyframes ripple { to { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
+
+        @media (max-width: 768px) {
+            .header { padding: 0.8rem 1rem; }
+            .page-title { font-size: 0.7rem; }
+            .section-title { font-size: 1.1rem; }
+            #query-count { font-size: 1.5rem; }
+            #kwh-value { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zurück
+        </a>
+        <span class="page-title">ENERGIEVERBRAUCH</span>
+    </div>
+
+    <div class="main">
+        <h1 class="section-title">Was verbraucht KI?</h1>
+        <p class="section-desc">Bewege den Regler und sieh, wie viel Energie KI-Anfragen verbrauchen</p>
+
+        <!-- Slider -->
+        <div class="slider-section">
+            <div class="slider-label">
+                <span>Anzahl KI-Anfragen</span>
+                <span id="query-count">100</span>
+            </div>
+            <input type="range" id="query-slider" min="1" max="100000" value="100" step="1">
+            <div id="scale-label">Normaler Tagesverbrauch eines KI-Nutzers</div>
+        </div>
+
+        <!-- KWH total -->
+        <div class="kwh-display">
+            <div class="label">Gesamtverbrauch</div>
+            <span id="kwh-value">0.5</span>
+            <span class="kwh-unit">kWh</span>
+        </div>
+
+        <!-- Lightbulbs -->
+        <div class="comparison-card">
+            <div class="comparison-header">
+                <div>
+                    <span class="comparison-icon">💡</span>
+                    <span class="comparison-title"> Glühbirnen (1 Stunde)</span>
+                </div>
+                <span class="comparison-value" id="bulb-count">50</span>
+            </div>
+            <div id="bulb-grid"></div>
+        </div>
+
+        <!-- Households -->
+        <div class="comparison-card">
+            <div class="comparison-header">
+                <div>
+                    <span class="comparison-icon">🏠</span>
+                    <span class="comparison-title"> Haushalte (Tagesverbrauch)</span>
+                </div>
+                <span class="comparison-value" id="home-count">0.05</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar-fill" id="home-bar"></div>
+            </div>
+            <div class="bar-label">Anteil am Tagesverbrauch eines Haushalts</div>
+        </div>
+
+        <!-- City -->
+        <div class="comparison-card">
+            <div class="comparison-header">
+                <div>
+                    <span class="comparison-icon">🏙️</span>
+                    <span class="comparison-title"> Straßenzüge (Tagesverbrauch)</span>
+                </div>
+                <span class="comparison-value" id="city-count">0.001</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar-fill" id="city-bar"></div>
+            </div>
+            <div class="bar-label">Anteil am Tagesverbrauch eines Straßenzugs</div>
+        </div>
+
+        <!-- Fun fact -->
+        <div class="fact-box">
+            <div class="fact-label">WUSSTEST DU?</div>
+            <p id="fact-text">Ein einzelner KI-Prompt verbraucht etwa 10x so viel Energie wie eine Google-Suche.</p>
+        </div>
+    </div>
+
+    <script src="js/energy.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>

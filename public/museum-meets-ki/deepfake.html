@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Test – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .back-link {
+            color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s;
+        }
+        .back-link:hover { color: #00e5ff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+            font-weight: 700; color: #00e5ff; letter-spacing: 2px;
+        }
+
+        .main {
+            padding: 5rem 1rem 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem; font-weight: 700;
+            text-align: center; margin-bottom: 0.3rem;
+        }
+
+        .section-desc {
+            text-align: center; color: rgba(255,255,255,0.5);
+            font-size: 0.85rem; margin-bottom: 1.5rem;
+        }
+
+        .game-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; font-size: 0.8rem;
+        }
+
+        #round-title {
+            font-family: 'Orbitron', sans-serif; font-weight: 700;
+            color: #00e5ff; font-size: 0.85rem;
+        }
+
+        #round-counter { color: rgba(255,255,255,0.4); }
+        #score-display { color: #d4af37; font-weight: 600; }
+
+        .prompt {
+            text-align: center; font-size: 1.1rem; font-weight: 600;
+            margin-bottom: 1rem; color: rgba(255,255,255,0.8);
+        }
+
+        .compare-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .compare-box {
+            border: 2px solid rgba(0, 229, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .compare-box svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .compare-box:hover {
+            border-color: rgba(0, 229, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+        }
+
+        .compare-box.real {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .compare-box.fake {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .choose-btn {
+            padding: 0.7rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 1px;
+            border: 2px solid rgba(0, 229, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(14, 34, 51, 0.8);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .choose-btn:hover:not(:disabled) {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: #00e5ff;
+        }
+
+        .choose-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #explanation {
+            display: none;
+            background: rgba(14, 34, 51, 0.8);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 12px;
+            padding: 1.2rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        #explanation .correct {
+            color: #00ff88; font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; margin-bottom: 0.5rem;
+        }
+
+        #explanation .wrong {
+            color: #ff6b6b; font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; margin-bottom: 0.5rem;
+        }
+
+        #explanation p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem; line-height: 1.7;
+        }
+
+        /* Results */
+        #result-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .result-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+        #final-score {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem; font-weight: 900;
+            color: #00e5ff; margin-bottom: 0.5rem;
+        }
+
+        #result-msg {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.8; margin-bottom: 2rem;
+            max-width: 500px; margin-left: auto; margin-right: auto;
+        }
+
+        .info-box {
+            background: rgba(14, 34, 51, 0.8);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; color: #00e5ff;
+            margin-bottom: 0.8rem;
+        }
+
+        .info-box p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem; line-height: 1.7;
+            margin-bottom: 0.6rem;
+        }
+
+        .info-box p:last-child { margin-bottom: 0; }
+
+        #btn-retry {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem; font-weight: 700;
+            letter-spacing: 2px; color: #ffffff;
+            border: 2px solid #00e5ff; border-radius: 50px;
+            background: rgba(0, 229, 255, 0.1);
+            cursor: pointer; transition: all 0.3s ease;
+        }
+
+        #btn-retry:hover {
+            background: rgba(0, 229, 255, 0.25);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .page-transition {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020b14; z-index: 1000; opacity: 0;
+            pointer-events: none; transition: opacity 0.4s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .page-transition.active { opacity: 1; pointer-events: auto; }
+        .transition-ring {
+            width: 40px; height: 40px; border: 2px solid rgba(0,229,255,0.1);
+            border-top-color: #00e5ff; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .touch-ripple {
+            position: absolute; width: 60px; height: 60px; border-radius: 50%;
+            background: rgba(0,229,255,0.2); transform: translate(-50%,-50%) scale(0);
+            animation: ripple 0.6s ease-out forwards; pointer-events: none;
+        }
+        @keyframes ripple { to { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
+
+        @media (max-width: 768px) {
+            .header { padding: 0.8rem 1rem; }
+            .page-title { font-size: 0.7rem; }
+            .section-title { font-size: 1.1rem; }
+        }
+
+        @media (max-width: 400px) {
+            .compare-row { gap: 0.5rem; }
+            .choose-btn { font-size: 0.7rem; padding: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zurück
+        </a>
+        <span class="page-title">DEEPFAKE TEST</span>
+    </div>
+
+    <div class="main">
+        <h1 class="section-title">Deepfake erkennen</h1>
+        <p class="section-desc">Welches Bild ist echt, welches von KI generiert?</p>
+
+        <div id="game-container">
+            <div class="game-header">
+                <span id="round-title">Portrait-Foto</span>
+                <span id="score-display">Score: 0</span>
+                <span id="round-counter">Runde 1 / 5</span>
+            </div>
+
+            <p class="prompt">Welches ist echt?</p>
+
+            <div class="compare-row">
+                <div class="compare-box" id="img-left"></div>
+                <div class="compare-box" id="img-right"></div>
+            </div>
+
+            <div class="button-row">
+                <button class="choose-btn" id="btn-left">Links ist echt</button>
+                <button class="choose-btn" id="btn-right">Rechts ist echt</button>
+            </div>
+
+            <div id="explanation"></div>
+        </div>
+
+        <div id="result-container">
+            <div class="result-icon">🔍</div>
+            <div id="final-score">0 / 5</div>
+            <p id="result-msg"></p>
+
+            <div class="info-box">
+                <h3>Was sind Deepfakes?</h3>
+                <p>Deepfakes sind KI-generierte Medien, die echte Personen oder Inhalte imitieren. Die Technologie nutzt neuronale Netzwerke, um Bilder, Videos und Stimmen zu erzeugen.</p>
+                <p>Die Qualität steigt rasant: Was vor wenigen Jahren noch leicht erkennbar war, ist heute oft vom Original nicht mehr zu unterscheiden.</p>
+                <p>Tipps zum Erkennen: Achte auf zu perfekte Symmetrie, unnatürliche Hauttexturen, seltsame Hintergründe und inkonsistente Beleuchtung.</p>
+            </div>
+
+            <button id="btn-retry">Nochmal spielen</button>
+        </div>
+    </div>
+
+    <script src="js/deepfake.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
