@@ -242,6 +242,249 @@
     // =============================================
     // ARÄOMETER
     // =============================================
+    // =============================================
+    // MEERSCHAUMPFEIFE
+    // =============================================
+    const PFEIFE_DEF = {
+        titel: "Die Meerschaumpfeife",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Ein Drache aus Stein und Rauch",
+                beschreibung: "Vor dir liegt ein Wunderwerk der Handwerkskunst: Eine Pfeife, geschnitzt aus Meerschaum – einem weißen Mineral aus den Tiefen Anatoliens. Ein Drache (oder Fabelwesen) blickt dich an, eine silberne Haube krönt seinen Kopf.<br><br>Diese Pfeife war kein Gebrauchsgegenstand. Sie war ein <em>Denkwerkzeug</em>. Ihr Besitzer, ein Professor, hielt sie in der Hand, wenn er die großen Fragen stellte. Und der Drache? Der hörte zu."
+            },
+            {
+                typ: "drache-fragt",
+                titel: "Der Drache fragt",
+                beschreibung: ""
+            },
+            {
+                typ: "patina",
+                titel: "Patina der Gedanken",
+                beschreibung: ""
+            },
+            {
+                typ: "handwerk-ki",
+                titel: "Handwerk vs. Algorithmus",
+                beschreibung: ""
+            },
+            {
+                typ: "pfeife-erfolg",
+                titel: "Rauch und Gedanken",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Der Drache fragt ---
+    const DRACHE_FRAGEN = [
+        {
+            frage: "Was ist für dich Luxus?",
+            optionen: ["Etwas Teures besitzen", "Zeit haben für nichts", "Etwas Handgemachtes, das nur für mich ist"],
+            drache: [
+                "1890 war diese Pfeife Luxus – 50 Gulden, ein Monatslohn. Aber ihr wahrer Wert? Die Abende, die der Professor mit ihr nachdachte.",
+                "Der Professor hätte dir zugestimmt. Er sagte einmal: 'Die wertvollste Stunde ist jene, in der man nichts tun MUSS.' Die Pfeife war sein Werkzeug des Nichtstuns.",
+                "Meister Alois schnitzte wochenlang an diesem Drachenkopf. Jede Schuppe, jedes Haar. Heute würde eine Maschine das in Minuten machen. Aber hätte sie eine Seele?"
+            ]
+        },
+        {
+            frage: "Wann hast du zuletzt etwas getan, das nur dem Denken diente?",
+            optionen: ["Heute – ich nehme mir bewusst Zeit", "Ich weiß nicht... vielleicht Wochen her?", "Denken? Dafür hab ich mein Handy"],
+            drache: [
+                "Bemerkenswert. Der Professor nahm sich jeden Abend eine Stunde. Pfeife, Sessel, Stille. Keine Zeitung, kein Gespräch. Nur Gedanken und Rauch.",
+                "Du bist ehrlich. Im 19. Jahrhundert war Nachdenken ein RITUAL. Man setzte sich hin, zündete die Pfeife an, und ließ die Gedanken schweifen. Heute scrollen wir.",
+                "Der Professor hätte gelacht – und geweint. Er lebte in einer Welt ohne Ablenkung. Kein Bildschirm, kein Ping. Nur das leise Knistern des Tabaks und die Stille der Stube."
+            ]
+        },
+        {
+            frage: "Was würdest du einem Menschen in 100 Jahren über unsere Zeit erzählen?",
+            optionen: ["Wir hatten alles Wissen der Welt – und waren trotzdem oft ratlos", "Wir haben verlernt, Dinge mit den Händen zu machen", "Wir waren ständig verbunden – und oft einsam"],
+            drache: [
+                "Der Professor hätte dasselbe über seine Zeit gesagt. Wissen macht nicht weise. Die Pfeife half ihm, den Unterschied zu finden.",
+                "Diese Pfeife wurde wochenlang von Hand geschnitzt. Jede Schuppe ein Gedanke, jede Linie eine Entscheidung. Was machen DEINE Hände heute?",
+                "Verbunden und einsam – das kannte auch der Professor. Er schrieb Briefe, die Wochen brauchten. Aber jedes Wort war gewählt. Heute schreiben wir hundert Nachrichten und sagen nichts."
+            ]
+        }
+    ];
+    let dracheIdx = 0;
+
+    function buildDracheFragtUI() {
+        dracheIdx = 0;
+        return `
+        <div class="game-area" id="dracheArea" style="text-align:center;">
+            <div style="font-size:2.5em; margin:5px 0;">🐉</div>
+            <p style="color:rgba(253,245,230,0.4); font-size:0.85em; font-style:italic;">Der Drache auf der Pfeife öffnet die Augen...</p>
+            <div id="dracheContent"></div>
+        </div>`;
+    }
+
+    function renderDracheFrage() {
+        if (dracheIdx >= DRACHE_FRAGEN.length) {
+            document.getElementById('dracheContent').innerHTML = `
+                <div class="fade-in">
+                    <p style="color:var(--gold); font-style:italic; margin:15px 0;">"Danke, dass du mir zugehört hast. Seit über hundert Jahren hat mich niemand mehr gefragt."</p>
+                    <button class="btn" onclick="next()">Weiter – Patina der Gedanken</button>
+                </div>`;
+            return;
+        }
+        const f = DRACHE_FRAGEN[dracheIdx];
+        document.getElementById('dracheContent').innerHTML = `
+            <div class="fade-in">
+                <p style="color:var(--gold); font-size:1.2em; font-weight:bold; margin:15px 0;">"${f.frage}"</p>
+                ${f.optionen.map((opt, i) => `<button class="btn" style="margin-top:8px; font-size:0.85em; padding:10px; text-align:left;" onclick="antwortDrache(${dracheIdx},${i})">${opt}</button>`).join('')}
+            </div>`;
+    }
+
+    function antwortDrache(fIdx, aIdx) {
+        const f = DRACHE_FRAGEN[fIdx];
+        playTone(300, 400);
+        document.getElementById('dracheContent').innerHTML = `
+            <div class="fade-in">
+                <p style="color:rgba(253,245,230,0.5); font-size:0.85em; margin-bottom:5px;">Du: "${f.optionen[aIdx]}"</p>
+                <div class="info-box" style="border-left-color:var(--gold); font-style:italic;">
+                    🐉 ${f.drache[aIdx]}
+                </div>
+                <button class="btn" style="margin-top:10px;" onclick="dracheIdx++; renderDracheFrage();">Nächste Frage</button>
+            </div>`;
+    }
+
+    // --- Patina der Gedanken ---
+    let patinaGedanken = [];
+    const PATINA_FARBEN = ['#FFFFF0','#FFF8DC','#F5DEB3','#DEB887','#D2B48C','#C8A870','#B8860B','#8B6914','#6B4F10','#4A3500'];
+
+    function buildPatinaUI() {
+        patinaGedanken = [];
+        return `
+        <div class="game-area" style="text-align:center;" id="patinaArea">
+            <p style="font-size:0.9em; margin-bottom:5px;">Diese Pfeife begann <strong>schneeweiß</strong>. Mit jedem Abend, jedem Gedanken, jedem Rauchzug wurde sie goldener.</p>
+            <div style="width:80px; height:120px; margin:15px auto; border-radius:0 0 40px 40px; transition:background 0.5s;" id="patinaKopf">
+                <div style="font-size:2em; padding-top:10px;">🐉</div>
+            </div>
+            <p style="font-size:0.75em; color:rgba(253,245,230,0.4);" id="patinaLabel">Schneeweiß – noch unberührt</p>
+            <p style="font-size:0.95em; margin:10px 0;">Gib der Pfeife einen Gedanken:</p>
+            <input type="text" id="patinaInput" placeholder="Was beschäftigt dich gerade?" style="width:90%; padding:12px; border:1px solid rgba(212,175,55,0.3); background:#111; color:var(--text); border-radius:8px; font-size:1em; text-align:center;">
+            <button class="btn" style="margin-top:10px;" onclick="addPatina()">Gedanke einrauchen</button>
+            <div id="patinaList" style="margin-top:10px; font-size:0.8em; color:rgba(253,245,230,0.4);"></div>
+        </div>`;
+    }
+
+    function addPatina() {
+        const input = document.getElementById('patinaInput');
+        const text = input.value.trim();
+        if (!text) return;
+        patinaGedanken.push(text);
+        input.value = '';
+        playTone(250 + patinaGedanken.length * 30, 300);
+
+        const idx = Math.min(patinaGedanken.length, PATINA_FARBEN.length - 1);
+        document.getElementById('patinaKopf').style.background = PATINA_FARBEN[idx];
+
+        const labels = ['Erstes Glimmen','Ein Hauch von Gold','Wärme steigt auf','Die Farbe des Denkens','Honigbraun','Tiefe Patina','Reife Weisheit','Fast vollendet','Meisterstück'];
+        document.getElementById('patinaLabel').innerText = labels[Math.min(idx-1, labels.length-1)] || 'Schneeweiß';
+
+        document.getElementById('patinaList').innerHTML = patinaGedanken.map(g => `<div style="margin:3px 0;">💭 ${g}</div>`).join('');
+
+        if (patinaGedanken.length >= 5) {
+            if (!document.getElementById('patinaWeiter')) {
+                const area = document.getElementById('patinaArea');
+                const msg = document.createElement('div');
+                msg.className = 'info-box fade-in';
+                msg.style.cssText = 'margin-top:15px; font-style:italic; border-left-color:var(--gold);';
+                msg.innerHTML = '<strong>Du bist wie dieser Meerschaum.</strong> Jeder Gedanke, jede Erfahrung gibt dir Farbe. Deine Patina ist dein Leben.';
+                area.appendChild(msg);
+                const btn = document.createElement('button');
+                btn.id = 'patinaWeiter'; btn.className = 'btn erfolg-animation';
+                btn.innerText = 'Weiter – Handwerk vs. Algorithmus';
+                btn.onclick = () => next();
+                area.appendChild(btn);
+            }
+        }
+    }
+
+    // --- Handwerk vs. KI ---
+    function buildHandwerkKiUI() {
+        return `
+        <div class="game-area" style="text-align:center;" id="hkArea">
+            <p style="font-size:0.95em;">Meister Alois brauchte <strong>4 Wochen</strong>, um den Drachenkopf aus Meerschaum zu schnitzen. Jede Schuppe, jedes Haar – von Hand.</p>
+            <div style="display:flex; gap:10px; margin:15px 0;">
+                <div style="flex:1; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.2); border-radius:8px; padding:12px;">
+                    <div style="font-size:1.5em;">🤲</div>
+                    <p style="color:var(--gold); font-weight:bold; font-size:0.9em;">Handwerk</p>
+                    <p style="font-size:0.75em; color:rgba(253,245,230,0.5);">4 Wochen Arbeit<br>Einzigartig<br>Mit Seele<br>Unvollkommen</p>
+                </div>
+                <div style="flex:1; background:rgba(100,180,255,0.08); border:1px solid rgba(100,180,255,0.2); border-radius:8px; padding:12px;">
+                    <div style="font-size:1.5em;">🤖</div>
+                    <p style="color:#64b5f6; font-weight:bold; font-size:0.9em;">Algorithmus</p>
+                    <p style="font-size:0.75em; color:rgba(253,245,230,0.5);">4 Sekunden<br>Beliebig kopierbar<br>Technisch perfekt<br>Ohne Geschichte</p>
+                </div>
+            </div>
+            <p style="font-size:1.05em; color:var(--gold); font-weight:bold; margin:15px 0;">Was hat mehr Wert?</p>
+            <button class="btn" style="margin-top:5px;" onclick="hkAntwort('handwerk')">🤲 Das Handgemachte</button>
+            <button class="btn" style="margin-top:8px; background:transparent; border:2px solid #64b5f6; color:#64b5f6;" onclick="hkAntwort('ki')">🤖 Das Perfekte</button>
+            <button class="btn" style="margin-top:8px; background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="hkAntwort('beides')">🤝 Beides – auf verschiedene Weise</button>
+            <div id="hkResult" style="margin-top:10px;"></div>
+        </div>`;
+    }
+
+    function hkAntwort(wahl) {
+        const texte = {
+            handwerk: "Der Professor hätte zugestimmt. Er schrieb einmal: 'Die Unvollkommenheit der menschlichen Hand ist die vollkommenste Signatur.' Jede Kerbe in dieser Pfeife erzählt von einem Moment, in dem Meister Alois eine Entscheidung traf. Das kann kein Algorithmus.",
+            ki: "Eine überraschende Wahl – aber ehrlich. Und vielleicht braucht die Welt beides: Die Effizienz der Maschine UND die Seele des Handwerks. Diese Pfeife jedenfalls wurde in einer Welt gemacht, in der Perfektion nicht das Ziel war. Charakter war es.",
+            beides: "Die weiseste Antwort. Der Algorithmus kann entwerfen, was der Mensch nicht berechnen kann. Aber der Mensch kann fühlen, was der Algorithmus nicht versteht. Diese Pfeife ist der Beweis: Meister Alois' Hände wussten Dinge, die sein Kopf nicht in Worte fassen konnte."
+        };
+        playTone(350, 400);
+        document.getElementById('hkResult').innerHTML = `
+            <div class="info-box fade-in" style="border-left-color:var(--gold); font-style:italic;">
+                🐉 ${texte[wahl]}
+            </div>
+            <div class="info-box fade-in" style="margin-top:10px; font-size:0.85em; border-left-color:rgba(100,180,255,0.5);">
+                <strong>Meta-Gedanke:</strong> Du stehst gerade in einer Ausstellung namens "Museum meets KI". Dieses Programm, das du bedienst, wurde von einer KI mitgeschrieben. Aber die Fragen, die der Drache stellt – die kommen aus einer Welt, die älter ist als jeder Computer.
+            </div>
+            <button class="btn erfolg-animation" style="margin-top:10px;" onclick="next()">Weiter – Reflexion</button>`;
+    }
+
+    // --- Pfeife Erfolg ---
+    function buildPfeifeErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">🐉</div>
+            <h1 style="font-size:1.1em;">Rauch und Gedanken</h1>
+            <p style="font-size:0.95em; font-style:italic;">"Die besten Gedanken kommen, wenn man aufhört zu suchen."</p>
+
+            <div class="erfolg-stats">
+                <div class="erfolg-stat">
+                    <div class="label">Deine Gedanken</div>
+                    <div class="value">${patinaGedanken.length}</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Alter der Pfeife</div>
+                    <div class="value">~130 Jahre</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Material</div>
+                    <div class="value">Meerschaum</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Schnitzzeit</div>
+                    <div class="value">~4 Wochen</div>
+                </div>
+            </div>
+
+            <div class="fun-facts">
+                <h3>Zum Nachdenken:</h3>
+                <ul>
+                    <li><strong>Meerschaum</strong> (Sepiolith) kommt fast ausschließlich aus der Türkei. Das Wort bedeutet wörtlich "Schaum des Meeres" – weil es so leicht ist, dass es auf Wasser schwimmt.</li>
+                    <li>Die <strong>Patina</strong> entsteht, weil der poröse Meerschaum Nikotin und Öle aufnimmt. Jede Pfeife wird einzigartig – wie ein Fingerabdruck ihres Besitzers.</li>
+                    <li>Im 19. Jahrhundert war das <strong>Pfeifenrauchen</strong> ein Ritual der Kontemplation. Professoren, Dichter und Denker nutzten es als bewusste Verlangsamung.</li>
+                    <li>Diese Pfeife hat mehr Gedanken "gehört" als die meisten Bücher jemals erzählen werden. Sie war <strong>stiller Zeuge</strong> eines ganzen Gelehrtenlebens.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal erleben</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
     const ARAEOMETER_DEF = {
         titel: "Das Aräometer",
         schritte: [
@@ -330,8 +573,7 @@
         const item = SCHWIMM_ITEMS[schwimmIdx];
         const correct = antwort === item.schwimmt;
         if (correct) { schwimmScore++; playTone(523, 200); } else { playTone(200, 200); }
-        document.getElementById('schwimmFb').innerHTML = `<div class="info-box fade-in" style="font-size:0.85em; border-left-color:${correct ? 'lime' : '#ff6347'};"><strong>${correct ? '✓ Richtig!' : '✗ Falsch!'}</strong> ${item.erklaerung}</div>`;
-        setTimeout(() => { schwimmIdx++; renderSchwimmFrage(); }, 2000);
+        document.getElementById('schwimmFb').innerHTML = `<div class="info-box fade-in" style="font-size:0.85em; border-left-color:${correct ? 'lime' : '#ff6347'};"><strong>${correct ? '✓ Richtig!' : '✗ Falsch!'}</strong> ${item.erklaerung}</div><button class="btn" style="margin-top:10px; font-size:0.9em; padding:10px;" onclick="schwimmIdx++; renderSchwimmFrage();">Nächste Frage →</button>`;
     }
 
     // --- Leopold Mission ---
@@ -2134,6 +2376,7 @@
     artefakte["fronleichnam"] = FRONLEICHNAM_DEF;
     artefakte["feldtelefon"] = FELDTELEFON_DEF;
     artefakte["araeometer"] = ARAEOMETER_DEF;
+    artefakte["pfeife"] = PFEIFE_DEF;
 
     const urlParams = new URLSearchParams(window.location.search);
     const objektKey = urlParams.get('objekt');
@@ -2151,7 +2394,8 @@
                 <button class="btn" onclick="window.location.search='?objekt=gemaelde'">Kärntner Abwehrkampf (Gemälde)</button>
                 <button class="btn" onclick="window.location.search='?objekt=fronleichnam'">Fronleichnam in Vorchdorf</button>
                 <button class="btn" onclick="window.location.search='?objekt=feldtelefon'">Feldtelefon (Feldfernsprecher)</button>
-                <button class="btn" onclick="window.location.search='?objekt=araeometer'">Aräometer (Baumé-Hydrometer)</button>`;
+                <button class="btn" onclick="window.location.search='?objekt=araeometer'">Aräometer (Baumé-Hydrometer)</button>
+                <button class="btn" onclick="window.location.search='?objekt=pfeife'">Meerschaumpfeife (Drachenkopf)</button>`;
             return;
         }
 
@@ -2258,6 +2502,15 @@
             html += buildDichteLaborUI();
         } else if (schritt.typ === "araeometer-erfolg") {
             html += buildAraeometerErfolgUI();
+
+        } else if (schritt.typ === "drache-fragt") {
+            html += buildDracheFragtUI();
+        } else if (schritt.typ === "patina") {
+            html += buildPatinaUI();
+        } else if (schritt.typ === "handwerk-ki") {
+            html += buildHandwerkKiUI();
+        } else if (schritt.typ === "pfeife-erfolg") {
+            html += buildPfeifeErfolgUI();
         }
 
         // Navigation
@@ -2267,7 +2520,8 @@
             || schritt.typ === "perspektiven" || schritt.typ === "propaganda" || schritt.typ === "abstimmung" || schritt.typ === "gemaelde-erfolg"
             || schritt.typ === "vorchdorf-slider" || schritt.typ === "sozial-ordnung" || schritt.typ === "anna-story" || schritt.typ === "fronleichnam-erfolg"
             || schritt.typ === "feldtel-verbindung" || schritt.typ === "feldtel-buchstabieren" || schritt.typ === "feldtel-abhoeren" || schritt.typ === "feldtel-stillepost" || schritt.typ === "feldtel-erfolg"
-            || schritt.typ === "schwimm-quiz" || schritt.typ === "leopold-mission" || schritt.typ === "dichte-labor" || schritt.typ === "araeometer-erfolg") {
+            || schritt.typ === "schwimm-quiz" || schritt.typ === "leopold-mission" || schritt.typ === "dichte-labor" || schritt.typ === "araeometer-erfolg"
+            || schritt.typ === "drache-fragt" || schritt.typ === "patina" || schritt.typ === "handwerk-ki" || schritt.typ === "pfeife-erfolg") {
             // Diese haben eigene Navigation
         } else if (schritt.typ === "game") {
             html += `<button class="btn" id="voltWeiter" onclick="next()" style="display:none">Weiter – Nachricht senden!</button>`;
@@ -2287,6 +2541,7 @@
         if (schritt.typ === "feldtel-verbindung") initVerbindung();
         if (schritt.typ === "feldtel-buchstabieren") renderBuchstFrage();
         if (schritt.typ === "feldtel-abhoeren") renderAbhoerFrage();
+        if (schritt.typ === "drache-fragt") renderDracheFrage();
         if (schritt.typ === "schwimm-quiz") renderSchwimmFrage();
         if (schritt.typ === "leopold-mission") renderLeopoldProbe();
         if (schritt.typ === "dichte-labor") renderLaborFrage();
