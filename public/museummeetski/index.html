@@ -245,6 +245,288 @@
     // =============================================
     // MEERSCHAUMPFEIFE
     // =============================================
+    // =============================================
+    // ODHNER RECHENMASCHINE
+    // =============================================
+    const ODHNER_DEF = {
+        titel: "Die Rechenmaschine",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Die Schwarze Dame – Wien, 1948",
+                beschreibung: "Vor dir steht eine Original Odhner Pinwheel-Rechenmaschine. Schwarz lackiert, schwedischer Stahl, Zahnräder aus Präzision und Geduld. Buchhalter Leopold nannte sie liebevoll <em>‚die Schwarze Dame'</em>.<br><br>Sie kann addieren, subtrahieren, multiplizieren und dividieren – rein mechanisch, ohne Strom. Aber sie ist viel mehr als ein Rechenwerkzeug. Sie ist ein Kapitel in der ältesten Geschichte der Menschheit: der Suche nach der Zahl."
+            },
+            {
+                typ: "rechen-zeitreise",
+                titel: "5000 Jahre Rechnen",
+                beschreibung: "Kurbel dich durch die Geschichte des Rechnens – von den Fingern der Steinzeit bis zur KI."
+            },
+            {
+                typ: "rechen-methoden",
+                titel: "Rechne wie die Großen",
+                beschreibung: "Dieselbe Aufgabe, 4 Methoden, 4 Epochen. Wer rechnet am besten – und wer VERSTEHT die Zahl?"
+            },
+            {
+                typ: "rechen-duell",
+                titel: "Kurbel-Duell",
+                beschreibung: "Wie schnell bist DU? Tritt an gegen die Odhner, den Taschenrechner und einen Supercomputer."
+            },
+            {
+                typ: "odhner-erfolg",
+                titel: "Was zählt mehr?",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Zeitreise des Rechnens ---
+    const RECHEN_EPOCHEN = [
+        { jahr: "50.000 v.Chr.", name: "Finger & Steine", emoji: "🖐️", text: "Der Mensch beginnt zu zählen – mit dem, was er hat: 10 Finger, Kieselsteine, Kerben in Knochen. Das Dezimalsystem? Verdanken wir unseren Händen.", dauer: "Unbegrenzt – solange du Finger hast" },
+        { jahr: "2400 v.Chr.", name: "Der Abakus", emoji: "🧮", text: "Mesopotamien erfindet den Abakus: Kugeln auf Stangen. Erstmals kann man rechnen, OHNE den Kopf zu belasten. Das Gedächtnis wird frei für Größeres.", dauer: "Eine Addition: ~3 Sekunden" },
+        { jahr: "100 v.Chr.", name: "Antikythera-Mechanismus", emoji: "⚙️", text: "Die alten Griechen bauen den ersten analogen Computer: 30+ Zahnräder, die Sonnen- und Mondfinsternisse vorhersagen. 2000 Jahre vor der Odhner – und genauso genial.", dauer: "Astronomische Berechnung: Minuten statt Monate" },
+        { jahr: "1642", name: "Pascals Pascaline", emoji: "🔢", text: "Blaise Pascal, 19 Jahre alt, baut eine Rechenmaschine für seinen Vater, einen Steuereintreiber. 6 Zahnräder, automatischer Zehnerübertrag. Die Geburt der mechanischen Berechnung.", dauer: "Eine Addition: ~5 Sekunden" },
+        { jahr: "1694", name: "Leibniz' Staffelwalze", emoji: "🎰", text: "Gottfried Wilhelm Leibniz – Mathematiker, Philosoph, Universalgenie – erfindet eine Maschine, die auch multiplizieren kann. Er sagt: 'Es ist unwürdig, die Zeit ausgezeichneter Leute mit knechtischen Rechenarbeiten zu verschwenden.'", dauer: "Eine Multiplikation: ~30 Sekunden" },
+        { jahr: "~1935", name: "DIESE Odhner", emoji: "🏭", text: "Die Maschine vor dir. Willgodt Odhner perfektioniert das Pinwheel-Prinzip. In jedem Büro Europas steht eine. Leopold kurbelt damit die Bilanzen des Wiederaufbaus. Sie ist robust, präzise und unersetzlich.", dauer: "347 × 12 = ca. 15 Sekunden" },
+        { jahr: "1945", name: "ENIAC", emoji: "💡", text: "Der erste elektronische Computer: 27 Tonnen, 18.000 Vakuumröhren, ein ganzer Raum. Er kann in SEKUNDEN, was die Odhner in Stunden braucht. Die mechanische Ära endet.", dauer: "347 × 12 = 0,001 Sekunden" },
+        { jahr: "2025", name: "Dein Smartphone + KI", emoji: "📱", text: "In deiner Hosentasche steckt mehr Rechenpower als in allen Odhner-Maschinen, die je gebaut wurden. Zusammen. Und die KI kann nicht nur rechnen – sie kann denken. Oder?", dauer: "347 × 12 = 0,000001 Sekunden" }
+    ];
+    let epocheIdx = 0;
+
+    function buildRechenZeitreiseUI() {
+        epocheIdx = 0;
+        return `
+        <div class="game-area" id="zeitreiseRechnen" style="text-align:center;">
+            <div id="epocheContent"></div>
+            <button class="btn" id="kurbelEpoche" onclick="nextEpoche()">⟳ Kurbeln – Nächste Ära</button>
+        </div>`;
+    }
+
+    function renderEpoche() {
+        if (epocheIdx >= RECHEN_EPOCHEN.length) {
+            document.getElementById('epocheContent').innerHTML = `
+                <div class="fade-in">
+                    <p style="color:var(--gold); font-size:1.2em; font-weight:bold;">5000 Jahre – 8 Revolutionen</p>
+                    <p style="font-size:0.9em;">Von den Fingern zur KI. Und diese Odhner? Sie steht genau in der Mitte – das Scharnier zwischen der alten und der neuen Welt des Rechnens.</p>
+                </div>`;
+            document.getElementById('kurbelEpoche').innerText = 'Weiter – Rechne wie die Großen';
+            document.getElementById('kurbelEpoche').onclick = () => next();
+            return;
+        }
+        const e = RECHEN_EPOCHEN[epocheIdx];
+        document.getElementById('epocheContent').innerHTML = `
+            <div class="fade-in">
+                <div class="step-indicator" style="margin-bottom:8px;">
+                    ${RECHEN_EPOCHEN.map((_, i) => `<div class="step-dot ${i < epocheIdx ? 'done' : i === epocheIdx ? 'active' : ''}"></div>`).join('')}
+                </div>
+                <div style="font-size:2.5em; margin:5px 0;">${e.emoji}</div>
+                <p style="color:var(--gold); font-weight:bold; font-size:0.9em;">${e.jahr}</p>
+                <p style="font-size:1.1em; font-weight:bold; margin:3px 0;">${e.name}</p>
+                <div class="info-box" style="font-size:0.9em;">${e.text}</div>
+                <p style="font-size:0.8em; color:rgba(253,245,230,0.4);">Geschwindigkeit: ${e.dauer}</p>
+            </div>`;
+        playTone(250 + epocheIdx * 60, 200);
+    }
+    function nextEpoche() { epocheIdx++; renderEpoche(); }
+
+    // --- Rechne wie die Großen ---
+    const AUFGABE = { a: 347, b: 12, ergebnis: 4164 };
+    let methodenIdx = 0, methodenBeantwortet = false;
+    const METHODEN = [
+        {
+            name: "Römische Fingermultiplikation",
+            emoji: "🖐️",
+            epoche: "~200 v.Chr.",
+            erklaerung: "Die Römer multiplizierten mit den Fingern! Für 7×8: Strecke an einer Hand 2 Finger (10-8), an der anderen 3 (10-7). Gestreckte Finger = Zehner (5×10=50). Gebogene Finger multiplizieren (3×2=6). Ergebnis: 56!",
+            frage: "Was ist 347 × 12 mit dem Kopf? (Tipp: 347×10 + 347×2)",
+            optionen: ["4.164", "3.894", "4.264"],
+            richtig: 0
+        },
+        {
+            name: "Die Odhner-Methode",
+            emoji: "⚙️",
+            epoche: "1935",
+            erklaerung: "Schiebe 347 in die Eingabeschlitze. Kurbel 2× für die Einer. Verschiebe den Schlitten. Kurbel 1× für die Zehner. Lies das Ergebnis im unteren Register: 4.164!",
+            frage: "Wie oft muss man für 347 × 12 insgesamt kurbeln?",
+            optionen: ["3 Mal (1+2)", "12 Mal", "347 Mal"],
+            richtig: 0
+        },
+        {
+            name: "Der Taschenrechner",
+            emoji: "🔢",
+            epoche: "1972",
+            erklaerung: "3-4-7-×-1-2-=. Sieben Tastendrücke. 0,5 Sekunden. Aber verstehst du WARUM 4.164 rauskommt? Der Taschenrechner erklärt nichts.",
+            frage: "Was fehlt dem Taschenrechner, das Pythagoras hatte?",
+            optionen: ["Das VERSTÄNDNIS, warum das Ergebnis stimmt", "Geschwindigkeit", "Ein Display"],
+            richtig: 0
+        },
+        {
+            name: "Die KI (heute)",
+            emoji: "🤖",
+            epoche: "2025",
+            erklaerung: "Die KI rechnet nicht nur – sie kann erklären: '347 × 12 = 347 × (10+2) = 3470 + 694 = 4164.' Sie versteht Muster, kann Kontext geben, sogar Witze über Mathe machen. Aber: Hat sie ein GESPÜR für Zahlen?",
+            frage: "Was kann die KI NICHT, was der Buchhalter Leopold konnte?",
+            optionen: ["FÜHLEN ob eine Zahl ‚stimmt' – das Bauchgefühl der Erfahrung", "Schneller rechnen", "Größere Zahlen verarbeiten"],
+            richtig: 0
+        }
+    ];
+
+    function buildRechenMethodenUI() {
+        methodenIdx = 0;
+        return `<div class="game-area" id="methodenArea"><div id="methodenContent"></div></div>`;
+    }
+
+    function renderMethode() {
+        if (methodenIdx >= METHODEN.length) {
+            document.getElementById('methodenContent').innerHTML = `
+                <div class="fade-in" style="text-align:center;">
+                    <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">4 Epochen, 1 Ergebnis: ${AUFGABE.ergebnis}</p>
+                    <div class="info-box" style="font-style:italic;">Die Methoden ändern sich. Die Mathematik bleibt. Aber das <strong>Verstehen</strong> – das geht mit jeder Abkürzung ein Stück verloren.</div>
+                </div>`;
+            setTimeout(() => {
+                if (!document.getElementById('methodenWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'methodenWeiter'; btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Kurbel-Duell';
+                    btn.onclick = () => next();
+                    document.getElementById('app').appendChild(btn);
+                }
+            }, 500);
+            return;
+        }
+        const m = METHODEN[methodenIdx];
+        document.getElementById('methodenContent').innerHTML = `
+            <div class="fade-in" style="text-align:center;">
+                <div class="step-indicator" style="margin-bottom:8px;">
+                    ${METHODEN.map((_, i) => `<div class="step-dot ${i < methodenIdx ? 'done' : i === methodenIdx ? 'active' : ''}"></div>`).join('')}
+                </div>
+                <div style="font-size:2em;">${m.emoji}</div>
+                <p style="color:var(--gold); font-weight:bold;">${m.name} <span style="font-weight:normal; font-size:0.8em;">(${m.epoche})</span></p>
+                <div class="info-box" style="font-size:0.85em; text-align:left;">${m.erklaerung}</div>
+                <p style="font-size:0.95em; font-weight:bold; margin:10px 0;">${m.frage}</p>
+                ${m.optionen.map((opt, i) => `<button class="btn" style="margin-top:6px; font-size:0.85em; padding:10px; text-align:left;" onclick="checkMethode(${methodenIdx},${i})">${opt}</button>`).join('')}
+                <div id="methodenFb" style="min-height:30px; margin-top:8px;"></div>
+            </div>`;
+    }
+
+    function checkMethode(mIdx, aIdx) {
+        const m = METHODEN[mIdx];
+        const correct = aIdx === m.richtig;
+        if (correct) playTone(523, 200); else playTone(200, 200);
+        document.getElementById('methodenFb').innerHTML = `
+            <p style="color:${correct ? 'lime' : '#ff6347'}; font-weight:bold;">${correct ? '✓ Genau!' : '✗ Nicht ganz.'}</p>
+            <button class="btn" style="margin-top:8px; font-size:0.9em;" onclick="methodenIdx++; renderMethode();">Nächste Methode →</button>`;
+    }
+
+    // --- Kurbel-Duell ---
+    const DUELL_AUFGABEN = [
+        { a: 23, b: 7, op: '×' },
+        { a: 456, b: 89, op: '+' },
+        { a: 15, b: 13, op: '×' },
+        { a: 1000, b: 377, op: '-' },
+        { a: 84, b: 4, op: '×' }
+    ];
+    let duellIdx = 0, duellStart = 0, duellZeit = 0;
+
+    function buildRechenDuellUI() {
+        duellIdx = 0; duellStart = Date.now();
+        return `
+        <div class="game-area" id="duellArea" style="text-align:center;">
+            <p style="font-size:0.9em;">Löse 5 Aufgaben so schnell du kannst!</p>
+            <div id="duellContent"></div>
+        </div>`;
+    }
+
+    function renderDuellAufgabe() {
+        if (duellIdx >= DUELL_AUFGABEN.length) {
+            duellZeit = ((Date.now() - duellStart) / 1000).toFixed(1);
+            document.getElementById('duellContent').innerHTML = `
+                <div class="fade-in">
+                    <p style="color:var(--gold); font-size:1.3em; font-weight:bold;">Deine Zeit: ${duellZeit} Sekunden</p>
+                    <div class="erfolg-stats" style="margin:15px 0;">
+                        <div class="erfolg-stat"><div class="label">Du</div><div class="value">${duellZeit}s</div></div>
+                        <div class="erfolg-stat"><div class="label">Odhner</div><div class="value">~90s</div></div>
+                        <div class="erfolg-stat"><div class="label">Taschenrechner</div><div class="value">~5s</div></div>
+                        <div class="erfolg-stat"><div class="label">Supercomputer</div><div class="value">0,00001s</div></div>
+                    </div>
+                    <div class="info-box" style="font-style:italic; font-size:0.9em;">
+                        Der Supercomputer ist ${Math.round(parseFloat(duellZeit) / 0.00001).toLocaleString()}× schneller als du. Aber er hat bei keiner einzigen Aufgabe nachgedacht. Du schon.
+                    </div>
+                </div>`;
+            setTimeout(() => {
+                if (!document.getElementById('duellWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'duellWeiter'; btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Reflexion';
+                    btn.onclick = () => next();
+                    document.getElementById('app').appendChild(btn);
+                }
+            }, 500);
+            return;
+        }
+        const a = DUELL_AUFGABEN[duellIdx];
+        let ergebnis;
+        if (a.op === '×') ergebnis = a.a * a.b;
+        else if (a.op === '+') ergebnis = a.a + a.b;
+        else ergebnis = a.a - a.b;
+        // 3 Optionen
+        const opts = [ergebnis, ergebnis + Math.floor(Math.random()*20+5), ergebnis - Math.floor(Math.random()*15+3)].sort(() => Math.random()-0.5);
+
+        document.getElementById('duellContent').innerHTML = `
+            <div class="fade-in">
+                <p style="font-size:0.8em; color:rgba(253,245,230,0.4);">Aufgabe ${duellIdx+1}/5</p>
+                <p style="font-size:2em; color:var(--gold); font-weight:bold; margin:10px 0;">${a.a} ${a.op} ${a.b} = ?</p>
+                ${opts.map(o => `<button class="btn" style="margin-top:6px; font-size:1.1em; padding:12px;" onclick="checkDuell(${o},${ergebnis})">${o.toLocaleString()}</button>`).join('')}
+            </div>`;
+    }
+
+    function checkDuell(answer, correct) {
+        if (answer === correct) playTone(523, 100); else playTone(200, 150);
+        duellIdx++;
+        renderDuellAufgabe();
+    }
+
+    // --- Odhner Erfolg ---
+    function buildOdhnerErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">⚙️</div>
+            <h1 style="font-size:1.1em;">Was zählt mehr?</h1>
+            <p style="font-size:0.95em; font-style:italic;">"Rechnen können alle. Verstehen nur wenige. Was zählt mehr?"</p>
+
+            <div class="erfolg-stats">
+                <div class="erfolg-stat">
+                    <div class="label">Deine Rechenzeit</div>
+                    <div class="value">${duellZeit || '?'}s</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Epochen bereist</div>
+                    <div class="value">8</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Alter der Odhner</div>
+                    <div class="value">~90 Jahre</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Gewicht</div>
+                    <div class="value">~6 kg</div>
+                </div>
+            </div>
+
+            <div class="fun-facts">
+                <h3>Die große Perspektive:</h3>
+                <ul>
+                    <li><strong>Leibniz</strong> (1694) sagte: „Es ist unwürdig, die Zeit ausgezeichneter Leute mit knechtischen Rechenarbeiten zu verschwenden." Er erfand die erste Multipliziermaschine – und das Binärsystem, auf dem JEDER Computer basiert.</li>
+                    <li>Der <strong>Antikythera-Mechanismus</strong> (100 v.Chr.) konnte Sonnenfinsternisse vorhersagen – mit Zahnrädern. Er wurde erst 1901 im Meer gefunden. 2000 Jahre lang wusste niemand, dass die Griechen so etwas konnten.</li>
+                    <li>Diese Odhner kostete <strong>200-400 Reichsmark</strong> – mehrere Monatslöhne. Heute hat dein Smartphone die Rechenleistung von Millionen Odhner-Maschinen.</li>
+                    <li><strong>Buchhalter Leopold</strong> nannte seine Odhner „die Schwarze Dame". Sie half ihm, die Bilanzen des österreichischen Wiederaufbaus zu rechnen. Ohne sie wäre die Nachkriegswirtschaft im Chaos versunken.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal spielen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
     const PFEIFE_DEF = {
         titel: "Die Meerschaumpfeife",
         schritte: [
@@ -2377,6 +2659,7 @@
     artefakte["feldtelefon"] = FELDTELEFON_DEF;
     artefakte["araeometer"] = ARAEOMETER_DEF;
     artefakte["pfeife"] = PFEIFE_DEF;
+    artefakte["odhner"] = ODHNER_DEF;
 
     const urlParams = new URLSearchParams(window.location.search);
     const objektKey = urlParams.get('objekt');
@@ -2395,7 +2678,8 @@
                 <button class="btn" onclick="window.location.search='?objekt=fronleichnam'">Fronleichnam in Vorchdorf</button>
                 <button class="btn" onclick="window.location.search='?objekt=feldtelefon'">Feldtelefon (Feldfernsprecher)</button>
                 <button class="btn" onclick="window.location.search='?objekt=araeometer'">Aräometer (Baumé-Hydrometer)</button>
-                <button class="btn" onclick="window.location.search='?objekt=pfeife'">Meerschaumpfeife (Drachenkopf)</button>`;
+                <button class="btn" onclick="window.location.search='?objekt=pfeife'">Meerschaumpfeife (Drachenkopf)</button>
+                <button class="btn" onclick="window.location.search='?objekt=odhner'">Odhner Rechenmaschine</button>`;
             return;
         }
 
@@ -2511,6 +2795,15 @@
             html += buildHandwerkKiUI();
         } else if (schritt.typ === "pfeife-erfolg") {
             html += buildPfeifeErfolgUI();
+
+        } else if (schritt.typ === "rechen-zeitreise") {
+            html += buildRechenZeitreiseUI();
+        } else if (schritt.typ === "rechen-methoden") {
+            html += buildRechenMethodenUI();
+        } else if (schritt.typ === "rechen-duell") {
+            html += buildRechenDuellUI();
+        } else if (schritt.typ === "odhner-erfolg") {
+            html += buildOdhnerErfolgUI();
         }
 
         // Navigation
@@ -2521,7 +2814,8 @@
             || schritt.typ === "vorchdorf-slider" || schritt.typ === "sozial-ordnung" || schritt.typ === "anna-story" || schritt.typ === "fronleichnam-erfolg"
             || schritt.typ === "feldtel-verbindung" || schritt.typ === "feldtel-buchstabieren" || schritt.typ === "feldtel-abhoeren" || schritt.typ === "feldtel-stillepost" || schritt.typ === "feldtel-erfolg"
             || schritt.typ === "schwimm-quiz" || schritt.typ === "leopold-mission" || schritt.typ === "dichte-labor" || schritt.typ === "araeometer-erfolg"
-            || schritt.typ === "drache-fragt" || schritt.typ === "patina" || schritt.typ === "handwerk-ki" || schritt.typ === "pfeife-erfolg") {
+            || schritt.typ === "drache-fragt" || schritt.typ === "patina" || schritt.typ === "handwerk-ki" || schritt.typ === "pfeife-erfolg"
+            || schritt.typ === "rechen-zeitreise" || schritt.typ === "rechen-methoden" || schritt.typ === "rechen-duell" || schritt.typ === "odhner-erfolg") {
             // Diese haben eigene Navigation
         } else if (schritt.typ === "game") {
             html += `<button class="btn" id="voltWeiter" onclick="next()" style="display:none">Weiter – Nachricht senden!</button>`;
@@ -2542,6 +2836,9 @@
         if (schritt.typ === "feldtel-buchstabieren") renderBuchstFrage();
         if (schritt.typ === "feldtel-abhoeren") renderAbhoerFrage();
         if (schritt.typ === "drache-fragt") renderDracheFrage();
+        if (schritt.typ === "rechen-zeitreise") renderEpoche();
+        if (schritt.typ === "rechen-methoden") renderMethode();
+        if (schritt.typ === "rechen-duell") renderDuellAufgabe();
         if (schritt.typ === "schwimm-quiz") renderSchwimmFrage();
         if (schritt.typ === "leopold-mission") renderLeopoldProbe();
         if (schritt.typ === "dichte-labor") renderLaborFrage();
