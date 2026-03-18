@@ -1,88 +1,2810 @@
-<!DOCTYPE html>  
-<html lang="de">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Museum meets KI - Vorchdorf</title>  
-    <style>  
-        :root { --gold: #d4af37; --bg: #1a1a1a; --text: #fdf5e6; }  
-        body { font-family: 'Segoe UI', serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 20px; margin: 0; }  
-        .container { max-width: 600px; margin: 20px auto; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; background: #262626; box-shadow: 0 0 30px rgba(0,0,0,0.5); }  
-        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.5em; }  
-        .btn { background: var(--gold); color: #1a1a1a; border: none; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 8px; text-transform: uppercase; }  
-        .audio-player { width: 100%; margin: 20px 0; filter: invert(1); }  
-        .info-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin: 20px 0; text-align: left; border-left: 4px solid var(--gold); }  
-        .game-area { border: 2px dashed var(--gold); padding: 20px; margin: 20px 0; border-radius: 10px; background: #111; }  
-        #voltage-display { font-size: 2.5em; color: var(--gold); }  
-        .error-msg { color: #ff6347; font-size: 0.8em; margin-top: 5px; display: none; }  
-    </style>  
-</head>  
-<body>  
-  
-<div class="container" id="app">  
-    <h1>Lade Geschichte...</h1>  
-</div>  
-  
-<script>  
-    const artefakte = {  
-        "zigaretten": {  
-            titel: "Zeitkapsel 1944",  
-            schritte: [  
-                { typ: "audio", titel: "Teil 1: Das Schweigen", file: "teil 1.m4a", beschreibung: "Betrachte die Packung. 'Feind hört mit' war Gesetz." },  
-                { typ: "audio", titel: "Teil 2: Der Mangel", file: "teil 2.m4a", beschreibung: "Papier war wertvoller als Tabak. Ohne Leerpackung kein Kauf." },  
-                { typ: "audio", titel: "Teil 3: Das Mahnmal", file: "teil 3.m4a", beschreibung: "Ein Zeugnis menschlicher Entbehrung." }  
-            ]  
-        },  
-        "roehre": {  
-            titel: "Die GRS 1 Challenge",  
-            schritte: [  
-                { typ: "info", titel: "Die Mission", beschreibung: "Hilf Dr. Anton Gruber im Jahr 1912. Wir müssen Wien mit Linz verbinden!" },  
-                { typ: "game", titel: "Spannung zähmen", beschreibung: "Regle die Spannung auf ca. 112 Volt (Datum 11/12), damit die GRS 1 stabil glüht." },  
-                { typ: "info", titel: "Sieg der Technik", beschreibung: "ERFOLG! Die Nachricht wurde empfangen." }  
-            ]  
-        }  
-    };  
-  
-    const urlParams = new URLSearchParams(window.location.search);  
-    const objektKey = urlParams.get('objekt');  
-    let aktuellerSchritt = 0;  
-  
-    function render() {  
-        const app = document.getElementById('app');  
-        if (!objektKey || !artefakte[objektKey]) {  
-            app.innerHTML = `<h1>Museums-Portal</h1><p>Bitte scanne einen QR-Code.</p>  
-                             <button class="btn" onclick="window.location.search='?objekt=roehre'">Siemens GRS 1 Röhre</button>  
-                             <button class="btn" onclick="window.location.search='?objekt=zigaretten'">Zigarettenpackung 1944</button>`;  
-            return;  
-        }  
-  
-        const daten = artefakte[objektKey];  
-        const schritt = daten.schritte[aktuellerSchritt];  
-        let html = `<h1>${daten.titel}</h1><div class="info-box"><strong>${schritt.titel}</strong><br>${schritt.beschreibung}</div>`;  
-  
-        if (schritt.typ === "audio") {  
-            html += `<audio controls class="audio-player" id="mainPlayer"><source src="${encodeURIComponent(schritt.file)}" type="audio/mp4">Ihr Browser unterstützt kein Audio.</audio>  
-                     <div id="audioError" class="error-msg">Datei konnte nicht geladen werden.</div>`;  
-        } else if (schritt.typ === "game") {  
-            html += `<div class="game-area"><input type="range" min="0" max="220" value="0" style="width:100%" oninput="checkVolt(this.value)"><div id="voltage-display">0 V</div><p id="feedback">Drehe am Regler...</p></div>`;  
-        }  
-  
-        if (aktuellerSchritt < daten.schritte.length - 1) {  
-            html += `<button class="btn" onclick="next()">Weiter</button>`;  
-        } else {  
-            html += `<button class="btn" onclick="window.location.search=''">Zur Übersicht</button>`;  
-        }  
-        app.innerHTML = html;  
-    }  
-  
-    function next() { aktuellerSchritt++; render(); }  
-    function checkVolt(val) {  
-        document.getElementById('voltage-display').innerText = val + " V";  
-        const fb = document.getElementById('feedback');  
-        fb.innerText = (val >= 108 && val <= 116) ? "PERFEKT! Die Energie fließt stabil!" : "Suche die richtige Spannung (ca. 112V)...";  
-        fb.style.color = (val >= 108 && val <= 116) ? "lime" : "white";  
-    }  
-    render();  
-</script>  
-</body>  
-</html>  
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum meets KI - Vorchdorf</title>
+    <style>
+        :root { --gold: #d4af37; --bg: #1a1a1a; --text: #fdf5e6; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 20px; margin: 0; }
+        .container { max-width: 600px; margin: 20px auto; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; background: #262626; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.5em; margin-top: 0; }
+        .btn { background: var(--gold); color: #1a1a1a; border: none; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 8px; text-transform: uppercase; font-size: 1em; }
+        .btn:active { transform: scale(0.97); }
+        .audio-player { width: 100%; margin: 20px 0; filter: invert(1); }
+        .info-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin: 20px 0; text-align: left; border-left: 4px solid var(--gold); line-height: 1.6; }
+        .game-area { border: 2px dashed var(--gold); padding: 20px; margin: 20px 0; border-radius: 10px; background: #111; }
+        .error-msg { color: #ff6347; font-size: 0.8em; margin-top: 5px; display: none; }
+
+        /* Schritt-Anzeige */
+        .step-indicator { display: flex; justify-content: center; gap: 6px; margin-bottom: 15px; }
+        .step-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(212,175,55,0.2); transition: all 0.3s; }
+        .step-dot.done { background: var(--gold); }
+        .step-dot.active { background: var(--gold); box-shadow: 0 0 8px rgba(212,175,55,0.6); transform: scale(1.3); }
+
+        /* Röhren-SVG */
+        .roehre-wrap { display: flex; justify-content: center; margin: 15px 0; }
+        .roehre-wrap svg { width: 100px; height: 170px; }
+
+        /* Voltage */
+        #voltage-display { font-size: 2.5em; color: var(--gold); }
+
+        /* Morse */
+        .morse-btn {
+            width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--gold);
+            background: radial-gradient(circle, #3a2a00 0%, #1a1a1a 80%);
+            color: var(--gold); font-size: 1em; font-weight: bold; cursor: pointer;
+            margin: 15px auto; display: block; user-select: none; -webkit-user-select: none;
+            transition: box-shadow 0.1s;
+        }
+        .morse-btn:active, .morse-btn.pressed {
+            background: radial-gradient(circle, var(--gold) 0%, #3a2a00 80%);
+            color: #1a1a1a; box-shadow: 0 0 40px rgba(212,175,55,0.6);
+        }
+        .morse-display {
+            font-family: 'Courier New', monospace; font-size: 1.8em; letter-spacing: 6px;
+            min-height: 45px; padding: 8px; color: var(--gold);
+            border-bottom: 2px solid rgba(212,175,55,0.3); margin: 8px 0;
+        }
+        .morse-letter {
+            font-family: 'Courier New', monospace; font-size: 1.2em;
+            color: rgba(253,245,230,0.6); min-height: 28px; margin-bottom: 5px;
+        }
+        .morse-hint { font-size: 0.8em; color: rgba(253,245,230,0.4); margin-top: 12px; }
+        .morse-target { font-size: 1.3em; font-weight: bold; color: var(--gold); letter-spacing: 4px; margin: 8px 0; }
+        .morse-progress { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
+
+        /* Morse-Alphabet Tabelle */
+        .morse-alpha-toggle {
+            background: none; border: 1px solid rgba(212,175,55,0.4); color: var(--gold);
+            padding: 6px 14px; border-radius: 20px; font-size: 0.8em; cursor: pointer;
+            margin: 10px 0; display: inline-block;
+        }
+        .morse-alpha-toggle:active { background: rgba(212,175,55,0.15); }
+        .morse-alpha-table {
+            display: none; grid-template-columns: repeat(4, 1fr); gap: 4px;
+            margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.75em;
+        }
+        .morse-alpha-table.open { display: grid; }
+        .morse-alpha-cell {
+            background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 4px; padding: 4px 2px; text-align: center;
+        }
+        .morse-alpha-cell .char { color: var(--gold); font-weight: bold; font-size: 1.1em; }
+        .morse-alpha-cell .code { color: rgba(253,245,230,0.6); font-size: 0.95em; }
+
+        /* Freitext-Morse */
+        .free-morse-area { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(212,175,55,0.2); }
+        .free-morse-output {
+            font-family: 'Courier New', monospace; font-size: 1.4em; letter-spacing: 3px;
+            color: var(--gold); min-height: 40px; padding: 8px;
+            border-bottom: 2px solid rgba(212,175,55,0.3); margin: 8px 0; word-break: break-all;
+        }
+        .free-morse-dots {
+            font-family: 'Courier New', monospace; font-size: 1.1em;
+            color: rgba(253,245,230,0.5); min-height: 24px; margin-bottom: 8px;
+        }
+        .morse-progress span {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 2px solid rgba(212,175,55,0.3); display: flex;
+            align-items: center; justify-content: center; font-weight: bold; font-size: 0.9em;
+        }
+        .morse-progress .done { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.15); }
+        .morse-progress .active { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 12px rgba(212,175,55,0.4); }
+        .morse-progress .pending { color: rgba(253,245,230,0.3); }
+
+        /* Frequenz-Drehknopf */
+        .freq-dial-wrap { position: relative; width: 180px; height: 180px; margin: 15px auto; }
+        .freq-dial {
+            width: 180px; height: 180px; border-radius: 50%;
+            border: 4px solid rgba(212,175,55,0.5);
+            background: radial-gradient(circle, #2a2a2a 0%, #111 80%);
+            position: relative; cursor: grab; user-select: none; -webkit-user-select: none;
+            touch-action: none;
+        }
+        .freq-dial:active { cursor: grabbing; }
+        .freq-needle {
+            position: absolute; top: 10%; left: 50%; width: 3px; height: 40%;
+            background: var(--gold); transform-origin: bottom center;
+            border-radius: 2px; margin-left: -1.5px;
+            box-shadow: 0 0 6px rgba(212,175,55,0.5);
+        }
+        .freq-display {
+            font-family: 'Courier New', monospace; font-size: 2em; color: var(--gold);
+            margin: 10px 0; letter-spacing: 2px;
+        }
+        .freq-bar-wrap {
+            height: 40px; background: #0a0a0a; border-radius: 5px; margin: 10px 0;
+            position: relative; overflow: hidden; border: 1px solid rgba(212,175,55,0.2);
+        }
+        .freq-bar-signal {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        }
+        .freq-msg {
+            font-family: 'Courier New', monospace; font-size: 1.1em;
+            min-height: 60px; padding: 10px; color: lime;
+            border: 1px solid rgba(0,255,0,0.2); border-radius: 5px;
+            background: rgba(0,255,0,0.03); margin: 10px 0; text-align: left;
+        }
+
+        /* Fun Facts */
+        .fun-facts {
+            background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 10px; padding: 15px; margin: 15px 0; text-align: left;
+        }
+        .fun-facts h3 { color: var(--gold); margin-top: 0; font-size: 1em; }
+        .fun-facts ul { margin: 0; padding-left: 20px; }
+        .fun-facts li { margin: 8px 0; font-size: 0.9em; line-height: 1.5; }
+
+        /* Erfolg-Seite */
+        .erfolg-icon { font-size: 4em; margin: 10px 0; }
+        .erfolg-stats {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;
+        }
+        .erfolg-stat {
+            background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 8px; padding: 12px;
+        }
+        .erfolg-stat .label { font-size: 0.75em; color: rgba(253,245,230,0.5); text-transform: uppercase; }
+        .erfolg-stat .value { font-size: 1.3em; color: var(--gold); font-weight: bold; margin-top: 4px; }
+
+        .erfolg-animation { animation: erfolg-pulse 0.6s ease-in-out; }
+        @keyframes erfolg-pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+
+        /* ===== STANDUHR STYLES ===== */
+        /* Zahnrad-Puzzle */
+        .gear-workspace { position: relative; width: 100%; height: 280px; background: #0a0808; border-radius: 8px; overflow: hidden; touch-action: none; }
+        .gear-slot { position: absolute; border: 2px dashed rgba(212,175,55,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .gear-slot.filled { border-color: var(--gold); background: rgba(212,175,55,0.05); }
+        .gear-slot .slot-label { font-size: 0.7em; color: rgba(212,175,55,0.4); pointer-events: none; }
+        .gear-tray { display: flex; justify-content: center; gap: 15px; margin: 15px 0; padding: 10px; background: rgba(212,175,55,0.05); border-radius: 8px; }
+        .gear-piece { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; transition: transform 0.15s; }
+        .gear-piece:active { cursor: grabbing; transform: scale(1.1); }
+        .gear-piece.placed { opacity: 0.3; pointer-events: none; }
+        @keyframes gearSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes gearSpinReverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+
+        /* Pendel */
+        .pendel-canvas-wrap { display: flex; justify-content: center; margin: 10px 0; }
+        .pendel-canvas-wrap canvas { border-radius: 8px; background: #0a0808; }
+        .pendel-display { font-family: 'Courier New', monospace; font-size: 1.8em; color: var(--gold); margin: 5px 0; }
+        .pendel-ticker { font-size: 1.2em; margin: 5px 0; }
+
+        /* Zifferblatt bemalen */
+        .face-canvas-wrap { display: flex; justify-content: center; margin: 10px 0; }
+        .face-canvas-wrap canvas { border-radius: 50%; border: 3px solid rgba(212,175,55,0.4); cursor: crosshair; touch-action: none; }
+        .color-picker { display: flex; justify-content: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+        .color-swatch {
+            width: 36px; height: 36px; border-radius: 50%; border: 3px solid transparent;
+            cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-swatch.active { border-color: white; transform: scale(1.2); }
+        .stamp-picker { display: flex; justify-content: center; gap: 8px; margin: 8px 0; }
+        .stamp-btn {
+            padding: 6px 12px; border-radius: 15px; border: 1px solid rgba(212,175,55,0.3);
+            background: rgba(212,175,55,0.08); color: var(--text); cursor: pointer; font-size: 1.2em;
+        }
+        .stamp-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.2); }
+
+        /* Zeitreise */
+        .zeitreise-event {
+            text-align: left; padding: 12px; margin: 8px 0; border-left: 3px solid var(--gold);
+            background: rgba(212,175,55,0.04); border-radius: 0 8px 8px 0;
+            opacity: 0; transform: translateX(-20px); transition: all 0.5s ease-out;
+        }
+        .zeitreise-event.visible { opacity: 1; transform: translateX(0); }
+        .zeitreise-event .year { color: var(--gold); font-weight: bold; font-size: 1.1em; }
+        .zeitreise-event .text { font-size: 0.9em; margin-top: 4px; line-height: 1.4; }
+
+        /* Propaganda-Hotspots */
+        .prop-hotspot {
+            position: absolute; width: 36px; height: 36px; border-radius: 50%;
+            border: 2px solid rgba(255,100,100,0.6); background: rgba(255,100,100,0.15);
+            color: rgba(255,100,100,0.8); font-weight: bold; font-size: 1.1em;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transform: translate(-50%,-50%);
+            animation: hotspot-pulse 2s ease-in-out infinite;
+        }
+        @keyframes hotspot-pulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,100,100,0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(255,100,100,0); }
+        }
+
+        /* ===== FRONLEICHNAM STYLES ===== */
+        .slider-wrap { position: relative; width: 100%; padding-bottom: 70%; overflow: hidden; border-radius: 8px; background: #111; }
+        .slider-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85em; color: rgba(253,245,230,0.3); }
+        .slider-layer.alt { clip-path: inset(0 50% 0 0); transition: clip-path 0.05s; }
+        .slider-handle { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--gold); left: 50%; z-index: 10; pointer-events: none; }
+        .slider-handle::after { content: '⟨⟩'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--gold); color: #1a1a1a; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: bold; }
+        .slider-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 11; margin: 0; }
+
+        .person-hotspot {
+            position: absolute; width: 32px; height: 32px; border-radius: 50%;
+            border: 2px solid rgba(212,175,55,0.5); background: rgba(212,175,55,0.1);
+            color: var(--gold); font-size: 0.8em; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transform: translate(-50%,-50%);
+            animation: hotspot-pulse 2s ease-in-out infinite;
+        }
+        .person-hotspot.found { background: rgba(212,175,55,0.6); color: #1a1a1a; border-color: var(--gold); animation: none; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <h1>Lade Geschichte...</h1>
+</div>
+
+<script>
+    // =============================================
+    // ARÄOMETER
+    // =============================================
+    const ARAEOMETER_DEF = {
+        titel: "Das Aräometer",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Ein geheimnisvolles Glasinstrument",
+                beschreibung: "Vor dir liegt ein filigranes Glasrohr mit einem Gewicht im Bauch und einer feinen Skala. Was misst man damit? Und warum war es für Apotheker und Zuckerfabrikanten so wertvoll?<br><br>Lass uns herausfinden, wie Dichte funktioniert – und dann damit arbeiten wie ein Chemiker um 1895!"
+            },
+            {
+                typ: "schwimm-quiz",
+                titel: "Schwimm oder Sink?",
+                beschreibung: "Bevor wir das Aräometer benutzen, testen wir dein Bauchgefühl: Was schwimmt, was sinkt?"
+            },
+            {
+                typ: "leopold-mission",
+                titel: "Lehrling Leopold – Wien 1895",
+                beschreibung: ""
+            },
+            {
+                typ: "dichte-labor",
+                titel: "Dichte-Labor",
+                beschreibung: "Jetzt bist du der Experte! Tauche das Aräometer in unbekannte Flüssigkeiten und bestimme, was es ist."
+            },
+            {
+                typ: "araeometer-erfolg",
+                titel: "Präzision ist alles!",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Schwimm oder Sink Quiz ---
+    const SCHWIMM_ITEMS = [
+        { name: "Holzstück", emoji: "🪵", schwimmt: true, erklaerung: "Holz ist leichter als Wasser (Dichte ~0,5). Es schwimmt!" },
+        { name: "Stein", emoji: "🪨", schwimmt: false, erklaerung: "Stein ist schwerer als Wasser (Dichte ~2,5). Er sinkt!" },
+        { name: "rohes Ei", emoji: "🥚", schwimmt: false, erklaerung: "Ein rohes Ei ist knapp schwerer als Wasser – es sinkt. In Salzwasser würde es schwimmen!" },
+        { name: "Korken", emoji: "🍾", schwimmt: true, erklaerung: "Kork hat eine sehr geringe Dichte (~0,2). Er schwimmt hoch oben!" },
+        { name: "Eiswürfel", emoji: "🧊", schwimmt: true, erklaerung: "Eis ist leichter als flüssiges Wasser (Dichte 0,92). Deshalb schwimmen Eisberge!" },
+        { name: "Münze", emoji: "🪙", schwimmt: false, erklaerung: "Metall ist viel dichter als Wasser. Die Münze sinkt sofort." }
+    ];
+    let schwimmIdx = 0, schwimmScore = 0;
+
+    function buildSchwimmQuizUI() {
+        schwimmIdx = 0; schwimmScore = 0;
+        return `<div class="game-area" id="schwimmArea"><div id="schwimmContent"></div></div>`;
+    }
+
+    function renderSchwimmFrage() {
+        if (schwimmIdx >= SCHWIMM_ITEMS.length) {
+            document.getElementById('schwimmContent').innerHTML = `
+                <div class="fade-in" style="text-align:center;">
+                    <p style="color:lime; font-weight:bold; font-size:1.1em;">${schwimmScore}/${SCHWIMM_ITEMS.length} richtig!</p>
+                    <div class="info-box" style="font-size:0.9em;"><strong>Das Prinzip:</strong> Ob etwas schwimmt oder sinkt, hängt von der <strong>Dichte</strong> ab. Ist ein Gegenstand leichter als die Flüssigkeit → er schwimmt. Schwerer → er sinkt. Und genau das nutzt das Aräometer: Es sinkt unterschiedlich tief ein, je nach Dichte der Flüssigkeit!</div>
+                </div>`;
+            setTimeout(() => {
+                if (!document.getElementById('schwimmWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'schwimmWeiter'; btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Lehrling Leopold';
+                    btn.onclick = () => next();
+                    document.getElementById('app').appendChild(btn);
+                }
+            }, 500);
+            return;
+        }
+        const item = SCHWIMM_ITEMS[schwimmIdx];
+        let dots = '<div class="step-indicator" style="margin-bottom:10px;">';
+        for (let i = 0; i < SCHWIMM_ITEMS.length; i++) dots += `<div class="step-dot ${i < schwimmIdx ? 'done' : i === schwimmIdx ? 'active' : ''}"></div>`;
+        dots += '</div>';
+
+        document.getElementById('schwimmContent').innerHTML = `
+            <div class="fade-in" style="text-align:center;">
+                ${dots}
+                <div style="font-size:3em; margin:10px 0;">${item.emoji}</div>
+                <p style="font-size:1.2em; color:var(--gold); font-weight:bold;">${item.name}</p>
+                <p style="font-size:0.9em;">Schwimmt es oder sinkt es in Wasser?</p>
+                <div style="display:flex; gap:10px; margin:10px 0;">
+                    <button class="btn" style="width:50%; margin:0; background:#2980b9;" onclick="checkSchwimm(true)">🌊 Schwimmt</button>
+                    <button class="btn" style="width:50%; margin:0; background:#c0392b;" onclick="checkSchwimm(false)">⬇️ Sinkt</button>
+                </div>
+                <div id="schwimmFb" style="min-height:50px;"></div>
+            </div>`;
+    }
+
+    function checkSchwimm(antwort) {
+        const item = SCHWIMM_ITEMS[schwimmIdx];
+        const correct = antwort === item.schwimmt;
+        if (correct) { schwimmScore++; playTone(523, 200); } else { playTone(200, 200); }
+        document.getElementById('schwimmFb').innerHTML = `<div class="info-box fade-in" style="font-size:0.85em; border-left-color:${correct ? 'lime' : '#ff6347'};"><strong>${correct ? '✓ Richtig!' : '✗ Falsch!'}</strong> ${item.erklaerung}</div>`;
+        setTimeout(() => { schwimmIdx++; renderSchwimmFrage(); }, 2000);
+    }
+
+    // --- Leopold Mission ---
+    const LEOPOLD_PROBEN = [
+        { name: "Himbeersirip", zielBaume: 56, toleranz: 3, beschreibung: "Für die kaiserlichen Himbeerbonbons. Herr Gruber schaut dir über die Schulter!", ergebnis_gut: "Perfekt! 56 Baumé – die Bonbons werden köstlich.", ergebnis_schlecht: "Zu weit daneben! Der Sirup wäre zu dünn oder zu dick für die Bonbons." },
+        { name: "Zitronensirup", zielBaume: 48, toleranz: 3, beschreibung: "Für die beliebten Zitronendrops. Die Dichte muss stimmen!", ergebnis_gut: "Ausgezeichnet! Die Zitronendrops werden perfekt.", ergebnis_schlecht: "Nicht genau genug. Leopold, Präzision ist der Schlüssel!" },
+        { name: "Karamellsirup", zielBaume: 62, toleranz: 3, beschreibung: "Der dickste Sirup – für Karamellpralinen. Vorsicht, sehr zäh!", ergebnis_gut: "Hervorragend! Herr Gruber nickt zufrieden.", ergebnis_schlecht: "Knapp daneben. Bei Karamell muss es exakt stimmen!" }
+    ];
+    let leopoldIdx = 0, leopoldScore = 0;
+
+    function buildLeopoldUI() {
+        leopoldIdx = 0; leopoldScore = 0;
+        return `
+        <div class="game-area" id="leopoldArea">
+            <div class="info-box" style="font-size:0.9em;">
+                <strong>Wien, 1895 – Grubers Zuckerwarenfabrik</strong><br>
+                Du bist Leopold, 17, Chemikerlehrling. Dein Meister Dr. Steiner hat dir eingeschärft: <em>„Präzision, Leopold! Präzision ist der Schlüssel zur Meisterschaft!"</em><br><br>
+                Heute musst du drei Sirupe prüfen. Stelle das Aräometer auf den richtigen Baumé-Wert ein.
+            </div>
+            <div id="leopoldContent"></div>
+        </div>`;
+    }
+
+    function renderLeopoldProbe() {
+        if (leopoldIdx >= LEOPOLD_PROBEN.length) {
+            document.getElementById('leopoldContent').innerHTML = `
+                <div class="fade-in" style="text-align:center;">
+                    <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">Alle Proben getestet!</p>
+                    <p>${leopoldScore}/${LEOPOLD_PROBEN.length} Sirupe korrekt gemessen.</p>
+                    <p style="font-size:0.9em;">${leopoldScore === 3 ? 'Herr Gruber strahlt: „Leopold, Sie sind ein wahrer Chemiker!"' : leopoldScore >= 2 ? '„Gut gemacht, Leopold. Übung macht den Meister."' : '„Leopold, morgen nochmal. Und diesmal: Präzision!"'}</p>
+                </div>`;
+            setTimeout(() => {
+                if (!document.getElementById('leopoldWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'leopoldWeiter'; btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Dichte-Labor';
+                    btn.onclick = () => next();
+                    document.getElementById('app').appendChild(btn);
+                }
+            }, 500);
+            return;
+        }
+        const probe = LEOPOLD_PROBEN[leopoldIdx];
+        document.getElementById('leopoldContent').innerHTML = `
+            <div class="fade-in" style="text-align:center;">
+                <div class="step-indicator" style="margin:10px 0;">
+                    ${LEOPOLD_PROBEN.map((_, i) => `<div class="step-dot ${i < leopoldIdx ? 'done' : i === leopoldIdx ? 'active' : ''}"></div>`).join('')}
+                </div>
+                <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">Probe ${leopoldIdx+1}: ${probe.name}</p>
+                <p style="font-size:0.85em;">${probe.beschreibung}</p>
+                <div style="margin:15px 0;">
+                    <div style="position:relative; width:30px; height:200px; margin:0 auto; background:linear-gradient(to top, rgba(139,105,20,0.3), rgba(139,105,20,0.05)); border:1px solid rgba(212,175,55,0.3); border-radius:3px;">
+                        <div id="araeoLevel" style="position:absolute; left:-8px; right:-8px; height:3px; background:var(--gold); top:50%; transition:top 0.2s; box-shadow:0 0 6px rgba(212,175,55,0.5);"></div>
+                    </div>
+                </div>
+                <input type="range" min="30" max="75" value="50" style="width:80%;" id="leopoldSlider" orient="vertical">
+                <div style="font-family:'Courier New',monospace; font-size:1.8em; color:var(--gold); margin:5px 0;" id="leopoldReading">50 Baumé</div>
+                <button class="btn" onclick="checkLeopold()" style="max-width:250px; margin:10px auto 0;">Messung bestätigen</button>
+                <div id="leopoldFb" style="min-height:40px; margin-top:8px;"></div>
+            </div>`;
+        const slider = document.getElementById('leopoldSlider');
+        slider.addEventListener('input', function() {
+            document.getElementById('leopoldReading').innerText = this.value + ' Baumé';
+            const pct = (this.value - 30) / 45 * 100;
+            document.getElementById('araeoLevel').style.top = (100 - pct) + '%';
+        });
+    }
+
+    function checkLeopold() {
+        const probe = LEOPOLD_PROBEN[leopoldIdx];
+        const val = parseInt(document.getElementById('leopoldSlider').value);
+        const correct = Math.abs(val - probe.zielBaume) <= probe.toleranz;
+        if (correct) { leopoldScore++; playTone(523, 300); } else { playTone(200, 300); }
+        document.getElementById('leopoldFb').innerHTML = `<div class="info-box fade-in" style="font-size:0.85em; border-left-color:${correct ? 'lime' : '#ff6347'};">${correct ? probe.ergebnis_gut : probe.ergebnis_schlecht} (Ziel: ${probe.zielBaume} Baumé, du: ${val})</div>`;
+        setTimeout(() => { leopoldIdx++; renderLeopoldProbe(); }, 2500);
+    }
+
+    // --- Dichte-Labor ---
+    const LABOR_FLUESSIGKEITEN = [
+        { name: "Wasser", baume: 0, emoji: "💧", color: "rgba(100,180,255,0.3)" },
+        { name: "Milch", baume: 5, emoji: "🥛", color: "rgba(255,255,255,0.3)" },
+        { name: "Honig", baume: 42, emoji: "🍯", color: "rgba(255,180,50,0.3)" },
+        { name: "Zuckersirup", baume: 55, emoji: "🍬", color: "rgba(180,100,50,0.3)" },
+        { name: "Schwefelsäure", baume: 66, emoji: "⚗️", color: "rgba(200,255,100,0.3)" }
+    ];
+    let laborIdx = 0, laborScore = 0;
+
+    function buildDichteLaborUI() {
+        laborIdx = 0; laborScore = 0;
+        return `<div class="game-area" id="laborArea"><div id="laborContent"></div></div>`;
+    }
+
+    function renderLaborFrage() {
+        if (laborIdx >= LABOR_FLUESSIGKEITEN.length) {
+            document.getElementById('laborContent').innerHTML = `
+                <div class="fade-in" style="text-align:center;">
+                    <p style="color:lime; font-weight:bold; font-size:1.1em;">Labor abgeschlossen! ${laborScore}/${LABOR_FLUESSIGKEITEN.length} erkannt.</p>
+                </div>`;
+            setTimeout(() => {
+                if (!document.getElementById('laborWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'laborWeiter'; btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Ergebnis';
+                    btn.onclick = () => next();
+                    document.getElementById('app').appendChild(btn);
+                }
+            }, 500);
+            return;
+        }
+        const fl = LABOR_FLUESSIGKEITEN[laborIdx];
+        // Aräometer-Position: je höher Baumé, desto weniger sinkt es ein (höher steht es)
+        const eintauchPct = 90 - (fl.baume / 70 * 60); // 90% bei Wasser, ~30% bei 66 Baumé
+
+        // Zufällige Optionen
+        const optionen = [fl.name];
+        const andere = LABOR_FLUESSIGKEITEN.filter(x => x.name !== fl.name);
+        optionen.push(andere[Math.floor(Math.random() * andere.length)].name);
+        optionen.push(andere[Math.floor(Math.random() * andere.length / 2 + andere.length / 2)].name);
+        const shuffled = [...new Set(optionen)].sort(() => Math.random() - 0.5);
+        while (shuffled.length < 3) shuffled.push(andere[shuffled.length].name);
+
+        document.getElementById('laborContent').innerHTML = `
+            <div class="fade-in" style="text-align:center;">
+                <div class="step-indicator" style="margin-bottom:10px;">
+                    ${LABOR_FLUESSIGKEITEN.map((_, i) => `<div class="step-dot ${i < laborIdx ? 'done' : i === laborIdx ? 'active' : ''}"></div>`).join('')}
+                </div>
+                <p style="font-size:0.9em;">Unbekannte Flüssigkeit #${laborIdx+1}:</p>
+                <div style="position:relative; width:80px; height:180px; margin:10px auto; background:${fl.color}; border:2px solid rgba(212,175,55,0.3); border-radius:0 0 10px 10px;">
+                    <div style="position:absolute; left:50%; width:6px; margin-left:-3px; background:rgba(255,255,255,0.7); border-radius:3px; bottom:${eintauchPct}%; height:${100-eintauchPct+20}%; transition:all 0.5s;">
+                        <div style="position:absolute; top:0; left:-5px; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,0.9);"></div>
+                    </div>
+                    <div style="position:absolute; right:-50px; top:${eintauchPct-5}%; font-family:'Courier New',monospace; font-size:0.8em; color:var(--gold);">${fl.baume} Baumé</div>
+                </div>
+                <p style="font-size:0.9em; margin-top:10px;">Das Aräometer zeigt <strong>${fl.baume} Baumé</strong>. Was ist diese Flüssigkeit?</p>
+                ${shuffled.map(opt => `<button class="btn" style="margin-top:6px; font-size:0.9em; padding:10px;" onclick="checkLabor('${opt}','${fl.name}')">${opt}</button>`).join('')}
+                <div id="laborFb" style="min-height:40px; margin-top:8px;"></div>
+            </div>`;
+    }
+
+    function checkLabor(answer, correct) {
+        const isCorrect = answer === correct;
+        if (isCorrect) { laborScore++; playTone(523, 200); } else { playTone(200, 200); }
+        document.getElementById('laborFb').innerHTML = `<p style="color:${isCorrect ? 'lime' : '#ff6347'}; font-weight:bold;">${isCorrect ? '✓ Richtig!' : '✗ Falsch – es war ' + correct + '!'}</p>`;
+        setTimeout(() => { laborIdx++; renderLaborFrage(); }, 1500);
+    }
+
+    // --- Aräometer Erfolg ---
+    function buildAraeometerErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">⚗️</div>
+            <h1 style="font-size:1.1em;">Präzision ist alles!</h1>
+            <p style="font-size:0.95em;">Du hast das Archimedische Prinzip verstanden, Sirupe geprüft und Flüssigkeiten identifiziert – wie ein echter Chemiker des 19. Jahrhunderts.</p>
+
+            <div class="erfolg-stats">
+                <div class="erfolg-stat">
+                    <div class="label">Schwimm-Quiz</div>
+                    <div class="value">${schwimmScore}/6</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Leopold-Proben</div>
+                    <div class="value">${leopoldScore}/3</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Labor-Score</div>
+                    <div class="value">${laborScore}/5</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Alter des Geräts</div>
+                    <div class="value">~130 Jahre</div>
+                </div>
+            </div>
+
+            <div class="fun-facts">
+                <h3>Wusstest du?</h3>
+                <ul>
+                    <li>Die <strong>Baumé-Skala</strong> wurde 1768 vom französischen Chemiker Antoine Baumé erfunden. In Österreich war sie bis ins 20. Jahrhundert Standard.</li>
+                    <li>Die Temperaturangabe <strong>14° Réaumur</strong> auf dem Gerät entspricht 17,5° Celsius. Réaumur war vor Celsius die gängige Temperaturskala in Kontinentaleuropa.</li>
+                    <li>Das <strong>Bleigewicht im Bauch</strong> des Aräometers ist so kalibriert, dass es in reinem Wasser bis genau zur Nullmarke einsinkt.</li>
+                    <li>Winzer benutzen heute noch ein ähnliches Instrument – die <strong>Oechsle-Waage</strong> – um den Zuckergehalt von Traubenmost zu messen.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal spielen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
+    // FELDTELEFON
+    // =============================================
+    const PHONETIK = {A:'Anton',B:'Berta',C:'Cäsar',D:'Dora',E:'Emil',F:'Friedrich',G:'Gustav',H:'Heinrich',I:'Ida',J:'Julius',K:'Kaufmann',L:'Ludwig',M:'Martha',N:'Nordpol',O:'Otto',P:'Paula',Q:'Quelle',R:'Richard',S:'Siegfried',T:'Theodor',U:'Ulrich',V:'Viktor',W:'Wilhelm',X:'Xanthippe',Y:'Ypsilon',Z:'Zeppelin'};
+    const NATO_PHONETIK = {A:'Alpha',B:'Bravo',C:'Charlie',D:'Delta',E:'Echo',F:'Foxtrot',G:'Golf',H:'Hotel',I:'India',J:'Juliet',K:'Kilo',L:'Lima',M:'Mike',N:'November',O:'Oscar',P:'Papa',Q:'Quebec',R:'Romeo',S:'Sierra',T:'Tango',U:'Uniform',V:'Victor',W:'Whiskey',X:'X-ray',Y:'Yankee',Z:'Zulu'};
+
+    const FELDTELEFON_DEF = {
+        titel: "Feldfernsprecher",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Ostfront, Winter 1943",
+                beschreibung: "Du bist Gefreiter Erich Schmidt, Fernmelder. Dein Feldfernsprecher – ‚der Schwarze' – ist deine Verbindung zur Welt jenseits des Schützengrabens. Heute Nacht musst du eine lebenswichtige Meldung durchgeben.<br><br>Oberleutnant Weber blickt dich an: <em>\"Schmidt, Verbindung zum Beobachtungsposten herstellen. Sofort.\"</em>"
+            },
+            {
+                typ: "feldtel-verbindung",
+                titel: "Schritt 1: Verbindung aufbauen",
+                beschreibung: "Bevor du sprechen kannst, muss die Leitung stehen. Drehe die Kurbel des Magnetzünders, um die Gegenstelle zu rufen!"
+            },
+            {
+                typ: "feldtel-buchstabieren",
+                titel: "Schritt 2: Meldung buchstabieren",
+                beschreibung: "Klare Kommunikation rettet Leben! Buchstabiere die Meldung mit dem Phonetik-Alphabet. Auf dem Deckel deines Feldtelefons steht die Tafel: Anton, Berta, Cäsar..."
+            },
+            {
+                typ: "feldtel-abhoeren",
+                titel: "Schritt 3: Feindliches Abhören",
+                beschreibung: "ACHTUNG: Der Feind hat die Leitung angezapft! Eine verstümmelte Meldung kommt durch. Kannst du die fehlenden Wörter erraten?"
+            },
+            {
+                typ: "feldtel-stillepost",
+                titel: "Stille Post im Schützengraben",
+                beschreibung: "Eine Meldung wird über 4 Stationen weitergegeben. Bei jeder Station geht etwas verloren oder wird verändert. Beobachte, was aus der Nachricht wird..."
+            },
+            {
+                typ: "feldtel-erfolg",
+                titel: "Meldung durchgegeben!",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Verbindung aufbauen (Kurbel drehen) ---
+    let kurbelCount = 0, kurbelTarget = 8;
+    function buildVerbindungUI() {
+        kurbelCount = 0;
+        return `
+        <div class="game-area" style="text-align:center;">
+            <div style="font-size:3em; margin:10px 0;">📞</div>
+            <div style="position:relative; width:120px; height:120px; margin:10px auto; border:4px solid var(--gold); border-radius:50%; background:#111; cursor:pointer; touch-action:none;" id="kurbelDial">
+                <div style="position:absolute; top:10%; left:50%; width:4px; height:40%; background:var(--gold); transform-origin:bottom center; border-radius:2px; margin-left:-2px;" id="kurbelNadel"></div>
+            </div>
+            <p style="font-size:1.1em; color:var(--gold);" id="kurbelCount">Kurbeldrehungen: 0 / ${kurbelTarget}</p>
+            <p style="font-size:0.85em; color:rgba(253,245,230,0.4);">Drehe den Knopf im Kreis – wie eine echte Magnetkurbel!</p>
+            <div id="kurbelStatus" style="margin-top:10px; font-size:1em;"></div>
+        </div>`;
+    }
+
+    function initVerbindung() {
+        const dial = document.getElementById('kurbelDial');
+        if (!dial) return;
+        let lastAngle = 0, totalRotation = 0, dragging = false;
+
+        function getAngle(e) {
+            const rect = dial.getBoundingClientRect();
+            const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return Math.atan2(clientY - cy, clientX - cx);
+        }
+        function onStart(e) { e.preventDefault(); dragging = true; lastAngle = getAngle(e); }
+        function onMove(e) {
+            if (!dragging) return;
+            e.preventDefault();
+            const angle = getAngle(e);
+            let delta = angle - lastAngle;
+            if (delta > Math.PI) delta -= 2*Math.PI;
+            if (delta < -Math.PI) delta += 2*Math.PI;
+            lastAngle = angle;
+            totalRotation += delta;
+            document.getElementById('kurbelNadel').style.transform = 'rotate(' + (totalRotation * 180/Math.PI) + 'deg)';
+
+            const newCount = Math.floor(Math.abs(totalRotation) / (Math.PI * 2));
+            if (newCount > kurbelCount) {
+                kurbelCount = newCount;
+                playTone(600 + kurbelCount * 50, 80);
+                document.getElementById('kurbelCount').innerText = 'Kurbeldrehungen: ' + Math.min(kurbelCount, kurbelTarget) + ' / ' + kurbelTarget;
+                if (kurbelCount >= kurbelTarget) {
+                    const st = document.getElementById('kurbelStatus');
+                    st.innerHTML = '<strong style="color:lime;">KLINGELING! Verbindung steht!</strong>';
+                    playTone(800, 500);
+                    setTimeout(() => {
+                        if (!document.getElementById('verbWeiter')) {
+                            const btn = document.createElement('button');
+                            btn.id = 'verbWeiter'; btn.className = 'btn erfolg-animation';
+                            btn.innerText = 'Weiter – Meldung durchgeben';
+                            btn.onclick = () => next();
+                            document.getElementById('app').appendChild(btn);
+                        }
+                    }, 600);
+                }
+            }
+        }
+        function onEnd() { dragging = false; }
+        dial.addEventListener('mousedown', onStart);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+        dial.addEventListener('touchstart', onStart, {passive:false});
+        document.addEventListener('touchmove', onMove, {passive:false});
+        document.addEventListener('touchend', onEnd);
+    }
+
+    // --- Buchstabier-Challenge ---
+    const BUCHSTABIER_WORT = "PANZER";
+    let buchstIdx = 0, buchstScore = 0;
+
+    function buildBuchstabierenUI() {
+        buchstIdx = 0; buchstScore = 0;
+        return `
+        <div class="game-area" id="buchstArea">
+            <p style="color:var(--gold); font-size:1.1em; margin-bottom:5px;">Meldung: <strong style="letter-spacing:4px; font-size:1.3em;">${BUCHSTABIER_WORT}</strong></p>
+            <p style="font-size:0.85em; color:rgba(253,245,230,0.5);">Buchstabiere Buchstabe für Buchstabe mit dem Phonetik-Alphabet!</p>
+            <div id="buchstProgress" style="display:flex; justify-content:center; gap:6px; margin:12px 0;"></div>
+            <div id="buchstQuestion"></div>
+            <div id="buchstAlphabet" style="margin-top:10px;">
+                <button class="morse-alpha-toggle" onclick="document.getElementById('phonetikTabelle').classList.toggle('open'); this.innerText = this.innerText.includes('zeigen') ? 'Tabelle ausblenden' : 'Phonetik-Tabelle zeigen';">Phonetik-Tabelle zeigen</button>
+                <div class="morse-alpha-table" id="phonetikTabelle">${Object.entries(PHONETIK).map(([k,v]) => '<div class="morse-alpha-cell"><span class="char">'+k+'</span><br><span class="code" style="font-size:0.7em;">'+v+'</span></div>').join('')}</div>
+            </div>
+        </div>`;
+    }
+
+    function renderBuchstFrage() {
+        if (buchstIdx >= BUCHSTABIER_WORT.length) {
+            document.getElementById('buchstQuestion').innerHTML = `
+                <div class="fade-in">
+                    <p style="color:lime; font-weight:bold; font-size:1.1em;">Meldung übermittelt! ${buchstScore}/${BUCHSTABIER_WORT.length} richtig.</p>
+                    <p style="font-size:0.85em; color:rgba(253,245,230,0.5);">Heute nutzt die NATO: ${BUCHSTABIER_WORT.split('').map(c => NATO_PHONETIK[c] || c).join(' – ')}</p>
+                </div>`;
+            setTimeout(() => {
+                if (!document.getElementById('buchstWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'buchstWeiter'; btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Abhörstation';
+                    btn.onclick = () => next();
+                    document.getElementById('app').appendChild(btn);
+                }
+            }, 500);
+            return;
+        }
+        const letter = BUCHSTABIER_WORT[buchstIdx];
+        const correct = PHONETIK[letter];
+        // 3 Optionen: richtige + 2 falsche
+        const others = Object.values(PHONETIK).filter(v => v !== correct);
+        const shuffled = [correct, others[Math.floor(Math.random()*others.length)], others[Math.floor(Math.random()*others.length/2)]].sort(() => Math.random()-0.5);
+
+        // Progress
+        let prog = '';
+        for (let i = 0; i < BUCHSTABIER_WORT.length; i++) {
+            prog += `<div class="step-dot ${i < buchstIdx ? 'done' : i === buchstIdx ? 'active' : ''}"></div>`;
+        }
+        document.getElementById('buchstProgress').innerHTML = prog;
+
+        document.getElementById('buchstQuestion').innerHTML = `
+            <div class="fade-in">
+                <p style="font-size:1.5em; color:var(--gold); font-weight:bold; margin:10px 0;">${letter}</p>
+                <p style="font-size:0.9em;">Wie buchstabierst du <strong>${letter}</strong>?</p>
+                ${shuffled.map(opt => `<button class="btn" style="margin-top:8px; font-size:0.9em; padding:10px;" onclick="checkBuchstabe('${opt}','${correct}')">${opt}</button>`).join('')}
+            </div>`;
+    }
+
+    function checkBuchstabe(answer, correct) {
+        if (answer === correct) {
+            buchstScore++;
+            playTone(523, 200);
+        } else {
+            playTone(200, 300);
+        }
+        buchstIdx++;
+        renderBuchstFrage();
+    }
+
+    // --- Abhör-Station ---
+    const ABHOER_MELDUNGEN = [
+        { original: "Feindliche Panzer nähern sich von Nordost", luecken: "Feindliche _____ nähern sich von _____", optionen: [["Panzer","Flieger","Reiter"],["Nordost","Südwest","Westen"]], richtig: [0,0] },
+        { original: "Verstärkung angefordert, Stellung halten bis Morgengrauen", luecken: "_____ angefordert, Stellung halten bis _____", optionen: [["Verstärkung","Munition","Rückzug"],["Morgengrauen","Mittag","sofort"]], richtig: [0,0] },
+    ];
+    let abhoerIdx = 0, abhoerScore = 0;
+
+    function buildAbhoerenUI() {
+        abhoerIdx = 0; abhoerScore = 0;
+        return `
+        <div class="game-area" id="abhoerArea">
+            <div style="font-size:2em; text-align:center; margin:5px 0;">🎧</div>
+            <div id="abhoerContent"></div>
+        </div>`;
+    }
+
+    function renderAbhoerFrage() {
+        if (abhoerIdx >= ABHOER_MELDUNGEN.length) {
+            document.getElementById('abhoerContent').innerHTML = `
+                <div class="fade-in">
+                    <p style="color:lime; font-weight:bold;">Abhör-Analyse: ${abhoerScore}/${ABHOER_MELDUNGEN.length * 2} Lücken richtig!</p>
+                    <div class="info-box" style="font-size:0.85em;"><strong>Deshalb:</strong> Feldtelefone waren extrem unsicher. Jeder, der das Kabel anzapfte, konnte mithören. Das führte zur Entwicklung von Verschlüsselung – und letztlich zur Enigma-Maschine.</div>
+                </div>`;
+            setTimeout(() => {
+                if (!document.getElementById('abhoerWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'abhoerWeiter'; btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Stille Post';
+                    btn.onclick = () => next();
+                    document.getElementById('app').appendChild(btn);
+                }
+            }, 500);
+            return;
+        }
+        const m = ABHOER_MELDUNGEN[abhoerIdx];
+        let html = `<div class="fade-in">
+            <p style="font-size:0.8em; color:rgba(253,245,230,0.4);">Abgefangene Meldung ${abhoerIdx+1}/${ABHOER_MELDUNGEN.length}:</p>
+            <div class="info-box" style="font-family:'Courier New',monospace; font-size:0.95em; border-left-color:#ff6347;">
+                ~krrr~ ${m.luecken} ~krrr~
+            </div>
+            <p style="font-size:0.9em;">Ergänze die fehlenden Wörter:</p>`;
+        m.optionen.forEach((opts, i) => {
+            html += `<div style="margin:8px 0;">Lücke ${i+1}: `;
+            opts.forEach((opt, j) => {
+                html += `<button class="btn" style="width:auto; display:inline-block; padding:6px 12px; margin:3px; font-size:0.8em;" onclick="checkAbhoer(${abhoerIdx},${i},${j})" id="ab-${abhoerIdx}-${i}-${j}">${opt}</button>`;
+            });
+            html += '</div>';
+        });
+        html += '</div>';
+        document.getElementById('abhoerContent').innerHTML = html;
+    }
+
+    let abhoerAnswers = {};
+    function checkAbhoer(mIdx, luecke, antwort) {
+        const key = mIdx + '-' + luecke;
+        if (abhoerAnswers[key] !== undefined) return;
+        abhoerAnswers[key] = antwort;
+        const m = ABHOER_MELDUNGEN[mIdx];
+        const isCorrect = antwort === m.richtig[luecke];
+        if (isCorrect) { abhoerScore++; playTone(523, 150); }
+        else { playTone(200, 200); }
+        // Highlight
+        m.optionen[luecke].forEach((_, j) => {
+            const btn = document.getElementById('ab-'+mIdx+'-'+luecke+'-'+j);
+            if (btn) {
+                if (j === m.richtig[luecke]) btn.style.background = 'lime'; btn.style.color = '#1a1a1a';
+                if (j === antwort && !isCorrect) { btn.style.background = '#ff6347'; }
+                btn.onclick = null;
+            }
+        });
+        // Check if all Lücken answered
+        const allAnswered = m.optionen.every((_, i) => abhoerAnswers[mIdx+'-'+i] !== undefined);
+        if (allAnswered) {
+            setTimeout(() => { abhoerIdx++; abhoerAnswers = {}; renderAbhoerFrage(); }, 1200);
+        }
+    }
+
+    // --- Stille Post ---
+    const STILLE_POST_ORIGINAL = "3 feindliche Panzer von Nordosten, Verstärkung sofort anfordern";
+    const STILLE_POST_STATIONEN = [
+        { name: "Station 1 → 2", ergebnis: "3 feindliche Panzer von Nordosten, Verstärkung anfordern", verlust: "Das 'sofort' ging im Rauschen unter." },
+        { name: "Station 2 → 3", ergebnis: "Mehrere Panzer von Norden, Verstärkung nötig", verlust: "'3' wurde zu 'mehrere', 'Nordosten' zu 'Norden' – eine Explosion störte die Leitung." },
+        { name: "Station 3 → 4", ergebnis: "Panzer von Norden, brauchen Hilfe", verlust: "'Mehrere' ging verloren, 'Verstärkung nötig' wurde zu 'brauchen Hilfe' – Stress und Angst verändern Sprache." },
+        { name: "Station 4 → Kommandant", ergebnis: "Feind im Norden, Hilfe!", verlust: "Aus einer präzisen taktischen Meldung wurde ein verzweifelter Hilferuf. Der Kommandant weiß nicht: Wie viele? Welche Art? Von wo genau?" }
+    ];
+    let stillePostIdx = 0;
+
+    function buildStillePostUI() {
+        stillePostIdx = 0;
+        return `
+        <div class="game-area" id="stillePostArea">
+            <div class="info-box" style="border-left-color:lime; font-family:'Courier New',monospace; font-size:0.9em;">
+                <strong>Original-Meldung:</strong><br>„${STILLE_POST_ORIGINAL}"
+            </div>
+            <div id="stillePostContent"></div>
+            <button class="btn" id="stillePostBtn" onclick="nextStillePost()">Weiterleiten →</button>
+        </div>`;
+    }
+
+    function nextStillePost() {
+        if (stillePostIdx >= STILLE_POST_STATIONEN.length) return;
+        const s = STILLE_POST_STATIONEN[stillePostIdx];
+        const container = document.getElementById('stillePostContent');
+
+        const div = document.createElement('div');
+        div.className = 'zeitreise-event';
+        div.innerHTML = `
+            <div class="year">${s.name}</div>
+            <div style="font-family:'Courier New',monospace; font-size:0.95em; margin:5px 0; color:var(--gold);">„${s.ergebnis}"</div>
+            <div class="text" style="color:#ff6347; font-size:0.8em;">⚡ ${s.verlust}</div>`;
+        container.appendChild(div);
+        setTimeout(() => div.classList.add('visible'), 50);
+        playTone(400 - stillePostIdx * 50, 200);
+
+        stillePostIdx++;
+        const btn = document.getElementById('stillePostBtn');
+        if (stillePostIdx >= STILLE_POST_STATIONEN.length) {
+            btn.innerText = 'Weiter – Reflexion';
+            btn.onclick = () => next();
+            // Vergleich
+            const comp = document.createElement('div');
+            comp.className = 'info-box fade-in';
+            comp.style.cssText = 'margin-top:15px; font-size:0.85em; border-left-color:var(--gold);';
+            comp.innerHTML = `<strong>Vergleich:</strong><br>
+                <span style="color:lime;">Original:</span> „${STILLE_POST_ORIGINAL}"<br>
+                <span style="color:#ff6347;">Angekommen:</span> „${STILLE_POST_STATIONEN[STILLE_POST_STATIONEN.length-1].ergebnis}"<br><br>
+                <strong>Im echten Krieg kosteten solche Verzerrungen Menschenleben.</strong>`;
+            container.appendChild(comp);
+            setTimeout(() => comp.style.opacity = '1', 100);
+        } else {
+            btn.innerText = 'Station ' + (stillePostIdx + 1) + ' weiterleiten →';
+        }
+    }
+
+    // --- Feldtelefon Erfolg ---
+    function buildFeldtelErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">📞</div>
+            <h1 style="font-size:1.1em;">Meldung durchgegeben!</h1>
+            <p style="font-size:0.95em;">Du hast erlebt, wie Kommunikation im Krieg funktionierte – und wie leicht sie scheitern konnte.</p>
+
+            <div class="erfolg-stats">
+                <div class="erfolg-stat">
+                    <div class="label">Phonetik-Score</div>
+                    <div class="value">${buchstScore}/${BUCHSTABIER_WORT.length}</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Abhör-Score</div>
+                    <div class="value">${abhoerScore}/4</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Reichweite</div>
+                    <div class="value">~5 km</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Gewicht</div>
+                    <div class="value">~5 kg</div>
+                </div>
+            </div>
+
+            <div class="fun-facts">
+                <h3>Wusstest du?</h3>
+                <ul>
+                    <li>Das <strong>Phonetik-Alphabet</strong> auf dem Deckel (Anton, Berta, Cäsar...) war bis 1999 in Verwendung! Erst dann wechselte man zum NATO-Alphabet (Alpha, Bravo, Charlie).</li>
+                    <li>Die <strong>Magnetkurbel</strong> erzeugte genug Strom zum Klingeln – ganz ohne Batterie. Ein geniales Prinzip für den Feldeinsatz.</li>
+                    <li>Feldkabel konnten einfach mit einer <strong>Nadel angezapft</strong> werden – deshalb wurden wichtige Meldungen oft verschlüsselt oder per Melder (Läufer) überbracht.</li>
+                    <li>Heute passt mehr Kommunikationstechnik in dein <strong>Smartphone</strong> als in eine ganze Fernmeldekompanie von 1943.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal spielen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
+    // FRONLEICHNAM – PROZESSION VORCHDORF
+    // =============================================
+    const FRONLEICHNAM_DEF = {
+        titel: "Fronleichnam in Vorchdorf",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Ein Foto, ein ganzes Dorf",
+                beschreibung: "Du hältst ein altes Schwarz-Weiß-Foto in der Hand. Zackenrand, vergilbt, kostbar. Es zeigt die Fronleichnamsprozession in Vorchdorf – irgendwann zwischen 1935 und 1955.<br><br>Dieses eine Foto ist vielleicht die <em>einzige</em> Aufnahme dieses Tages. Lass uns hinschauen."
+            },
+            {
+                typ: "vorchdorf-slider",
+                titel: "Erkennst du Vorchdorf?",
+                beschreibung: "Schiebe den Regler und vergleiche: Links das historische Foto, rechts dieselbe Stelle heute. Was hat sich verändert? Was steht noch?"
+            },
+            {
+                typ: "sozial-ordnung",
+                titel: "Wer geht wo?",
+                beschreibung: "Die Prozession war ein Spiegel der Dorfhierarchie. Tippe auf die Gruppen und erfahre: Warum geht wer an welcher Stelle?"
+            },
+            {
+                typ: "anna-story",
+                titel: "Annas Tag",
+                beschreibung: ""
+            },
+            {
+                typ: "fronleichnam-erfolg",
+                titel: "Ein Moment für die Ewigkeit",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Vorchdorf Damals/Heute Slider ---
+    function buildVorchdorfSliderUI() {
+        return `
+        <div class="game-area">
+            <div class="slider-wrap" id="sliderWrap">
+                <div class="slider-layer" style="background:#2a2015;">
+                    <div style="text-align:center; padding:20px;">
+                        <span style="font-size:2em;">📷</span><br>
+                        <strong style="color:rgba(212,175,55,0.5);">~ 1945 ~</strong><br>
+                        <span style="font-size:0.8em;">Fronleichnamsprozession<br>Hauptstraße Vorchdorf<br>Schuhhaus Hartleitner · Sparkasse<br>Girlanden · Kruzifix · Festgewänder</span>
+                    </div>
+                </div>
+                <div class="slider-layer alt" id="sliderAlt" style="background:#1a2530;">
+                    <div style="text-align:center; padding:20px;">
+                        <span style="font-size:2em;">📱</span><br>
+                        <strong style="color:rgba(100,180,255,0.5);">~ Heute ~</strong><br>
+                        <span style="font-size:0.8em;">Dieselbe Straße, neues Jahrhundert<br>Geschäfte gewechselt · Autos statt Pferde<br>Asphalt statt Kopfstein<br>Aber: Die Kirche steht noch</span>
+                    </div>
+                </div>
+                <div class="slider-handle" id="sliderHandle"></div>
+                <input type="range" min="0" max="100" value="50" class="slider-input" id="sliderRange">
+            </div>
+            <div id="sliderFacts" style="margin-top:10px;">
+                <div class="info-box" style="font-size:0.85em;">
+                    <strong>Schau genau:</strong> Im Foto sieht man das <strong>Schuhhaus Hartleitner</strong> und die <strong>Sparkasse</strong>. Die Girlanden hängen von Fenster zu Fenster. Das große Kruzifix steht am Beginn der Hauptgasse – ein stummer Wächter über Generationen.
+                </div>
+            </div>
+            <button class="btn" onclick="next()">Weiter – Wer geht wo?</button>
+        </div>`;
+    }
+
+    function initVorchdorfSlider() {
+        const range = document.getElementById('sliderRange');
+        const alt = document.getElementById('sliderAlt');
+        const handle = document.getElementById('sliderHandle');
+        if (!range) return;
+        range.addEventListener('input', function() {
+            const v = this.value;
+            alt.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
+            handle.style.left = v + '%';
+        });
+    }
+
+    // --- Soziale Ordnung ---
+    const SOZIAL_GRUPPEN = [
+        { id: "pfarrer", label: "1", x: 55, y: 35, name: "Pfarrer mit Monstranz", text: "An der Spitze: Der Pfarrer trägt das Allerheiligste in der goldenen Monstranz. Er ist der geistliche Mittelpunkt – ihm gebührt der Ehrenplatz.", rang: 1 },
+        { id: "mini", label: "2", x: 42, y: 40, name: "Ministranten & Kreuzträger", text: "Die Messdiener mit Weihrauchfässern und dem Vortragekreuz. Meist Buben aus dem Ort, für die es eine große Ehre war.", rang: 2 },
+        { id: "honoratioren", label: "3", x: 38, y: 55, name: "Bürgermeister & Honoratioren", text: "Die weltliche Macht: Bürgermeister, Schuldirektor, Vereinsvorstände. Ihre Position direkt hinter dem Geistlichen zeigt ihren Status im Dorf.", rang: 3 },
+        { id: "maenner", label: "4", x: 30, y: 60, name: "Männer in Sonntagsanzügen", text: "Bauern, Handwerker, Kaufleute – alle im besten Anzug. Am Fronleichnamstag waren Standesunterschiede kurz aufgehoben. Fast.", rang: 4 },
+        { id: "frauen", label: "5", x: 50, y: 65, name: "Ältere Frauen in Tracht", text: "Die Mütter und Großmütter in dunklen Gewändern mit Kopftüchern. Für sie war Fronleichnam ein Anker in einer Welt voller Umbrüche – Kriege, Not, Wiederaufbau.", rang: 5 },
+        { id: "maedchen", label: "6", x: 65, y: 55, name: "Junge Mädchen in Weiß", text: "Die Marianische Jungfrauenkongregation: Weiße Blusen, dunkle Röcke. Sie symbolisierten Reinheit und die Zukunft der Gemeinde. Für die Mädchen war es aufregend UND einschüchternd.", rang: 6 }
+    ];
+    let sozialFound = [];
+
+    function buildSozialOrdnungUI() {
+        sozialFound = [];
+        let hotspots = SOZIAL_GRUPPEN.map(g =>
+            `<div class="person-hotspot" id="soz-${g.id}" style="left:${g.x}%;top:${g.y}%;" onclick="findSozialGruppe('${g.id}')">${g.label}</div>`
+        ).join('');
+        return `
+        <div class="game-area">
+            <div style="position:relative; width:100%; padding-bottom:70%; background:#2a2015; border-radius:8px; overflow:hidden;">
+                <div style="position:absolute;inset:0; display:flex; align-items:center; justify-content:center; color:rgba(212,175,55,0.2); font-size:0.8em;">
+                    [ Fronleichnamsprozession Vorchdorf ]
+                </div>
+                ${hotspots}
+            </div>
+            <p id="sozCount" style="margin:8px 0; font-size:0.9em;">Gruppen erkannt: 0 / ${SOZIAL_GRUPPEN.length}</p>
+            <div id="sozExplain" style="min-height:50px;"></div>
+        </div>`;
+    }
+
+    function findSozialGruppe(id) {
+        if (sozialFound.includes(id)) return;
+        const g = SOZIAL_GRUPPEN.find(x => x.id === id);
+        if (!g) return;
+        sozialFound.push(id);
+        playTone(300 + g.rang * 60, 200);
+
+        const hs = document.getElementById('soz-' + id);
+        if (hs) hs.classList.add('found');
+
+        document.getElementById('sozCount').innerText = 'Gruppen erkannt: ' + sozialFound.length + ' / ' + SOZIAL_GRUPPEN.length;
+        document.getElementById('sozExplain').innerHTML = `<div class="info-box fade-in" style="font-size:0.9em;"><strong>${g.label}. ${g.name}</strong><br>${g.text}</div>`;
+
+        if (sozialFound.length >= SOZIAL_GRUPPEN.length) {
+            setTimeout(() => {
+                document.getElementById('sozExplain').innerHTML += `<p style="color:var(--gold); font-weight:bold; margin-top:10px;">Und wo wärst DU gegangen? Die Prozession war ein lebendiges Abbild der Dorfgesellschaft – jeder hatte seinen Platz.</p>`;
+                const app = document.getElementById('app');
+                if (!document.getElementById('sozWeiter')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'sozWeiter';
+                    btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Annas Geschichte';
+                    btn.onclick = () => next();
+                    app.appendChild(btn);
+                }
+            }, 500);
+        }
+    }
+
+    // --- Annas Geschichte ---
+    const ANNA_KAPITEL = [
+        { titel: "Der Morgen", text: "Es ist fünf Uhr früh und Anna ist schon wach. Heute ist Fronleichnam! Seit Wochen hat sie ihre weiße Bluse gebügelt und den dunklen Rock bereitgelegt. Ihre Mutter prüft jeden Knopf. \"Du gehst in der Jungfrauenreihe, Anna. Kopf hoch, Hände gefaltet, nicht zu den Buben schauen!\"", emoji: "🌅" },
+        { titel: "Die Vorbereitung", text: "Das ganze Dorf ist auf den Beinen. Girlanden aus Birkengrün und Feldblumen hängen von Fenster zu Fenster. Die alte Resi und ihre Helferinnen haben seit Tagen die vier Altäre geschmückt. Vor dem Schuhhaus Hartleitner duftet es nach frischen Blumen. Anna spürt die Aufregung bis in die Zehenspitzen.", emoji: "🌸" },
+        { titel: "Die Prozession", text: "Die Glocken läuten. Der Pfarrer erhebt die goldene Monstranz. Die Prozession setzt sich in Bewegung. Anna geht in der Reihe der Jungfrauen, ihre weißen Blusen leuchten im Sonnenlicht. Links und rechts stehen die Zuschauer – Männer ziehen die Hüte, Kinder staunen. Anna spürt die Kühle des Pflasters durch ihre dünnen Sohlen und die Wärme der Sonne auf dem Scheitel.", emoji: "⛪" },
+        { titel: "Der Moment", text: "Am Straßenrand steht Franz, der Sohn vom Schmied. Er schaut sie an. Anna wird rot, senkt den Blick – und muss lächeln. Ihre Freundin Leni stupst sie: \"Nicht schauen!\" Aber für einen Augenblick ist die ganze Feierlichkeit vergessen. Sie ist sechzehn, und das Leben ist schön.", emoji: "💛" },
+        { titel: "Ein einziges Foto", text: "Irgendwo am Straßenrand steht ein Mann mit einer Kamera. Er drückt genau einmal ab. KLICK. Dieses eine Foto ist alles, was von diesem Tag bleibt. Kein Video, kein Instagram, keine Story. Ein einziger Moment, eingefroren auf Silbergelatine. Heute hättest du 200 Handyfotos und 3 TikToks. Aber hättest du den Tag genauso ERLEBT?", emoji: "📸" }
+    ];
+    let annaIdx = 0;
+
+    function buildAnnaStoryUI() {
+        annaIdx = 0;
+        return `
+        <div class="game-area" id="annaArea" style="text-align:left;">
+            <div id="annaContent"></div>
+            <button class="btn" id="annaNext" onclick="nextAnna()">Geschichte beginnen</button>
+        </div>`;
+    }
+
+    function renderAnna() {
+        const k = ANNA_KAPITEL[annaIdx];
+        const container = document.getElementById('annaContent');
+        if (!container) return;
+
+        // Fortschritts-Dots
+        let dots = '<div class="step-indicator" style="margin-bottom:10px;">';
+        for (let i = 0; i < ANNA_KAPITEL.length; i++) {
+            dots += `<div class="step-dot ${i < annaIdx ? 'done' : i === annaIdx ? 'active' : ''}"></div>`;
+        }
+        dots += '</div>';
+
+        container.innerHTML = `
+            ${dots}
+            <div class="fade-in">
+                <div style="font-size:2em; text-align:center; margin:5px 0;">${k.emoji}</div>
+                <div class="info-box"><strong>${k.titel}</strong><br>${k.text}</div>
+            </div>`;
+        playTone(350 + annaIdx * 40, 200);
+
+        const btn = document.getElementById('annaNext');
+        if (annaIdx >= ANNA_KAPITEL.length - 1) {
+            btn.innerText = 'Weiter – Reflexion';
+            btn.onclick = () => next();
+        } else {
+            btn.innerText = 'Weiter';
+            btn.onclick = () => nextAnna();
+        }
+    }
+
+    function nextAnna() {
+        if (annaIdx === 0 && document.getElementById('annaContent').innerHTML === '') {
+            renderAnna();
+        } else {
+            annaIdx++;
+            renderAnna();
+        }
+    }
+
+    // --- Fronleichnam Erfolg ---
+    function buildFronleichnamErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">📷</div>
+            <h1 style="font-size:1.1em;">Ein Moment für die Ewigkeit</h1>
+            <p style="font-size:0.95em;">Dieses eine Foto erzählt vom Glauben, von der Gemeinschaft und vom Alltag in Vorchdorf – festgehalten in einem einzigen Klick.</p>
+
+            <div class="erfolg-stats">
+                <div class="erfolg-stat">
+                    <div class="label">Fotos damals</div>
+                    <div class="value">1</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Fotos heute</div>
+                    <div class="value">~200</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Gruppen erkannt</div>
+                    <div class="value">${sozialFound.length}/6</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Alter des Fotos</div>
+                    <div class="value">~80 Jahre</div>
+                </div>
+            </div>
+
+            <div class="fun-facts">
+                <h3>Wusstest du?</h3>
+                <ul>
+                    <li>Der <strong>Zackenrand</strong> des Fotos war typisch für Abzüge der 1940er/50er Jahre – er entstand durch spezielle Schneidemaschinen im Fotolabor.</li>
+                    <li>Ein einzelnes Foto kostete damals ca. <strong>0,50-1 Reichsmark</strong> für Entwicklung und Abzug – bei einem Tagelohn von 5 RM war das kein billiges Vergnügen.</li>
+                    <li>Fronleichnam wird in Vorchdorf <strong>bis heute</strong> gefeiert. Die Route hat sich kaum verändert – aber die Teilnehmerzahl und die Kleidung schon.</li>
+                    <li>Die <strong>Marianische Jungfrauenkongregation</strong> (die Mädchen in Weiß) war für junge Frauen oft der einzige Anlass, öffentlich als Gruppe aufzutreten.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal erleben</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
+    // GEMÄLDE – KÄRNTNER ABWEHRKAMPF (definition moved after artefakte object)
+    // =============================================
+    const GEMAELDE_DEF = {
+        titel: "Kärntner Abwehrkampf",
+        schritte: [
+            {
+                typ: "info",
+                titel: "November 1918 – Ein Reich zerfällt",
+                beschreibung: "Der Erste Weltkrieg ist vorbei. Die Habsburgermonarchie bricht zusammen. In den Tälern Kärntens an der Grenze zu Slowenien beginnt ein neuer Konflikt: Jugoslawische Truppen rücken vor und beanspruchen das Gebiet.<br><br>Dieses Gemälde zeigt einen Moment dieses Kampfes. Aber jedes Bild hat mehr als eine Wahrheit. Schauen wir genauer hin."
+            },
+            {
+                typ: "perspektiven",
+                titel: "Zwei Seiten – eine Schlacht",
+                beschreibung: "Jeder Krieg hat mindestens zwei Perspektiven. Wechsle zwischen Franz und Janez, um dieselbe Schlacht durch verschiedene Augen zu sehen."
+            },
+            {
+                typ: "propaganda",
+                titel: "Propaganda-Detektor",
+                beschreibung: "Dieses Gemälde ist kein neutrales Foto. Es wurde gemalt, um eine bestimmte Wirkung zu erzielen. Erkennst du die Propaganda-Elemente? Tippe auf die verdächtigen Stellen!"
+            },
+            {
+                typ: "abstimmung",
+                titel: "Die Volksabstimmung – Du entscheidest",
+                beschreibung: "Nach den Kämpfen sollte die Bevölkerung selbst entscheiden: Österreich oder Jugoslawien? Höre die Argumente beider Seiten und stimme ab."
+            },
+            {
+                typ: "gemaelde-erfolg",
+                titel: "Reflexion",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Zwei Perspektiven ---
+    const PERSPEKTIVEN = {
+        franz: {
+            name: "Franz Leitner",
+            alter: "19 Jahre, Bauer aus Feistritz",
+            seite: "Kärntner Heimwehr",
+            icon: "🏔️",
+            abschnitte: [
+                { titel: "Der Morgen", text: "Es ist bitterkalt. Seit drei Wochen bin ich hier oben. Meine Mutter wollte nicht, dass ich gehe. Aber wenn ich nicht gehe – wer verteidigt dann unseren Hof, unser Tal, unsere Sprache?" },
+                { titel: "Das Gefecht", text: "Ein Pfiff zerreißt die Stille. Schüsse! Ich werfe mich hinter einen Felsen. Mein Herz hämmert. Neben mir keucht der alte Huber. Er hat schon den Weltkrieg überlebt. Ob er auch das hier überlebt?" },
+                { titel: "Danach", text: "Wir haben den Pass gehalten. Aber zu welchem Preis? Zwei Kameraden werden wir nicht mehr nach Hause bringen. Ich bin 19 und habe Dinge gesehen, die kein Mensch sehen sollte." }
+            ]
+        },
+        janez: {
+            name: "Janez Kovač",
+            alter: "20 Jahre, Bauernsohn aus Jesenice",
+            seite: "SHS-Truppen",
+            icon: "⛰️",
+            abschnitte: [
+                { titel: "Der Morgen", text: "Wir sind aufgebrochen, noch bevor es hell wurde. Mein Leutnant sagt, das Land hinter dem Pass gehört uns – es ist slowenisches Land, unsere Sprache, unsere Leute. Meine Großmutter lebt drüben. Warum sollte eine Grenze uns trennen?" },
+                { titel: "Das Gefecht", text: "Die Österreicher haben sich verschanzt. Wir greifen an. Der Donner der Gewehre hallt von den Felswänden. Ich sehe einen jungen Mann hinter einem Stein – er ist genauso alt wie ich, genauso verängstigt. Einen Moment lang schauen wir uns in die Augen." },
+                { titel: "Danach", text: "Wir ziehen uns zurück. Ein Kamerad wird getragen, er stöhnt leise. Ich frage mich: Wer hat recht? Wir kämpfen beide für unsere Heimat. Kann man für dasselbe Stück Erde zwei Heimaten haben?" }
+            ]
+        }
+    };
+    let perspAktiv = 'franz', perspAbschnitt = 0;
+
+    function buildPerspektivenUI() {
+        perspAktiv = 'franz'; perspAbschnitt = 0;
+        return `
+        <div class="game-area" id="perspArea">
+            <div style="display:flex; justify-content:center; gap:10px; margin-bottom:15px;">
+                <button class="btn persp-tab active" id="tabFranz" onclick="switchPersp('franz')" style="width:48%; margin:0; font-size:0.85em; padding:10px;">🏔️ Franz (Österreich)</button>
+                <button class="btn persp-tab" id="tabJanez" onclick="switchPersp('janez')" style="width:48%; margin:0; font-size:0.85em; padding:10px; background:transparent; border:2px solid var(--gold); color:var(--gold);">⛰️ Janez (Jugoslawien)</button>
+            </div>
+            <div id="perspContent"></div>
+            <div style="display:flex; justify-content:center; gap:6px; margin:15px 0;" id="perspDots"></div>
+            <button class="btn" id="perspNext" onclick="nextPerspAbschnitt()">Weiter</button>
+        </div>`;
+    }
+
+    function renderPersp() {
+        const p = PERSPEKTIVEN[perspAktiv];
+        const a = p.abschnitte[perspAbschnitt];
+        document.getElementById('perspContent').innerHTML = `
+            <div class="fade-in" style="text-align:left;">
+                <p style="color:var(--gold); margin-bottom:2px;"><strong>${p.icon} ${p.name}</strong> <span style="color:rgba(253,245,230,0.5); font-size:0.85em;">– ${p.alter}</span></p>
+                <p style="font-size:0.8em; color:rgba(253,245,230,0.4); margin-top:0;">${p.seite}</p>
+                <div class="info-box"><strong>${a.titel}</strong><br>${a.text}</div>
+            </div>`;
+        // Dots
+        let dots = '';
+        for (let i = 0; i < p.abschnitte.length; i++) {
+            dots += `<div class="step-dot ${i < perspAbschnitt ? 'done' : i === perspAbschnitt ? 'active' : ''}"></div>`;
+        }
+        document.getElementById('perspDots').innerHTML = dots;
+        // Button
+        const btn = document.getElementById('perspNext');
+        if (perspAbschnitt >= p.abschnitte.length - 1) {
+            if (perspAktiv === 'franz') {
+                btn.innerText = 'Jetzt Janez\' Seite hören';
+                btn.onclick = () => { switchPersp('janez'); };
+            } else {
+                btn.innerText = 'Weiter – Propaganda-Detektor';
+                btn.onclick = () => next();
+            }
+        } else {
+            btn.innerText = 'Weiter';
+            btn.onclick = () => nextPerspAbschnitt();
+        }
+        // Tab styling
+        const tf = document.getElementById('tabFranz');
+        const tj = document.getElementById('tabJanez');
+        if (perspAktiv === 'franz') {
+            tf.style.background = 'var(--gold)'; tf.style.color = '#1a1a1a'; tf.style.border = 'none';
+            tj.style.background = 'transparent'; tj.style.color = 'var(--gold)'; tj.style.border = '2px solid var(--gold)';
+        } else {
+            tj.style.background = 'var(--gold)'; tj.style.color = '#1a1a1a'; tj.style.border = 'none';
+            tf.style.background = 'transparent'; tf.style.color = 'var(--gold)'; tf.style.border = '2px solid var(--gold)';
+        }
+    }
+
+    function switchPersp(who) { perspAktiv = who; perspAbschnitt = 0; renderPersp(); }
+    function nextPerspAbschnitt() { perspAbschnitt++; renderPersp(); }
+
+    // --- Propaganda-Detektor ---
+    const PROPAGANDA_PUNKTE = [
+        { id: "helden", label: "Heroische Haltung", x: 45, y: 55, text: "Die Soldaten werden aufrecht, entschlossen und mutig dargestellt. In Wirklichkeit waren die meisten verängstigt, erschöpft und schlecht ausgerüstet." },
+        { id: "feind", label: "Unsichtbarer Feind", x: 80, y: 40, text: "Der Gegner ist nur als Schatten sichtbar, nicht als Mensch. Das macht es leichter, ihn als Bedrohung zu sehen statt als Person mit eigener Familie." },
+        { id: "rauch", label: "Dramatischer Rauch", x: 75, y: 25, text: "Rauch und Explosionen sind übertrieben dargestellt. Sie machen das Bild dramatischer und heroischer – wie in einem Abenteuerfilm statt einer Tragödie." },
+        { id: "opfer", label: "Keine Opfer sichtbar", x: 30, y: 70, text: "Wo sind die Verwundeten? Die Toten? Das Bild zeigt Kampf ohne Konsequenzen. Echte Schlachten sind blutig und grausam – das wird hier ausgeblendet." },
+        { id: "sprache", label: "Zweisprachige Propaganda", x: 50, y: 8, text: "Die Bildunterschrift ist auf Deutsch UND Ungarisch – das Bild wurde in der Doppelmonarchie verbreitet, um in mehreren Bevölkerungsgruppen Patriotismus zu wecken." }
+    ];
+    let propagandaFound = [];
+
+    function buildPropagandaUI() {
+        propagandaFound = [];
+        let hotspots = PROPAGANDA_PUNKTE.map(p =>
+            `<div class="prop-hotspot" id="hs-${p.id}" style="left:${p.x}%;top:${p.y}%;" onclick="findPropaganda('${p.id}')">?</div>`
+        ).join('');
+        return `
+        <div class="game-area">
+            <div style="position:relative; width:100%; padding-bottom:65%; background:#2a1a0a; border-radius:8px; overflow:hidden;" id="propBild">
+                <div style="position:absolute;inset:0; display:flex; align-items:center; justify-content:center; color:rgba(212,175,55,0.3); font-size:0.9em;">
+                    [ Gemälde: Überfälle an der Kärntner Grenze ]
+                </div>
+                ${hotspots}
+            </div>
+            <p id="propCount" style="margin:10px 0; font-size:0.9em;">Gefunden: 0 / ${PROPAGANDA_PUNKTE.length}</p>
+            <div id="propExplain" style="min-height:60px;"></div>
+        </div>`;
+    }
+
+    function findPropaganda(id) {
+        if (propagandaFound.includes(id)) return;
+        const punkt = PROPAGANDA_PUNKTE.find(p => p.id === id);
+        if (!punkt) return;
+        propagandaFound.push(id);
+        playTone(500 + propagandaFound.length * 80, 200);
+
+        const hs = document.getElementById('hs-' + id);
+        if (hs) { hs.innerText = '✓'; hs.style.background = 'rgba(212,175,55,0.8)'; hs.style.color = '#1a1a1a'; hs.style.borderColor = 'var(--gold)'; }
+
+        document.getElementById('propCount').innerText = 'Gefunden: ' + propagandaFound.length + ' / ' + PROPAGANDA_PUNKTE.length;
+        document.getElementById('propExplain').innerHTML = `<div class="info-box fade-in" style="font-size:0.9em;"><strong>${punkt.label}</strong><br>${punkt.text}</div>`;
+
+        if (propagandaFound.length >= PROPAGANDA_PUNKTE.length) {
+            setTimeout(() => {
+                const app = document.getElementById('app');
+                if (!document.getElementById('propWeiter')) {
+                    document.getElementById('propExplain').innerHTML += `<p style="color:lime; font-weight:bold; margin-top:10px;">Alle Propaganda-Elemente erkannt! Jedes Bild erzählt die Geschichte, die der Maler erzählen WILL – nicht die ganze Wahrheit.</p>`;
+                    const btn = document.createElement('button');
+                    btn.id = 'propWeiter';
+                    btn.className = 'btn erfolg-animation';
+                    btn.innerText = 'Weiter – Die Volksabstimmung';
+                    btn.onclick = () => next();
+                    app.appendChild(btn);
+                }
+            }, 600);
+        }
+    }
+
+    // --- Volksabstimmung ---
+    const ARGUMENTE = {
+        oesterreich: [
+            "Kärnten ist seit Jahrhunderten Teil Österreichs. Unsere Verwaltung, Schulen und Infrastruktur sind österreichisch.",
+            "Auch viele Slowenischsprachige fühlen sich Österreich zugehörig – Sprache allein definiert keine Staatszugehörigkeit.",
+            "Wirtschaftlich ist Kärnten nach Norden orientiert – Klagenfurt, Wien, der Handel über die Alpen."
+        ],
+        jugoslawien: [
+            "In Südkärnten leben Tausende Slowenen. Sie verdienen es, in einem Staat zu leben, der ihre Sprache und Kultur fördert.",
+            "Das Selbstbestimmungsrecht der Völker, das auch US-Präsident Wilson fordert, gibt uns das Recht auf diese Gebiete.",
+            "Die alte Monarchie hat die Slowenen unterdrückt. Im neuen Staat können sie frei und gleichberechtigt leben."
+        ]
+    };
+    let abstimmungPhase = 0; // 0=argumente, 1=wahl, 2=ergebnis
+
+    function buildAbstimmungUI() {
+        abstimmungPhase = 0;
+        let argHTML = '<div id="argContainer">';
+        argHTML += '<p style="color:var(--gold); font-weight:bold; margin-bottom:5px;">🇦🇹 Argumente für Österreich:</p>';
+        ARGUMENTE.oesterreich.forEach(a => { argHTML += `<div class="info-box" style="font-size:0.85em; margin:6px 0; border-left-color:#c0392b;">${a}</div>`; });
+        argHTML += '<p style="color:var(--gold); font-weight:bold; margin-bottom:5px; margin-top:15px;">🇷🇸 Argumente für Jugoslawien:</p>';
+        ARGUMENTE.jugoslawien.forEach(a => { argHTML += `<div class="info-box" style="font-size:0.85em; margin:6px 0; border-left-color:#2980b9;">${a}</div>`; });
+        argHTML += '</div>';
+        return `
+        <div class="game-area" id="abstimmungArea">
+            ${argHTML}
+            <p style="margin-top:15px; font-weight:bold; color:var(--gold);">10. Oktober 1920 – Deine Stimme:</p>
+            <div style="display:flex; gap:10px; margin:10px 0;">
+                <button class="btn" style="width:50%; margin:0; background:#c0392b;" onclick="abstimmen('oesterreich')">🇦🇹 Österreich</button>
+                <button class="btn" style="width:50%; margin:0; background:#2980b9;" onclick="abstimmen('jugoslawien')">🇷🇸 Jugoslawien</button>
+            </div>
+        </div>`;
+    }
+
+    function abstimmen(wahl) {
+        const area = document.getElementById('abstimmungArea');
+        const wahlText = wahl === 'oesterreich' ? 'Österreich' : 'Jugoslawien';
+        playTone(440, 300);
+        area.innerHTML = `
+        <div class="fade-in">
+            <p style="font-size:1.1em;">Du hast für <strong style="color:var(--gold);">${wahlText}</strong> gestimmt.</p>
+            <p style="margin:15px 0; font-size:1em;">Das echte Ergebnis vom 10. Oktober 1920:</p>
+            <div class="erfolg-stats">
+                <div class="erfolg-stat" style="border-color:#c0392b;">
+                    <div class="label">🇦🇹 Österreich</div>
+                    <div class="value" style="color:#e74c3c;">59,04%</div>
+                </div>
+                <div class="erfolg-stat" style="border-color:#2980b9;">
+                    <div class="label">🇷🇸 Jugoslawien</div>
+                    <div class="value" style="color:#3498db;">40,96%</div>
+                </div>
+            </div>
+            <div class="info-box" style="font-size:0.9em;">
+                <strong>Bemerkenswert:</strong> Auch viele slowenischsprachige Kärntner stimmten für Österreich. Die Entscheidung fiel nicht entlang der Sprachgrenze, sondern war eine Frage der Zugehörigkeit, der Wirtschaft und des Vertrauens. Es war einer der seltenen Momente, in denen ein Grenzkonflikt <strong>an der Wahlurne</strong> statt auf dem Schlachtfeld entschieden wurde.
+            </div>
+            <button class="btn" onclick="next()">Weiter – Reflexion</button>
+        </div>`;
+    }
+
+    // --- Gemälde Erfolg ---
+    function buildGemaeldeErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">🕊️</div>
+            <h1 style="font-size:1.1em;">Zwei Heimaten, eine Geschichte</h1>
+            <p style="font-size:0.95em;">Du hast beide Seiten gehört, Propaganda erkannt und eine historische Entscheidung nachvollzogen.</p>
+
+            <div class="fun-facts">
+                <h3>Was du mitnehmen kannst:</h3>
+                <ul>
+                    <li>Jedes Kriegsbild zeigt nur <strong>eine Seite</strong>. Die andere Seite hat genauso gelitten, gehofft und um ihre Heimat gekämpft.</li>
+                    <li>Der <strong>10. Oktober</strong> ist bis heute Feiertag in Kärnten – ein Tag, der daran erinnert, dass Konflikte auch ohne Waffen gelöst werden können.</li>
+                    <li>In Kärnten leben noch heute <strong>slowenischsprachige Österreicher</strong> – ein lebendiges Zeugnis dafür, dass Vielfalt und Zusammenleben möglich sind.</li>
+                    <li>Propaganda funktioniert auch heute noch. <strong>Medienkompetenz</strong> – das Erkennen von Manipulation – ist wichtiger denn je.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal erleben</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
+    // MORSE-CODE TABELLE
+    // =============================================
+    const MORSE = {
+        'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....',
+        'I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.',
+        'Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-',
+        'Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....',
+        '6':'-....','7':'--...','8':'---..','9':'----.','0':'-----'
+    };
+
+    const MORSE_WORT = "SOS";
+    let morseState = null;
+    let startTime = null;
+
+    // =============================================
+    // SVG RÖHRE
+    // =============================================
+    function roehreSVG(glow) {
+        const g = glow ? 1 : 0.15;
+        const filterGlow = glow
+            ? '<filter id="glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+            : '';
+        return `<svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>${filterGlow}</defs>
+            <ellipse cx="60" cy="45" rx="35" ry="42" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
+            <ellipse cx="60" cy="45" rx="33" ry="40" fill="rgba(212,175,55,${g * 0.08})" />
+            <line x1="50" y1="60" x2="50" y2="25" stroke="rgba(255,200,50,${g})" stroke-width="2" ${glow ? 'filter="url(#glow)"' : ''}/>
+            <line x1="60" y1="65" x2="60" y2="20" stroke="rgba(255,180,30,${g})" stroke-width="2" ${glow ? 'filter="url(#glow)"' : ''}/>
+            <line x1="70" y1="60" x2="70" y2="25" stroke="rgba(255,200,50,${g})" stroke-width="2" ${glow ? 'filter="url(#glow)"' : ''}/>
+            <rect x="40" y="85" width="40" height="25" rx="3" fill="#333" stroke="rgba(212,175,55,0.5)" stroke-width="1"/>
+            <line x1="48" y1="110" x2="48" y2="140" stroke="#888" stroke-width="2"/>
+            <line x1="60" y1="110" x2="60" y2="145" stroke="#888" stroke-width="2"/>
+            <line x1="72" y1="110" x2="72" y2="140" stroke="#888" stroke-width="2"/>
+            <rect x="35" y="145" width="50" height="12" rx="2" fill="#444" stroke="rgba(212,175,55,0.3)" stroke-width="1"/>
+            <text x="60" y="100" text-anchor="middle" fill="rgba(212,175,55,0.7)" font-size="8" font-family="monospace">GRS 1</text>
+        </svg>`;
+    }
+
+    // =============================================
+    // AUDIO-KONTEXT
+    // =============================================
+    let audioCtx = null;
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+    }
+    function playTone(freq, durationMs) {
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.frequency.value = freq || 680;
+            osc.type = 'sine';
+            gain.gain.value = 0.25;
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + (durationMs || 200) / 1000);
+        } catch(e) {}
+    }
+
+    // Rauschen für Frequenz-Suche
+    let noiseNode = null, noiseGain = null;
+    function startNoise() {
+        try {
+            const ctx = getAudioCtx();
+            const bufSize = ctx.sampleRate * 2;
+            const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+            noiseNode = ctx.createBufferSource();
+            noiseNode.buffer = buf;
+            noiseNode.loop = true;
+            noiseGain = ctx.createGain();
+            noiseGain.gain.value = 0.08;
+            noiseNode.connect(noiseGain);
+            noiseGain.connect(ctx.destination);
+            noiseNode.start();
+        } catch(e) {}
+    }
+    function setNoiseLevel(level) {
+        if (noiseGain) noiseGain.gain.value = level;
+    }
+    function stopNoise() {
+        try { if (noiseNode) { noiseNode.stop(); noiseNode = null; noiseGain = null; } } catch(e) {}
+    }
+
+    // Morse-Piep-Ton für Antwort
+    function playMorseString(morseStr, cb) {
+        const ctx = getAudioCtx();
+        let time = ctx.currentTime + 0.3;
+        const dot = 0.08, dash = 0.24, gap = 0.1, letterGap = 0.3;
+        for (const ch of morseStr) {
+            if (ch === '.') {
+                const o = ctx.createOscillator(); const g = ctx.createGain();
+                o.frequency.value = 750; o.type = 'sine'; g.gain.value = 0.2;
+                o.connect(g); g.connect(ctx.destination);
+                o.start(time); o.stop(time + dot); time += dot + gap;
+            } else if (ch === '-') {
+                const o = ctx.createOscillator(); const g = ctx.createGain();
+                o.frequency.value = 750; o.type = 'sine'; g.gain.value = 0.2;
+                o.connect(g); g.connect(ctx.destination);
+                o.start(time); o.stop(time + dash); time += dash + gap;
+            } else if (ch === ' ') {
+                time += letterGap;
+            }
+        }
+        if (cb) setTimeout(cb, (time - ctx.currentTime) * 1000 + 200);
+    }
+
+    // =============================================
+    // ARTEFAKTE
+    // =============================================
+    const artefakte = {
+        "zigaretten": {
+            titel: "Zeitkapsel 1944",
+            schritte: [
+                { typ: "audio", titel: "Teil 1: Das Schweigen", file: "teil 1.m4a", beschreibung: "Betrachte die Packung. 'Feind hört mit' war Gesetz." },
+                { typ: "audio", titel: "Teil 2: Der Mangel", file: "teil 2.m4a", beschreibung: "Papier war wertvoller als Tabak. Ohne Leerpackung kein Kauf." },
+                { typ: "audio", titel: "Teil 3: Das Mahnmal", file: "teil 3.m4a", beschreibung: "Ein Zeugnis menschlicher Entbehrung." }
+            ]
+        },
+        "roehre": {
+            titel: "Die GRS 1 Mission",
+            schritte: [
+                {
+                    typ: "info",
+                    titel: "Wien, 1912 – Dein Auftrag",
+                    beschreibung: "Du bist Funktechniker im k.u.k. Telegraphenamt Wien. Eine dringende Nachricht muss nach Linz – doch der einzige Weg führt über die brandneue Siemens GRS 1 Verstärkerröhre. Niemand hat sie bisher unter Echtbedingungen getestet.<br><br>Dein Vorgesetzter blickt dich an: <em>\"Sie schaffen das. Drei Schritte: Röhre aufheizen, Nachricht morsen, Bestätigung empfangen. Los!\"</em>"
+                },
+                {
+                    typ: "game",
+                    titel: "Schritt 1: Röhre aufheizen",
+                    beschreibung: "Die GRS 1 braucht exakt die richtige Spannung. Zu wenig – kein Signal. Zu viel – die Röhre brennt durch und du stehst mit leeren Händen da. Ziel: ca. 112 Volt."
+                },
+                {
+                    typ: "morse",
+                    titel: "Schritt 2: SOS morsen",
+                    beschreibung: "Die Röhre glüht stabil! Jetzt die Nachricht senden. Tippe kurz für Punkt (·), halte lang für Strich (–). Morse Buchstabe für Buchstabe: S – O – S."
+                },
+                {
+                    typ: "frequenz",
+                    titel: "Schritt 3: Antwort empfangen",
+                    beschreibung: "Deine Nachricht ist draußen! Jetzt musst du die Antwort aus Linz finden. Drehe am Empfänger-Knopf und suche das Signal im Rauschen. Irgendwo zwischen 140 und 160 kHz versteckt sich die Bestätigung..."
+                },
+                {
+                    typ: "erfolg",
+                    titel: "Mission erfüllt!",
+                    beschreibung: ""
+                }
+            ]
+        }
+    };
+
+    // =============================================
+    // STANDUHR-ARTEFAKT
+    // =============================================
+    artefakte["standuhr"] = {
+        titel: "Uhrmacher-Lehrling",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Schwarzwald, 1810 – Deine Lehre beginnt",
+                beschreibung: "Du bist der neue Lehrling von Uhrmachermeister Kuno. In seiner kleinen, holzduftenden Werkstatt entsteht gerade sein Meisterwerk: eine prächtige Standuhr für die Bauernfamilie Schmidt.<br><br>Kuno blickt dich an: <em>\"Drei Aufgaben, Bursch. Zahnräder einsetzen, Pendel justieren, Zifferblatt bemalen. Dann ist sie fertig. Zeig, was du kannst!\"</em>"
+            },
+            {
+                typ: "zahnrad",
+                titel: "Schritt 1: Zahnräder einsetzen",
+                beschreibung: "Das Herz der Uhr besteht aus Holzzahnrädern. Ziehe jedes Zahnrad an die richtige Stelle im Uhrwerk. Die Größe muss zur Position passen!"
+            },
+            {
+                typ: "pendel",
+                titel: "Schritt 2: Pendel justieren",
+                beschreibung: "Die Uhr soll genau im Sekundentakt ticken. Stelle die Pendellänge so ein, dass ein Tick exakt eine Sekunde dauert. Zu kurz = zu schnell, zu lang = zu langsam!"
+            },
+            {
+                typ: "bemalen",
+                titel: "Schritt 3: Zifferblatt bemalen",
+                beschreibung: "Gretas Aufgabe – aber heute darfst du! Wähle Farben und verziere das Zifferblatt mit Blumen und Ranken. Tippe aufs Zifferblatt um Blumen zu platzieren."
+            },
+            {
+                typ: "uhr-spricht",
+                titel: "Die Uhr erwacht...",
+                beschreibung: ""
+            },
+            {
+                typ: "preisvergleich",
+                titel: "Was kostet die Zeit?",
+                beschreibung: "Diese Standuhr kostete um 1810 etwa 40 Gulden. Aber was bedeutet das? Wähle einen Beruf und sieh, wie lange du dafür arbeiten müsstest – damals und heute."
+            },
+            {
+                typ: "standuhr-erfolg",
+                titel: "Meisterstück vollendet!",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Zahnrad-Puzzle ---
+    let gearsPlaced = 0;
+    function buildZahnradUI() {
+        return `
+        <div class="game-area">
+            <div class="gear-workspace" id="gearWorkspace">
+                <div class="gear-slot" id="slot0" data-size="small" style="width:50px;height:50px;left:60px;top:30px;"><span class="slot-label">S</span></div>
+                <div class="gear-slot" id="slot1" data-size="medium" style="width:70px;height:70px;left:140px;top:90px;"><span class="slot-label">M</span></div>
+                <div class="gear-slot" id="slot2" data-size="large" style="width:90px;height:90px;left:60px;top:150px;"><span class="slot-label">L</span></div>
+                <svg id="gearAxles" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                    <line x1="85" y1="55" x2="175" y2="125" stroke="rgba(212,175,55,0.15)" stroke-width="2" stroke-dasharray="4"/>
+                    <line x1="175" y1="125" x2="105" y2="195" stroke="rgba(212,175,55,0.15)" stroke-width="2" stroke-dasharray="4"/>
+                </svg>
+            </div>
+            <div class="gear-tray" id="gearTray">
+                <div class="gear-piece" id="gear-medium" data-size="medium" draggable="false">${gearSVG(70,'#8B6914')}</div>
+                <div class="gear-piece" id="gear-small" data-size="small" draggable="false">${gearSVG(50,'#A0792C')}</div>
+                <div class="gear-piece" id="gear-large" data-size="large" draggable="false">${gearSVG(90,'#6B4F10')}</div>
+            </div>
+            <p id="gearFeedback" style="font-size:0.95em; min-height:24px;"></p>
+        </div>`;
+    }
+
+    function gearSVG(size, color) {
+        const r = size/2, teeth = Math.round(size/10), tr = r * 0.85, ir = r * 0.65;
+        let path = '';
+        for (let i = 0; i < teeth; i++) {
+            const a1 = (i/teeth) * Math.PI * 2;
+            const a2 = ((i+0.3)/teeth) * Math.PI * 2;
+            const a3 = ((i+0.5)/teeth) * Math.PI * 2;
+            const a4 = ((i+0.8)/teeth) * Math.PI * 2;
+            path += `${i===0?'M':'L'}${r+Math.cos(a1)*ir},${r+Math.sin(a1)*ir} `;
+            path += `L${r+Math.cos(a2)*tr},${r+Math.sin(a2)*tr} `;
+            path += `L${r+Math.cos(a3)*tr},${r+Math.sin(a3)*tr} `;
+            path += `L${r+Math.cos(a4)*ir},${r+Math.sin(a4)*ir} `;
+        }
+        path += 'Z';
+        return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><path d="${path}" fill="${color}" stroke="rgba(212,175,55,0.6)" stroke-width="1"/><circle cx="${r}" cy="${r}" r="${r*0.2}" fill="#333" stroke="rgba(212,175,55,0.4)" stroke-width="1"/></svg>`;
+    }
+
+    function initZahnrad() {
+        gearsPlaced = 0;
+        const pieces = document.querySelectorAll('.gear-piece');
+        pieces.forEach(piece => {
+            let startX, startY, origLeft, origTop;
+            const onStart = (e) => {
+                e.preventDefault();
+                const touch = e.touches ? e.touches[0] : e;
+                const rect = piece.getBoundingClientRect();
+                startX = touch.clientX - rect.left;
+                startY = touch.clientY - rect.top;
+                piece.style.position = 'fixed';
+                piece.style.zIndex = '100';
+                piece.style.left = (touch.clientX - startX) + 'px';
+                piece.style.top = (touch.clientY - startY) + 'px';
+                origLeft = rect.left; origTop = rect.top;
+            };
+            const onMove = (e) => {
+                if (!piece.style.position || piece.style.position !== 'fixed') return;
+                e.preventDefault();
+                const touch = e.touches ? e.touches[0] : e;
+                piece.style.left = (touch.clientX - startX) + 'px';
+                piece.style.top = (touch.clientY - startY) + 'px';
+            };
+            const onEnd = (e) => {
+                if (piece.style.position !== 'fixed') return;
+                const rect = piece.getBoundingClientRect();
+                const cx = rect.left + rect.width/2;
+                const cy = rect.top + rect.height/2;
+                const size = piece.dataset.size;
+                let matched = false;
+                document.querySelectorAll('.gear-slot').forEach(slot => {
+                    if (slot.dataset.size === size && !slot.classList.contains('filled')) {
+                        const sr = slot.getBoundingClientRect();
+                        const sx = sr.left + sr.width/2, sy = sr.top + sr.height/2;
+                        if (Math.abs(cx-sx) < 50 && Math.abs(cy-sy) < 50) {
+                            slot.classList.add('filled');
+                            slot.innerHTML = piece.innerHTML;
+                            const svg = slot.querySelector('svg');
+                            if (svg) {
+                                const dir = gearsPlaced % 2 === 0 ? 'gearSpin' : 'gearSpinReverse';
+                                svg.style.animation = dir + ' 3s linear infinite';
+                            }
+                            piece.classList.add('placed');
+                            piece.style.position = '';
+                            piece.style.zIndex = '';
+                            gearsPlaced++;
+                            playTone(300 + gearsPlaced * 100, 200);
+                            const fb = document.getElementById('gearFeedback');
+                            if (gearsPlaced === 3) {
+                                if (fb) { fb.innerHTML = '<strong style="color:lime;">Alle Zahnräder sitzen! Das Uhrwerk dreht sich!</strong>'; }
+                                setTimeout(() => {
+                                    const app = document.getElementById('app');
+                                    const btn = document.createElement('button');
+                                    btn.className = 'btn erfolg-animation';
+                                    btn.innerText = 'Weiter – Pendel einstellen';
+                                    btn.onclick = () => next();
+                                    app.appendChild(btn);
+                                }, 800);
+                            } else {
+                                if (fb) fb.innerText = gearsPlaced + '/3 Zahnräder eingesetzt';
+                            }
+                            matched = true;
+                        }
+                    }
+                });
+                if (!matched) {
+                    piece.style.position = '';
+                    piece.style.zIndex = '';
+                    const fb = document.getElementById('gearFeedback');
+                    if (fb && !piece.classList.contains('placed')) { fb.innerText = 'Passt nicht – probiere eine andere Stelle!'; fb.style.color = '#ff6347'; setTimeout(() => { if(fb) fb.style.color = ''; }, 1000); }
+                }
+            };
+            piece.addEventListener('mousedown', onStart);
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+            piece.addEventListener('touchstart', onStart, {passive:false});
+            document.addEventListener('touchmove', onMove, {passive:false});
+            document.addEventListener('touchend', onEnd);
+        });
+    }
+
+    // --- Pendel-Justierung ---
+    let pendelInterval = null, pendelOk = false;
+    function buildPendelUI() {
+        return `
+        <div class="game-area">
+            <div class="pendel-canvas-wrap"><canvas id="pendelCanvas" width="280" height="250"></canvas></div>
+            <div class="pendel-display" id="pendelDisplay">Pendellänge: 50 cm</div>
+            <div class="pendel-ticker" id="pendelTicker"></div>
+            <input type="range" min="20" max="120" value="50" style="width:90%;" id="pendelSlider">
+            <p style="font-size:0.8em; color:rgba(253,245,230,0.4);">Ziel: 1 Tick pro Sekunde (100 cm = 1 Sekunde)</p>
+            <p id="pendelFeedback" style="font-size:1em; min-height:24px;"></p>
+        </div>`;
+    }
+
+    function initPendel() {
+        pendelOk = false;
+        const canvas = document.getElementById('pendelCanvas');
+        const ctx = canvas.getContext('2d');
+        const slider = document.getElementById('pendelSlider');
+        let length = 50, angle = Math.PI/6, velocity = 0;
+        const g = 9.81;
+
+        function draw() {
+            const w = canvas.width, h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+            const pivotX = w/2, pivotY = 30;
+            const scale = length / 100 * 150;
+            const bobX = pivotX + Math.sin(angle) * scale;
+            const bobY = pivotY + Math.cos(angle) * scale;
+
+            // Aufhängung
+            ctx.fillStyle = 'rgba(212,175,55,0.6)';
+            ctx.fillRect(pivotX - 15, pivotY - 5, 30, 10);
+
+            // Stange
+            ctx.strokeStyle = 'rgba(212,175,55,0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(pivotX, pivotY); ctx.lineTo(bobX, bobY); ctx.stroke();
+
+            // Gewicht
+            ctx.beginPath(); ctx.arc(bobX, bobY, 14, 0, Math.PI*2);
+            ctx.fillStyle = '#8B6914'; ctx.fill();
+            ctx.strokeStyle = 'rgba(212,175,55,0.7)'; ctx.lineWidth = 2; ctx.stroke();
+
+            // Tick-Markierung
+            ctx.strokeStyle = 'rgba(212,175,55,0.15)';
+            ctx.setLineDash([3,3]);
+            ctx.beginPath(); ctx.moveTo(pivotX, pivotY); ctx.lineTo(pivotX, pivotY + scale + 20); ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        let lastTick = 0, tickCount = 0, tickTimes = [], lastAngleSign = 1, lastFrame = Date.now();
+        function simulate() {
+            const now = Date.now();
+            const realDt = Math.min((now - lastFrame) / 1000, 0.05); // cap at 50ms
+            lastFrame = now;
+            // Sub-step physics for stability
+            const steps = Math.max(1, Math.round(realDt / 0.004));
+            const dt = realDt / steps;
+            for (let s = 0; s < steps; s++) {
+                const acc = -(g / (length/100)) * Math.sin(angle);
+                velocity += acc * dt;
+                velocity *= 0.999;
+                angle += velocity * dt;
+            } // end sub-steps
+
+            // Tick-Erkennung (jeder Durchgang durch Mitte = Halbperiode)
+            const currentSign = angle >= 0 ? 1 : -1;
+            if (currentSign !== lastAngleSign) {
+                lastAngleSign = currentSign;
+                const now = Date.now();
+                if (lastTick > 0) {
+                    const interval = (now - lastTick) / 1000;
+                    tickTimes.push(interval);
+                    if (tickTimes.length > 3) tickTimes.shift();
+                    const avg = tickTimes.reduce((a,b) => a+b, 0) / tickTimes.length;
+                    const ticker = document.getElementById('pendelTicker');
+                    if (ticker) ticker.innerText = 'Tick! (' + avg.toFixed(2) + 's)';
+
+                    const fb = document.getElementById('pendelFeedback');
+                    if (Math.abs(avg - 1.0) < 0.08) {
+                        if (!pendelOk) {
+                            pendelOk = true;
+                            playTone(523, 300);
+                            if (fb) { fb.innerHTML = '<strong style="color:lime;">PERFEKT! Exakt im Sekundentakt!</strong>'; }
+                            setTimeout(() => {
+                                const app = document.getElementById('app');
+                                if (!document.getElementById('pendelWeiter')) {
+                                    const btn = document.createElement('button');
+                                    btn.id = 'pendelWeiter';
+                                    btn.className = 'btn erfolg-animation';
+                                    btn.innerText = 'Weiter – Zifferblatt bemalen';
+                                    btn.onclick = () => { clearInterval(pendelInterval); next(); };
+                                    app.appendChild(btn);
+                                }
+                            }, 500);
+                        }
+                    } else {
+                        pendelOk = false;
+                        const pw = document.getElementById('pendelWeiter');
+                        if (pw) pw.remove();
+                        if (avg < 0.92) {
+                            if (fb) { fb.innerText = 'Zu schnell! Pendel verlängern.'; fb.style.color = '#ff6347'; }
+                        } else if (avg > 1.08) {
+                            if (fb) { fb.innerText = 'Zu langsam! Pendel kürzen.'; fb.style.color = '#ff6347'; }
+                        } else {
+                            if (fb) { fb.innerText = 'Fast... Feinjustierung!'; fb.style.color = 'orange'; }
+                        }
+                    }
+                    playTone(800, 50);
+                }
+                lastTick = now;
+            }
+
+            draw();
+        }
+
+        slider.addEventListener('input', function() {
+            length = parseInt(this.value);
+            document.getElementById('pendelDisplay').innerText = 'Pendellänge: ' + length + ' cm';
+            tickTimes = [];
+            pendelOk = false;
+        });
+
+        draw();
+        pendelInterval = setInterval(simulate, 16);
+    }
+
+    // --- Zifferblatt bemalen ---
+    let paintColor = '#c0392b', paintStamp = 'rose';
+    const STAMPS = { rose: '🌹', tulpe: '🌷', stern: '✿', blatt: '🍃' };
+    const PAINT_COLORS = ['#c0392b','#e74c3c','#2980b9','#27ae60','#f39c12','#8e44ad','#e91e63','#00bcd4'];
+    let paintedFlowers = [];
+
+    function buildBemalenUI() {
+        let swatches = PAINT_COLORS.map((c,i) =>
+            `<div class="color-swatch ${i===0?'active':''}" style="background:${c};" data-color="${c}"></div>`
+        ).join('');
+        let stamps = Object.entries(STAMPS).map(([k,v],i) =>
+            `<div class="stamp-btn ${i===0?'active':''}" data-stamp="${k}">${v}</div>`
+        ).join('');
+
+        return `
+        <div class="game-area">
+            <div class="face-canvas-wrap"><canvas id="faceCanvas" width="260" height="260"></canvas></div>
+            <div class="color-picker">${swatches}</div>
+            <div class="stamp-picker">${stamps}</div>
+            <p id="paintCount" style="font-size:0.9em;">Platzierte Blumen: 0 / 5</p>
+            <p id="paintFeedback" style="font-size:1em; min-height:24px;"></p>
+        </div>`;
+    }
+
+    function drawClockFace() {
+        const canvas = document.getElementById('faceCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height, cx = w/2, cy = h/2, r = w/2 - 5;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Hintergrund
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+        ctx.fillStyle = '#f5e6c8'; ctx.fill();
+        ctx.strokeStyle = '#8B6914'; ctx.lineWidth = 3; ctx.stroke();
+
+        // Innerer Ring
+        ctx.beginPath(); ctx.arc(cx, cy, r*0.85, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(139,105,20,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+
+        // Römische Ziffern
+        const roman = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 14px serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        for (let i = 0; i < 12; i++) {
+            const a = (i/12) * Math.PI * 2 - Math.PI/2;
+            const tx = cx + Math.cos(a) * r * 0.72;
+            const ty = cy + Math.sin(a) * r * 0.72;
+            ctx.fillText(roman[i], tx, ty);
+        }
+
+        // Stundenstriche
+        for (let i = 0; i < 60; i++) {
+            const a = (i/60) * Math.PI * 2 - Math.PI/2;
+            const len = i % 5 === 0 ? 0.88 : 0.92;
+            ctx.strokeStyle = i % 5 === 0 ? '#333' : 'rgba(51,51,51,0.3)';
+            ctx.lineWidth = i % 5 === 0 ? 2 : 1;
+            ctx.beginPath();
+            ctx.moveTo(cx + Math.cos(a)*r*len, cy + Math.sin(a)*r*len);
+            ctx.lineTo(cx + Math.cos(a)*r*0.95, cy + Math.sin(a)*r*0.95);
+            ctx.stroke();
+        }
+
+        // Gemalte Blumen
+        ctx.font = '24px serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        paintedFlowers.forEach(f => {
+            ctx.fillStyle = f.color;
+            ctx.font = '24px serif';
+            ctx.fillText(STAMPS[f.stamp] || '🌹', f.x, f.y);
+        });
+
+        // Zeiger (dekorativ, zeigen ~10:10)
+        // Stundenzeiger
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(-Math.PI/6);
+        ctx.fillStyle = '#333';
+        ctx.fillRect(-2, -r*0.45, 4, r*0.45);
+        ctx.restore();
+        // Minutenzeiger
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(Math.PI/6);
+        ctx.fillStyle = '#555';
+        ctx.fillRect(-1.5, -r*0.6, 3, r*0.6);
+        ctx.restore();
+        // Zentrum
+        ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2);
+        ctx.fillStyle = '#333'; ctx.fill();
+    }
+
+    function initBemalen() {
+        paintedFlowers = [];
+        drawClockFace();
+
+        const canvas = document.getElementById('faceCanvas');
+        document.querySelectorAll('.color-swatch').forEach(s => {
+            s.onclick = () => {
+                document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('active'));
+                s.classList.add('active');
+                paintColor = s.dataset.color;
+            };
+        });
+        document.querySelectorAll('.stamp-btn').forEach(s => {
+            s.onclick = () => {
+                document.querySelectorAll('.stamp-btn').forEach(x => x.classList.remove('active'));
+                s.classList.add('active');
+                paintStamp = s.dataset.stamp;
+            };
+        });
+
+        const onTap = (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            const x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+            const cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2 - 10;
+            // Nur innerhalb des Kreises
+            if (Math.sqrt((x-cx)**2 + (y-cy)**2) > r*0.95) return;
+            // Nicht zu nah an Mitte (Zeiger)
+            if (Math.sqrt((x-cx)**2 + (y-cy)**2) < 25) return;
+
+            paintedFlowers.push({ x, y, color: paintColor, stamp: paintStamp });
+            playTone(400 + paintedFlowers.length * 50, 150);
+            drawClockFace();
+
+            document.getElementById('paintCount').innerText = 'Platzierte Blumen: ' + paintedFlowers.length + ' / 5';
+            if (paintedFlowers.length >= 5) {
+                const fb = document.getElementById('paintFeedback');
+                if (fb) fb.innerHTML = '<strong style="color:lime;">Wunderschön! Meister Kuno wäre stolz.</strong>';
+                setTimeout(() => {
+                    const app = document.getElementById('app');
+                    if (!document.getElementById('paintWeiter')) {
+                        const btn = document.createElement('button');
+                        btn.id = 'paintWeiter';
+                        btn.className = 'btn erfolg-animation';
+                        btn.innerText = 'Weiter – Die Uhr erwacht';
+                        btn.onclick = () => next();
+                        app.appendChild(btn);
+                    }
+                }, 500);
+            }
+        };
+        canvas.addEventListener('click', onTap);
+        canvas.addEventListener('touchend', onTap, {passive:false});
+    }
+
+    // --- Die Uhr spricht (Ich-Erzählung) ---
+    const UHR_KAPITEL = [
+        { jahr: "1810", text: "Endlich bin ich fertig. Mein Schöpfer Kuno hat mein Herz aus Birnbaumholz geschnitzt, mein Gesicht mit Blumen bemalt. Heute werde ich zum ersten Mal aufgezogen. Mein erstes Tick... Tock... füllt die Werkstatt." },
+        { jahr: "1810", text: "Die junge Bäuerin Anna streichelt mein Gehäuse. Ihr Mann Thomas hat lange für mich gespart. Ich bin mehr als eine Uhr – ich bin ein Versprechen auf eine gute Zukunft. Sie stellen mich neben den warmen Kachelofen." },
+        { jahr: "1835", text: "Der kleine Jakob steht wieder vor mir und staunt mein Pendel an. Er fährt mit den Fingern über meine geschnitzten Ranken. Ich zähle seine Jahre – und er wächst so schnell, dieser kleine Kerl." },
+        { jahr: "1847", text: "Dunkle Zeiten. Missernte, Hunger, Krankheit. Jakob überlegt, mich zu verkaufen. Aber Anna flüstert: 'Die Uhr bleibt. Sie ist das Herz unseres Hauses. Solange sie tickt, haben wir Hoffnung.' Ich ticke weiter. Lauter als je zuvor." },
+        { jahr: "1890", text: "Neue Uhren kommen – aus Messing, aus Fabriken. Billiger, genauer. Aber ich bin noch da. Meine Holzzahnräder drehen sich treu, mein Pendel schwingt. Ich bin kein Gerät mehr. Ich bin Familie." },
+        { jahr: "Heute", text: "Nun stehe ich hier im Museum. Stiller Zeuge aus einer anderen Zeit. Mein Herz aus Holz schlägt nicht mehr – aber meine Geschichte lebt weiter. In dir, der mich gerade betrachtet. Danke, dass du mir zuhörst." }
+    ];
+    let uhrKapitelIdx = 0;
+    let tickTockInterval = null;
+
+    function buildUhrSprichtUI() {
+        uhrKapitelIdx = 0;
+        return `
+        <div class="game-area" id="uhrSprichtArea" style="text-align:center;">
+            <div style="font-size:3em; margin:10px 0;">🕰️</div>
+            <p style="color:rgba(253,245,230,0.5); font-size:0.9em; margin-bottom:15px;">Ziehe die Uhr auf, um ihre Geschichte zu hören.</p>
+            <div id="uhrKapitel"></div>
+            <button class="btn" id="aufziehenBtn" style="max-width:250px; margin:15px auto 0; display:block;">Uhr aufziehen</button>
+        </div>`;
+    }
+
+    function initUhrSpricht() {
+        const btn = document.getElementById('aufziehenBtn');
+        if (!btn) return;
+        // Tick-Tock Sound
+        function tickTock() {
+            playTone(1200, 30);
+            setTimeout(() => playTone(900, 30), 500);
+        }
+        tickTockInterval = setInterval(tickTock, 1000);
+
+        btn.onclick = () => {
+            if (uhrKapitelIdx >= UHR_KAPITEL.length) return;
+            const kap = UHR_KAPITEL[uhrKapitelIdx];
+            const container = document.getElementById('uhrKapitel');
+            if (!container) return;
+
+            // Neues Kapitel einfügen
+            const div = document.createElement('div');
+            div.className = 'zeitreise-event';
+            div.innerHTML = `<div class="year">${kap.jahr}</div><div class="text">${kap.text}</div>`;
+            container.appendChild(div);
+            setTimeout(() => div.classList.add('visible'), 50);
+            playTone(350, 200);
+            container.scrollTop = container.scrollHeight;
+
+            uhrKapitelIdx++;
+            if (uhrKapitelIdx >= UHR_KAPITEL.length) {
+                btn.innerText = 'Weiter';
+                btn.onclick = () => { clearInterval(tickTockInterval); next(); };
+            } else {
+                btn.innerText = 'Weiter aufziehen (' + uhrKapitelIdx + '/' + UHR_KAPITEL.length + ')';
+            }
+        };
+    }
+
+    // --- Was kostet die Zeit? ---
+    const BERUFE = [
+        { name: "Tagelöhner", tageslohn1810: 0.25, tageslohn2025: 80 },
+        { name: "Bäcker", tageslohn1810: 0.5, tageslohn2025: 110 },
+        { name: "Schmied", tageslohn1810: 0.75, tageslohn2025: 130 },
+        { name: "Bauer (mit Hof)", tageslohn1810: 0.4, tageslohn2025: 100 },
+        { name: "Lehrer", tageslohn1810: 0.6, tageslohn2025: 140 }
+    ];
+    const STANDUHR_PREIS_GULDEN = 40;
+    const SMARTWATCH_PREIS = 450;
+
+    function buildPreisvergleichUI() {
+        let berufBtns = BERUFE.map((b,i) =>
+            `<button class="btn" style="margin-top:8px; font-size:0.85em; padding:10px;" onclick="selectBeruf(${i})">${b.name}</button>`
+        ).join('');
+        return `
+        <div class="game-area" id="preisArea">
+            <p style="font-size:1em; margin-bottom:10px;">Wähle deinen Beruf um 1810:</p>
+            <div id="berufBtns">${berufBtns}</div>
+            <div id="preisResult" style="margin-top:15px;"></div>
+        </div>`;
+    }
+
+    function selectBeruf(idx) {
+        const b = BERUFE[idx];
+        const tage1810 = Math.round(STANDUHR_PREIS_GULDEN / b.tageslohn1810);
+        const tage2025 = Math.round(SMARTWATCH_PREIS / b.tageslohn2025);
+        const monate1810 = (tage1810 / 26).toFixed(1);
+
+        document.getElementById('berufBtns').style.display = 'none';
+        const result = document.getElementById('preisResult');
+        result.innerHTML = `
+            <div class="fade-in">
+                <p style="color:var(--gold); font-size:1.1em; font-weight:bold;">${b.name}</p>
+                <div class="erfolg-stats" style="margin:15px 0;">
+                    <div class="erfolg-stat">
+                        <div class="label">Standuhr 1810</div>
+                        <div class="value">${tage1810} Tage</div>
+                        <div class="label">(${monate1810} Monate)</div>
+                    </div>
+                    <div class="erfolg-stat">
+                        <div class="label">Smartwatch 2025</div>
+                        <div class="value">${tage2025} Tage</div>
+                    </div>
+                </div>
+                <div class="info-box" style="font-size:0.9em;">
+                    <strong>Das bedeutet:</strong> Als ${b.name} hättest du 1810 fast <strong>${monate1810} Monate</strong> nur für diese Uhr arbeiten müssen – ohne zu essen oder zu trinken. Heute arbeitest du <strong>${tage2025} Tage</strong> für eine Apple Watch. Die Zeiten ändern sich!
+                </div>
+                <button class="btn" onclick="selectBeruf2(${idx})">Anderer Beruf</button>
+                <button class="btn" style="background:var(--gold);" onclick="next()">Weiter – Meisterstück vollendet!</button>
+            </div>`;
+    }
+    function selectBeruf2(currentIdx) {
+        document.getElementById('berufBtns').style.display = '';
+        document.getElementById('preisResult').innerHTML = '';
+    }
+
+    // --- Standuhr Erfolg ---
+    function buildStanduhrErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">🕰️</div>
+            <h1 style="font-size:1.2em;">Meisterstück vollendet!</h1>
+            <p>Du hast die Standuhr gebaut, justiert, bemalt – und ihre 200-jährige Geschichte gehört. Meister Kuno wäre stolz auf dich!</p>
+
+            <div class="erfolg-stats">
+                <div class="erfolg-stat">
+                    <div class="label">Zahnräder</div>
+                    <div class="value">3 / 3</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Pendel</div>
+                    <div class="value">100 cm</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Blumen gemalt</div>
+                    <div class="value">${paintedFlowers.length}</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Alter der Uhr</div>
+                    <div class="value">~215 Jahre</div>
+                </div>
+            </div>
+
+            <div class="fun-facts">
+                <h3>Wusstest du?</h3>
+                <ul>
+                    <li>Die Zahnräder dieser Uhr sind aus <strong>Birnbaumholz</strong> – so hart, dass es auch für Lineale und Messinstrumente verwendet wurde.</li>
+                    <li>Ein Sekundenpendel ist exakt <strong>99,4 cm</strong> lang. Das wussten die Uhrmacher schon 1656, als Christiaan Huygens die erste Pendeluhr baute.</li>
+                    <li>Die handbemalten <strong>Blumenmotive</strong> auf Schwarzwälder Uhren waren oft von den Ehefrauen der Uhrmacher gemalt – ihre Namen kennt man meist nicht.</li>
+                    <li>Im 19. Jahrhundert wurde eine Standuhr durchschnittlich <strong>3 Generationen</strong> lang in einer Familie weitergegeben – sie war Erbstück, nicht Ware.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal spielen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
+    // HAUPT-LOGIK
+    // =============================================
+    artefakte["gemaelde"] = GEMAELDE_DEF;
+    artefakte["fronleichnam"] = FRONLEICHNAM_DEF;
+    artefakte["feldtelefon"] = FELDTELEFON_DEF;
+    artefakte["araeometer"] = ARAEOMETER_DEF;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const objektKey = urlParams.get('objekt');
+    let aktuellerSchritt = 0;
+
+    function render() {
+        const app = document.getElementById('app');
+
+        // Portal
+        if (!objektKey || !artefakte[objektKey]) {
+            app.innerHTML = `<h1>Museums-Portal</h1><p>Bitte scanne einen QR-Code bei einem Exponat.</p>
+                <button class="btn" onclick="window.location.search='?objekt=roehre'">Siemens GRS 1 Röhre</button>
+                <button class="btn" onclick="window.location.search='?objekt=zigaretten'">Zigarettenpackung 1944</button>
+                <button class="btn" onclick="window.location.search='?objekt=standuhr'">Standuhr (Schwarzwälder Art)</button>
+                <button class="btn" onclick="window.location.search='?objekt=gemaelde'">Kärntner Abwehrkampf (Gemälde)</button>
+                <button class="btn" onclick="window.location.search='?objekt=fronleichnam'">Fronleichnam in Vorchdorf</button>
+                <button class="btn" onclick="window.location.search='?objekt=feldtelefon'">Feldtelefon (Feldfernsprecher)</button>
+                <button class="btn" onclick="window.location.search='?objekt=araeometer'">Aräometer (Baumé-Hydrometer)</button>`;
+            return;
+        }
+
+        const daten = artefakte[objektKey];
+        const schritt = daten.schritte[aktuellerSchritt];
+
+        // Schritt-Dots
+        let html = '<div class="step-indicator">';
+        for (let i = 0; i < daten.schritte.length; i++) {
+            const cls = i < aktuellerSchritt ? 'done' : i === aktuellerSchritt ? 'active' : '';
+            html += `<div class="step-dot ${cls}"></div>`;
+        }
+        html += '</div>';
+
+        html += `<h1>${daten.titel}</h1>`;
+        if (schritt.beschreibung) {
+            html += `<div class="info-box"><strong>${schritt.titel}</strong><br>${schritt.beschreibung}</div>`;
+        }
+
+        // Typ-spezifischer Inhalt
+        if (schritt.typ === "audio") {
+            html += `<audio controls class="audio-player" id="mainPlayer">
+                <source src="${encodeURIComponent(schritt.file)}" type="audio/mp4">Ihr Browser unterstützt kein Audio.</audio>
+                <div id="audioError" class="error-msg">Datei konnte nicht geladen werden.</div>`;
+
+        } else if (schritt.typ === "game") {
+            if (!startTime) startTime = Date.now();
+            html += `<div class="roehre-wrap" id="roehreContainer">${roehreSVG(false)}</div>`;
+            html += `<div class="game-area">
+                <input type="range" min="0" max="220" value="0" style="width:100%" id="voltSlider">
+                <div id="voltage-display">0 V</div>
+                <p id="feedback">Drehe langsam am Regler...</p>
+            </div>`;
+
+        } else if (schritt.typ === "morse") {
+            morseState = { letterIdx: 0, currentInput: '', letters: MORSE_WORT.split('') };
+            html += buildMorseUI();
+
+        } else if (schritt.typ === "frequenz") {
+            html += buildFrequenzUI();
+
+        } else if (schritt.typ === "erfolg") {
+            html += buildErfolgUI();
+
+        } else if (schritt.typ === "zahnrad") {
+            if (!startTime) startTime = Date.now();
+            html += buildZahnradUI();
+
+        } else if (schritt.typ === "pendel") {
+            html += buildPendelUI();
+
+        } else if (schritt.typ === "bemalen") {
+            html += buildBemalenUI();
+
+        } else if (schritt.typ === "uhr-spricht") {
+            html += buildUhrSprichtUI();
+
+        } else if (schritt.typ === "preisvergleich") {
+            html += buildPreisvergleichUI();
+
+        } else if (schritt.typ === "standuhr-erfolg") {
+            html += buildStanduhrErfolgUI();
+
+        } else if (schritt.typ === "perspektiven") {
+            html += buildPerspektivenUI();
+
+        } else if (schritt.typ === "propaganda") {
+            html += buildPropagandaUI();
+
+        } else if (schritt.typ === "abstimmung") {
+            html += buildAbstimmungUI();
+
+        } else if (schritt.typ === "gemaelde-erfolg") {
+            html += buildGemaeldeErfolgUI();
+
+        } else if (schritt.typ === "vorchdorf-slider") {
+            html += buildVorchdorfSliderUI();
+
+        } else if (schritt.typ === "sozial-ordnung") {
+            html += buildSozialOrdnungUI();
+
+        } else if (schritt.typ === "anna-story") {
+            html += buildAnnaStoryUI();
+
+        } else if (schritt.typ === "fronleichnam-erfolg") {
+            html += buildFronleichnamErfolgUI();
+
+        } else if (schritt.typ === "feldtel-verbindung") {
+            html += buildVerbindungUI();
+        } else if (schritt.typ === "feldtel-buchstabieren") {
+            html += buildBuchstabierenUI();
+        } else if (schritt.typ === "feldtel-abhoeren") {
+            html += buildAbhoerenUI();
+        } else if (schritt.typ === "feldtel-stillepost") {
+            html += buildStillePostUI();
+        } else if (schritt.typ === "feldtel-erfolg") {
+            html += buildFeldtelErfolgUI();
+
+        } else if (schritt.typ === "schwimm-quiz") {
+            html += buildSchwimmQuizUI();
+        } else if (schritt.typ === "leopold-mission") {
+            html += buildLeopoldUI();
+        } else if (schritt.typ === "dichte-labor") {
+            html += buildDichteLaborUI();
+        } else if (schritt.typ === "araeometer-erfolg") {
+            html += buildAraeometerErfolgUI();
+        }
+
+        // Navigation
+        if (schritt.typ === "morse" || schritt.typ === "frequenz" || schritt.typ === "erfolg"
+            || schritt.typ === "zahnrad" || schritt.typ === "pendel" || schritt.typ === "bemalen"
+            || schritt.typ === "uhr-spricht" || schritt.typ === "preisvergleich" || schritt.typ === "standuhr-erfolg"
+            || schritt.typ === "perspektiven" || schritt.typ === "propaganda" || schritt.typ === "abstimmung" || schritt.typ === "gemaelde-erfolg"
+            || schritt.typ === "vorchdorf-slider" || schritt.typ === "sozial-ordnung" || schritt.typ === "anna-story" || schritt.typ === "fronleichnam-erfolg"
+            || schritt.typ === "feldtel-verbindung" || schritt.typ === "feldtel-buchstabieren" || schritt.typ === "feldtel-abhoeren" || schritt.typ === "feldtel-stillepost" || schritt.typ === "feldtel-erfolg"
+            || schritt.typ === "schwimm-quiz" || schritt.typ === "leopold-mission" || schritt.typ === "dichte-labor" || schritt.typ === "araeometer-erfolg") {
+            // Diese haben eigene Navigation
+        } else if (schritt.typ === "game") {
+            html += `<button class="btn" id="voltWeiter" onclick="next()" style="display:none">Weiter – Nachricht senden!</button>`;
+        } else if (aktuellerSchritt < daten.schritte.length - 1) {
+            html += `<button class="btn" onclick="next()">Mission starten</button>`;
+        } else {
+            html += `<button class="btn" onclick="window.location.search=''">Zur Übersicht</button>`;
+        }
+
+        app.innerHTML = html;
+
+        // Post-render Init
+        if (schritt.typ === "morse") initMorse();
+        if (schritt.typ === "frequenz") initFrequenz();
+        if (schritt.typ === "perspektiven") renderPersp();
+        if (schritt.typ === "vorchdorf-slider") initVorchdorfSlider();
+        if (schritt.typ === "feldtel-verbindung") initVerbindung();
+        if (schritt.typ === "feldtel-buchstabieren") renderBuchstFrage();
+        if (schritt.typ === "feldtel-abhoeren") renderAbhoerFrage();
+        if (schritt.typ === "schwimm-quiz") renderSchwimmFrage();
+        if (schritt.typ === "leopold-mission") renderLeopoldProbe();
+        if (schritt.typ === "dichte-labor") renderLaborFrage();
+        if (schritt.typ === "zahnrad") initZahnrad();
+        if (schritt.typ === "pendel") initPendel();
+        if (schritt.typ === "bemalen") initBemalen();
+        if (schritt.typ === "uhr-spricht") initUhrSpricht();
+        if (schritt.typ === "game") {
+            const slider = document.getElementById('voltSlider');
+            if (slider) slider.addEventListener('input', function() { checkVolt(this.value); });
+        }
+    }
+
+    function next() {
+        stopNoise();
+        if (pendelInterval) { clearInterval(pendelInterval); pendelInterval = null; }
+        if (tickTockInterval) { clearInterval(tickTockInterval); tickTockInterval = null; }
+        aktuellerSchritt++;
+        render();
+    }
+
+    // =============================================
+    // SCHRITT 1: SPANNUNG
+    // =============================================
+    let voltOk = false;
+    function checkVolt(val) {
+        document.getElementById('voltage-display').innerText = val + " V";
+        const fb = document.getElementById('feedback');
+        const container = document.getElementById('roehreContainer');
+
+        if (val > 180) {
+            fb.innerText = "ACHTUNG! Die Röhre überhitzt – sofort runterdrehen!";
+            fb.style.color = "#ff6347";
+            if (container) container.innerHTML = roehreSVG(false);
+            voltOk = false;
+        } else if (val >= 108 && val <= 116) {
+            fb.innerText = "PERFEKT! Die Röhre glüht stabil bei " + val + "V.";
+            fb.style.color = "lime";
+            if (container) container.innerHTML = roehreSVG(true);
+            if (!voltOk) {
+                voltOk = true;
+                playTone(440, 300);
+                const btn = document.getElementById('voltWeiter');
+                if (btn) { btn.style.display = 'block'; btn.classList.add('erfolg-animation'); }
+            }
+        } else if (val > 60) {
+            fb.innerText = "Die Filamente erwärmen sich... weiter.";
+            fb.style.color = "white";
+            if (container) container.innerHTML = roehreSVG(true);
+            voltOk = false;
+        } else if (val > 0) {
+            fb.innerText = "Spannung steigt...";
+            fb.style.color = "white";
+            if (container) container.innerHTML = roehreSVG(false);
+            voltOk = false;
+        } else {
+            fb.innerText = "Drehe langsam am Regler...";
+            fb.style.color = "white";
+            if (container) container.innerHTML = roehreSVG(false);
+            voltOk = false;
+        }
+        const weiterBtn = document.getElementById('voltWeiter');
+        if (weiterBtn && !voltOk) weiterBtn.style.display = 'none';
+    }
+
+    // =============================================
+    // SCHRITT 2: MORSE
+    // =============================================
+    function buildMorseAlphabetHTML() {
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+        let cells = '';
+        for (const ch of letters) {
+            const code = MORSE[ch] || '';
+            const pretty = code.split('').map(c => c === '.' ? '·' : '–').join('');
+            cells += `<div class="morse-alpha-cell"><span class="char">${ch}</span><br><span class="code">${pretty}</span></div>`;
+        }
+        return `
+            <button class="morse-alpha-toggle" onclick="document.getElementById('morseAlpha').classList.toggle('open'); this.innerText = this.innerText.includes('zeigen') ? 'Alphabet ausblenden' : 'Morse-Alphabet zeigen';">Morse-Alphabet zeigen</button>
+            <div class="morse-alpha-table" id="morseAlpha">${cells}</div>`;
+    }
+
+    function buildMorseUI() {
+        const s = morseState;
+        const letter = s.letters[s.letterIdx];
+        const morseCode = MORSE[letter] || '';
+
+        let progress = '<div class="morse-progress">';
+        for (let i = 0; i < s.letters.length; i++) {
+            const cls = i < s.letterIdx ? 'done' : i === s.letterIdx ? 'active' : 'pending';
+            progress += `<span class="${cls}">${s.letters[i]}</span>`;
+        }
+        progress += '</div>';
+
+        return `
+            <div class="game-area" id="morseGame">
+                <div class="roehre-wrap" id="morseRoehre">${roehreSVG(true)}</div>
+                ${progress}
+                <div class="morse-target">${letter} = ${morseCode.split('').map(c => c === '.' ? '·' : '–').join(' ')}</div>
+                <div class="morse-letter" id="morseCurrent"></div>
+                <div class="morse-display" id="morseDisplay"></div>
+                <button class="morse-btn" id="morseKey">MORSEN</button>
+                <div class="morse-hint">Kurz = Punkt (·) &nbsp;|&nbsp; Lang = Strich (–)</div>
+                <div id="morseFeedback" style="margin-top:10px; font-size:1.1em;"></div>
+                ${buildMorseAlphabetHTML()}
+            </div>`;
+    }
+
+    function initMorse() {
+        const key = document.getElementById('morseKey');
+        if (!key) return;
+
+        let pressStart = 0;
+        let dotDash = [];
+        let letterTimeout = null;
+
+        function onDown(e) {
+            e.preventDefault();
+            pressStart = Date.now();
+            key.classList.add('pressed');
+            const r = document.getElementById('morseRoehre');
+            if (r) r.innerHTML = roehreSVG(true);
+            playTone(680, 300);
+            clearTimeout(letterTimeout);
+        }
+
+        function onUp(e) {
+            e.preventDefault();
+            if (!pressStart) return;
+            const dur = Date.now() - pressStart;
+            pressStart = 0;
+            key.classList.remove('pressed');
+
+            dotDash.push(dur < 250 ? '.' : '-');
+
+            const display = document.getElementById('morseCurrent');
+            if (display) display.innerText = dotDash.map(c => c === '.' ? '·' : '–').join(' ');
+
+            clearTimeout(letterTimeout);
+            letterTimeout = setTimeout(() => evaluateLetter(dotDash), 800);
+        }
+
+        key.addEventListener('mousedown', onDown);
+        key.addEventListener('mouseup', onUp);
+        key.addEventListener('mouseleave', onUp);
+        key.addEventListener('touchstart', onDown, {passive: false});
+        key.addEventListener('touchend', onUp, {passive: false});
+    }
+
+    function evaluateLetter(dotDash) {
+        const s = morseState;
+        const input = dotDash.join('');
+        const expected = MORSE[s.letters[s.letterIdx]];
+        const fb = document.getElementById('morseFeedback');
+
+        if (input === expected) {
+            if (fb) { fb.innerText = '✓ Richtig!'; fb.style.color = 'lime'; }
+            const display = document.getElementById('morseDisplay');
+            if (display) display.innerText = (display.innerText + s.letters[s.letterIdx]).trim();
+
+            s.letterIdx++;
+            if (s.letterIdx >= s.letters.length) {
+                setTimeout(() => {
+                    if (fb) { fb.innerHTML = '<strong>··· --- ··· GESENDET!</strong>'; fb.style.color = 'var(--gold)'; }
+                    // Freitext-Modus anbieten
+                    setTimeout(() => showFreeMorseOption(), 1000);
+                }, 600);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('morseCurrent').innerText = '';
+                    if (fb) fb.innerText = '';
+                    const game = document.getElementById('morseGame');
+                    if (game) {
+                        game.outerHTML = buildMorseUI();
+                        initMorse();
+                        const d = document.getElementById('morseDisplay');
+                        if (d) d.innerText = s.letters.slice(0, s.letterIdx).join('');
+                    }
+                }, 600);
+            }
+        } else {
+            if (fb) {
+                fb.innerText = '✗ Nochmal! ' + s.letters[s.letterIdx] + ' = ' + expected.split('').map(c => c === '.' ? '·' : '–').join(' ');
+                fb.style.color = '#ff6347';
+            }
+        }
+        dotDash.length = 0;
+        const cur = document.getElementById('morseCurrent');
+        if (cur) setTimeout(() => cur.innerText = '', 600);
+    }
+
+    // --- Freitext-Modus nach SOS ---
+    let freeMode = false;
+    function showFreeMorseOption() {
+        const game = document.getElementById('morseGame');
+        if (!game) return;
+
+        // Weiter-Button + Freitext-Option einfügen
+        const div = document.createElement('div');
+        div.className = 'free-morse-area fade-in';
+        div.innerHTML = `
+            <button class="btn" onclick="next()">Weiter – Antwort empfangen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold); margin-top:10px;" onclick="startFreeMode()">Eigene Nachricht morsen</button>
+        `;
+        game.appendChild(div);
+    }
+
+    function startFreeMode() {
+        freeMode = true;
+        const game = document.getElementById('morseGame');
+        if (!game) return;
+
+        game.innerHTML = `
+            <div class="roehre-wrap" id="morseRoehre">${roehreSVG(true)}</div>
+            <p style="color:var(--gold); font-size:1.1em; margin-bottom:5px;"><strong>Freier Modus</strong> – Morse was du willst!</p>
+            <div class="free-morse-dots" id="freeDots"></div>
+            <div class="free-morse-output" id="freeOutput"></div>
+            <button class="morse-btn" id="morseKey">MORSEN</button>
+            <div class="morse-hint">Kurz = Punkt (·) &nbsp;|&nbsp; Lang = Strich (–)<br>Pause = nächster Buchstabe</div>
+            <div id="freeDecoded" style="margin-top:8px; font-size:0.9em; color:rgba(253,245,230,0.5);"></div>
+            ${buildMorseAlphabetHTML()}
+            <button class="btn" style="margin-top:15px;" onclick="freeMode=false; next();">Weiter – Antwort empfangen</button>
+        `;
+        initFreeMorse();
+    }
+
+    function initFreeMorse() {
+        const key = document.getElementById('morseKey');
+        if (!key) return;
+
+        let pressStart = 0;
+        let dotDash = [];
+        let letterTimeout = null;
+        let fullText = '';
+
+        function onDown(e) {
+            e.preventDefault();
+            pressStart = Date.now();
+            key.classList.add('pressed');
+            const r = document.getElementById('morseRoehre');
+            if (r) r.innerHTML = roehreSVG(true);
+            playTone(680, 300);
+            clearTimeout(letterTimeout);
+        }
+
+        function onUp(e) {
+            e.preventDefault();
+            if (!pressStart) return;
+            const dur = Date.now() - pressStart;
+            pressStart = 0;
+            key.classList.remove('pressed');
+
+            dotDash.push(dur < 250 ? '.' : '-');
+
+            const dots = document.getElementById('freeDots');
+            if (dots) dots.innerText = dotDash.map(c => c === '.' ? '·' : '–').join(' ');
+
+            clearTimeout(letterTimeout);
+            letterTimeout = setTimeout(() => {
+                const code = dotDash.join('');
+                // Reverse-Lookup
+                let found = '?';
+                for (const [ch, m] of Object.entries(MORSE)) {
+                    if (m === code) { found = ch; break; }
+                }
+                fullText += found;
+                const output = document.getElementById('freeOutput');
+                if (output) output.innerText = fullText;
+                const decoded = document.getElementById('freeDecoded');
+                if (decoded) decoded.innerText = code + ' → ' + found;
+                const dots2 = document.getElementById('freeDots');
+                if (dots2) dots2.innerText = '';
+                dotDash.length = 0;
+            }, 800);
+        }
+
+        key.addEventListener('mousedown', onDown);
+        key.addEventListener('mouseup', onUp);
+        key.addEventListener('mouseleave', onUp);
+        key.addEventListener('touchstart', onDown, {passive: false});
+        key.addEventListener('touchend', onUp, {passive: false});
+    }
+
+    // =============================================
+    // SCHRITT 3: FREQUENZ SUCHEN
+    // =============================================
+    const TARGET_FREQ = 148; // kHz – Zielfrequenz
+    let freqFound = false;
+    let freqAngle = 0;
+
+    function buildFrequenzUI() {
+        return `
+            <div class="game-area" id="freqGame">
+                <div class="freq-display" id="freqDisplay">100.0 kHz</div>
+                <div class="freq-bar-wrap">
+                    <canvas id="freqCanvas" width="400" height="40"></canvas>
+                </div>
+                <div class="freq-dial-wrap">
+                    <div class="freq-dial" id="freqDial">
+                        <div class="freq-needle" id="freqNeedle"></div>
+                    </div>
+                </div>
+                <p id="freqHint" style="color: rgba(253,245,230,0.5); font-size:0.9em;">Drehe den Knopf und suche das Signal...</p>
+                <div class="freq-msg" id="freqMsg" style="display:none;"></div>
+            </div>`;
+    }
+
+    function initFrequenz() {
+        const dial = document.getElementById('freqDial');
+        if (!dial) return;
+
+        freqFound = false;
+        freqAngle = 0;
+        startNoise();
+
+        let dragging = false;
+        let lastAngle = 0;
+
+        function getAngle(e, rect) {
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return Math.atan2(clientY - cy, clientX - cx);
+        }
+
+        function onStart(e) {
+            e.preventDefault();
+            dragging = true;
+            const rect = dial.getBoundingClientRect();
+            lastAngle = getAngle(e, rect);
+        }
+
+        function onMove(e) {
+            if (!dragging || freqFound) return;
+            e.preventDefault();
+            const rect = dial.getBoundingClientRect();
+            const angle = getAngle(e, rect);
+            let delta = angle - lastAngle;
+            // Wrap-around
+            if (delta > Math.PI) delta -= 2 * Math.PI;
+            if (delta < -Math.PI) delta += 2 * Math.PI;
+            lastAngle = angle;
+            freqAngle += delta;
+
+            // Frequenz berechnen (100–200 kHz über mehrere Umdrehungen)
+            const freq = 100 + ((freqAngle / (Math.PI * 6)) * 100);
+            const clampedFreq = Math.max(100, Math.min(200, freq));
+            updateFrequenz(clampedFreq);
+        }
+
+        function onEnd() { dragging = false; }
+
+        dial.addEventListener('mousedown', onStart);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+        dial.addEventListener('touchstart', onStart, {passive: false});
+        document.addEventListener('touchmove', onMove, {passive: false});
+        document.addEventListener('touchend', onEnd);
+
+        // Initial draw
+        drawSignalBar(100);
+    }
+
+    function updateFrequenz(freq) {
+        const display = document.getElementById('freqDisplay');
+        const needle = document.getElementById('freqNeedle');
+        const hint = document.getElementById('freqHint');
+
+        if (display) display.innerText = freq.toFixed(1) + ' kHz';
+        if (needle) needle.style.transform = `rotate(${freqAngle * (180/Math.PI)}deg)`;
+
+        drawSignalBar(freq);
+
+        // Nähe zur Zielfrequenz
+        const distance = Math.abs(freq - TARGET_FREQ);
+
+        // Rauschen anpassen
+        if (distance < 2) {
+            setNoiseLevel(0.01);
+        } else if (distance < 8) {
+            setNoiseLevel(0.03);
+        } else if (distance < 20) {
+            setNoiseLevel(0.06);
+        } else {
+            setNoiseLevel(0.08);
+        }
+
+        if (distance < 8 && !freqFound) {
+            if (hint) { hint.innerText = 'Ein Signal! Feinjustierung...'; hint.style.color = 'lime'; }
+        } else if (!freqFound) {
+            if (hint) { hint.innerText = 'Nur Rauschen... weitersuchen.'; hint.style.color = 'rgba(253,245,230,0.5)'; }
+        }
+
+        // Getroffen!
+        if (distance < 3 && !freqFound) {
+            freqFound = true;
+            stopNoise();
+            if (hint) { hint.innerHTML = '<strong style="color:lime;">SIGNAL GEFUNDEN!</strong>'; }
+
+            const msg = document.getElementById('freqMsg');
+            if (msg) {
+                msg.style.display = 'block';
+                // Antwort Buchstabe für Buchstabe tippen
+                const antwort = "EMPFANGEN. ALLES KLAR. ENDE.";
+                // Morse-Sound abspielen
+                playMorseString('.- .-.. .-.. . ... -.- .-.. .- .-.', () => {});
+                let i = 0;
+                msg.innerHTML = '<span style="color:var(--gold);">Linz antwortet:</span><br>';
+                const typeInterval = setInterval(() => {
+                    if (i < antwort.length) {
+                        msg.innerHTML += antwort[i];
+                        i++;
+                    } else {
+                        clearInterval(typeInterval);
+                        setTimeout(() => {
+                            const app = document.getElementById('app');
+                            const weiterBtn = document.createElement('button');
+                            weiterBtn.className = 'btn erfolg-animation';
+                            weiterBtn.innerText = 'Mission abschließen';
+                            weiterBtn.onclick = () => next();
+                            app.appendChild(weiterBtn);
+                        }, 800);
+                    }
+                }, 70);
+            }
+        }
+    }
+
+    function drawSignalBar(freq) {
+        const canvas = document.getElementById('freqCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        // Rauschen zeichnen
+        ctx.strokeStyle = 'rgba(0,255,0,0.3)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = 0; x < w; x++) {
+            const noise = Math.random() * h * 0.6;
+            // Signal-Peak bei Zielfrequenz
+            const barFreq = 100 + (x / w) * 100;
+            const dist = Math.abs(barFreq - TARGET_FREQ);
+            const signal = dist < 5 ? Math.max(0, (5 - dist) / 5) * h * 0.8 : 0;
+            const y = h / 2 - noise * 0.3 + Math.sin(x * 0.3) * 3 - signal * 0.5;
+            if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Signal-Bereich hervorheben
+        const signalX = ((TARGET_FREQ - 100) / 100) * w;
+        ctx.fillStyle = 'rgba(0,255,0,0.08)';
+        ctx.fillRect(signalX - 10, 0, 20, h);
+
+        // Aktuelle Position
+        const posX = ((freq - 100) / 100) * w;
+        ctx.strokeStyle = 'var(--gold)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(posX, 0);
+        ctx.lineTo(posX, h);
+        ctx.stroke();
+    }
+
+    // =============================================
+    // SCHRITT 4: ERFOLG + FUN FACTS
+    // =============================================
+    function buildErfolgUI() {
+        const elapsed = startTime ? Math.round((Date.now() - startTime) / 1000) : 0;
+        const min = Math.floor(elapsed / 60);
+        const sec = elapsed % 60;
+        const zeitStr = min > 0 ? `${min}m ${sec}s` : `${sec}s`;
+
+        return `
+            <div class="fade-in">
+                <div class="erfolg-icon">📡</div>
+                <h1 style="font-size:1.2em;">Mission erfüllt!</h1>
+                <p>Du hast die erste drahtlose Nachricht von Wien nach Linz gesendet – mit der Siemens GRS 1 Verstärkerröhre.</p>
+
+                <div class="erfolg-stats">
+                    <div class="erfolg-stat">
+                        <div class="label">Deine Zeit</div>
+                        <div class="value">${zeitStr}</div>
+                    </div>
+                    <div class="erfolg-stat">
+                        <div class="label">Nachricht</div>
+                        <div class="value">SOS</div>
+                    </div>
+                    <div class="erfolg-stat">
+                        <div class="label">Spannung</div>
+                        <div class="value">112 V</div>
+                    </div>
+                    <div class="erfolg-stat">
+                        <div class="label">Frequenz</div>
+                        <div class="value">${TARGET_FREQ} kHz</div>
+                    </div>
+                </div>
+
+                <div class="fun-facts">
+                    <h3>Wusstest du?</h3>
+                    <ul>
+                        <li>Die GRS 1 war eine der ersten <strong>Verstärkerröhren</strong> in Österreich – sie machte schwache Funksignale stark genug zum Empfang.</li>
+                        <li><strong>SOS</strong> wurde 1906 als internationales Notsignal eingeführt – nicht weil es für etwas steht, sondern weil ··· --- ··· einfach zu morsen ist.</li>
+                        <li>Vor der Röhre mussten Funker mit <strong>Kristalldetektoren</strong> arbeiten – die waren so leise, dass man in absoluter Stille sitzen musste.</li>
+                        <li>Eine einzige GRS 1 verbrauchte mehr Strom als ein heutiges Smartphone in einer Woche – für ein einziges, schwaches Signal.</li>
+                    </ul>
+                </div>
+
+                <button class="btn" onclick="aktuellerSchritt=0; startTime=null; render();">Nochmal spielen</button>
+                <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+            </div>`;
+    }
+
+    // =============================================
+    // START
+    // =============================================
+    render();
+</script>
+</body>
+</html>
