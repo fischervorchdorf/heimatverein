@@ -246,6 +246,396 @@
     // MEERSCHAUMPFEIFE
     // =============================================
     // =============================================
+    // ZAHNPULVER - Prof. Dr. Seider's
+    // =============================================
+    const ZAHNPULVER_DEF = {
+        titel: "Das Zahn-Pulver",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Prof. Dr. Seider's Zahn-Pulver",
+                beschreibung: "Eine ovale Pappschachtel, gefüllt mit winzigen Holzstäbchen. Auf dem Deckel in kunstvoller Frakturschrift: <em>‚Prof. Dr. Seider's Zahn-Pulver'</em>.<br><br>Circa 1900 – als Zahnpasta noch nicht erfunden war, putzte man sich die Zähne mit Pulver und Holzstäbchen. Ein Ritual zwischen Ekel und Eleganz.<br><br>Kostete 0,50–1,50 Kronen. Nur die bürgerliche Mittel- und Oberschicht konnte sich solchen Luxus leisten. Ärmere Schichten? Salz, Asche – oder gar nichts."
+            },
+            {
+                typ: "zahn-zeitreise",
+                titel: "Zeitreise der Zahnpflege",
+                beschreibung: "Von den Ägyptern bis zur elektrischen Zahnbürste – mit Ekel-Faktor-Bewertung!"
+            },
+            {
+                typ: "zahn-labor",
+                titel: "Zahn-Detektiv: Was steckt drin?",
+                beschreibung: "Untersuche die Inhaltsstoffe von Prof. Dr. Seider's Rezeptur. Was hilft – und was schadet?"
+            },
+            {
+                typ: "werbe-professor",
+                titel: "Der Werbe-Professor",
+                beschreibung: "1900 konnte jeder ‚Prof. Dr.' auf die Packung drucken. Erkennst du den Schwindel?"
+            },
+            {
+                typ: "zahnpulver-erfolg",
+                titel: "Das Lächeln der Monarchie",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Zeitreise der Zahnpflege ---
+    const ZAHN_EPOCHEN = [
+        { jahr: "3000 v.Chr.", name: "Ägypten: Der Kaustab", emoji: "🌿", ekel: 2, text: "Die Ägypter kauten auf Zweigen des Salvadora-Baums. Das Holz fasert auf und reinigt wie eine natürliche Bürste. Funktioniert erstaunlich gut – und wird in Afrika und Asien HEUTE noch benutzt!", tipp: "Miswak-Stäbchen gibt's auf Amazon. Ja, wirklich." },
+        { jahr: "100 n.Chr.", name: "Rom: Urin-Mundwasser", emoji: "🏛️", ekel: 5, text: "Die Römer spülten ihren Mund mit... Urin. Portugiesischer Urin galt als besonders fein. Der Ammoniak darin WIRKT tatsächlich bleichend – aber der Geschmack...", tipp: "Römische Damen zahlten extra für importierten Urin." },
+        { jahr: "500", name: "Mittelalter: Gebet statt Bürste", emoji: "🙏", ekel: 3, text: "Zahnpflege? Gottes Wille! Zahnschmerzen galten als Strafe für Sünden. Wer es sich leisten konnte, ließ sich Zähne vom Barbier ziehen – ohne Betäubung.", tipp: "Der Zahnarzt hieß 'Zahnbrecher'. Kein Scherz." },
+        { jahr: "1700", name: "Barock: Zucker-Zähne", emoji: "👑", ekel: 4, text: "Zucker war das neue Statussymbol. Queen Elizabeth I. hatte schwarze Zähne – und war stolz darauf! Schwarze Zähne zeigten: Ich kann mir Zucker leisten.", tipp: "Manche malten sich die Zähne absichtlich schwarz." },
+        { jahr: "1780", name: "Erste Zahnbürste", emoji: "🪥", ekel: 1, text: "William Addis bastelt im Gefängnis die erste Zahnbürste: Ein Knochen mit Borsten vom Schwein. Er wird damit reich. Die moderne Zahnpflege beginnt!", tipp: "Addis' Firma existierte bis 1996." },
+        { jahr: "1900", name: "DIESES Zahnpulver!", emoji: "📦", ekel: 2, text: "Prof. Dr. Seider's Zahn-Pulver: Kreide, Soda, Minzöl, auf Holzstäbchen aufgetragen. Schmeckt nach Kreide und Hoffnung. Ob der 'Professor' echt war? Wer weiß...", tipp: "Kostete 0,50-1,50 Kronen – mehrere Stunden Arbeitslohn." },
+        { jahr: "1945", name: "Fluorid-Revolution", emoji: "🧪", ekel: 1, text: "Fluorid wird zur Zahnpasta hinzugefügt. Die Kariesrate sinkt dramatisch. Einer der größten Erfolge der Präventivmedizin!", tipp: "Manche Städte geben Fluorid ins Trinkwasser." },
+        { jahr: "2025", name: "KI-Zahnbürste", emoji: "🤖", ekel: 0, text: "Elektrische Zahnbürsten mit KI-Sensor, die dir sagen, wo du schlecht geputzt hast. Dein Smartphone kennt dein Gebiss. Der 'Prof. Dr. Seider' von heute heißt 'App'.", tipp: "Eine Oral-B iO kostet mehr als ein Monatsgehalt von 1900." }
+    ];
+    let zahnEpocheIdx = 0;
+
+    function buildZahnZeitreiseUI() {
+        zahnEpocheIdx = 0;
+        return `<div class="game-area" id="zahnZeitreise" style="text-align:center;"><div id="zahnEpocheContent"></div>
+            <button class="btn" id="zahnNextBtn" onclick="zahnNextEpoche()">Nächste Ära →</button></div>`;
+    }
+    function renderZahnEpoche() {
+        if (zahnEpocheIdx >= ZAHN_EPOCHEN.length) {
+            document.getElementById('zahnEpocheContent').innerHTML = `<div class="fade-in">
+                <p style="color:var(--gold); font-size:1.2em; font-weight:bold;">5000 Jahre Zahnpflege!</p>
+                <p style="font-size:0.9em;">Von Urin zu KI. Und dieses Zahnpulver? Es steht genau am Wendepunkt – das letzte Pulver vor der Paste.</p></div>`;
+            document.getElementById('zahnNextBtn').innerText = 'Weiter – Was steckt drin?';
+            document.getElementById('zahnNextBtn').onclick = () => next();
+            return;
+        }
+        const e = ZAHN_EPOCHEN[zahnEpocheIdx];
+        const ekelBars = '🤢'.repeat(e.ekel) + '⬜'.repeat(5 - e.ekel);
+        document.getElementById('zahnEpocheContent').innerHTML = `<div class="fade-in">
+            <div class="step-indicator" style="margin-bottom:8px;">${ZAHN_EPOCHEN.map((_, i) => `<div class="step-dot ${i < zahnEpocheIdx ? 'done' : i === zahnEpocheIdx ? 'active' : ''}"></div>`).join('')}</div>
+            <div style="font-size:2.5em; margin:5px 0;">${e.emoji}</div>
+            <p style="color:var(--gold); font-weight:bold; font-size:0.9em;">${e.jahr}</p>
+            <p style="font-size:1.1em; font-weight:bold; margin:3px 0;">${e.name}</p>
+            <div class="info-box" style="font-size:0.85em;">${e.text}</div>
+            <p style="font-size:0.8em; margin:5px 0;">Ekel-Faktor: ${ekelBars}</p>
+            <p style="font-size:0.75em; color:rgba(253,245,230,0.4); font-style:italic;">💡 ${e.tipp}</p></div>`;
+        playTone(300 + zahnEpocheIdx * 50, 150);
+    }
+    function zahnNextEpoche() { zahnEpocheIdx++; renderZahnEpoche(); }
+
+    // --- Zahn-Detektiv: Was steckt drin? ---
+    const ZAHN_ZUTATEN = [
+        { name: "Kreide (Calciumcarbonat)", emoji: "⚪", echt: true, hilft: true, erklaerung: "JA, echte Zutat! Kreide ist ein mildes Schleifmittel und poliert die Zähne sanft. Wird auch heute noch in manchen Zahnpasten verwendet!" },
+        { name: "Pfefferminzöl", emoji: "🌿", echt: true, hilft: true, erklaerung: "JA! Minzöl erfrischt den Atem und hat leicht antibakterielle Wirkung. Der Klassiker seit Jahrhunderten." },
+        { name: "Natriumbicarbonat (Soda)", emoji: "🧂", echt: true, hilft: true, erklaerung: "JA! Soda neutralisiert Säuren im Mund und hilft gegen Karies. Heute Hauptbestandteil vieler 'Natural'-Zahnpasten." },
+        { name: "Kokain-Extrakt", emoji: "💊", echt: true, hilft: false, erklaerung: "TATSÄCHLICH ECHT! Kokain war um 1900 ein legaler Wirkstoff in Zahnprodukten – es betäubte Zahnschmerzen. Erst 1920 verboten." },
+        { name: "Radioaktives Thorium", emoji: "☢️", echt: true, hilft: false, erklaerung: "LEIDER JA! In den 1920ern gab es 'Doramad'-Zahnpasta mit Thorium. Sollte die Zähne zum 'Strahlen' bringen. Buchstäblich." },
+        { name: "Holzkohle", emoji: "⬛", echt: true, hilft: true, erklaerung: "JA! Aktivkohle bindet Verfärbungen. Schon die Römer nutzten sie. Heute wieder trendy als 'Charcoal Toothpaste'." },
+        { name: "Diamantstaub", emoji: "💎", echt: false, hilft: false, erklaerung: "NEIN, Fake! Das wäre viel zu teuer und würde den Zahnschmelz zerstören. Aber klingt gut auf der Verpackung, oder?" },
+        { name: "Nelkenöl", emoji: "🌸", echt: true, hilft: true, erklaerung: "JA! Nelkenöl ist ein natürliches Schmerzmittel. Wurde jahrhundertelang bei Zahnschmerzen eingesetzt und wirkt tatsächlich." }
+    ];
+    let zahnZutatIdx = 0, zahnLabScore = 0;
+
+    function buildZahnLaborUI() {
+        zahnZutatIdx = 0; zahnLabScore = 0;
+        return `<div class="game-area" id="zahnLabor" style="text-align:center;">
+            <p style="font-size:0.85em; color:rgba(253,245,230,0.5);">War diese Zutat wirklich in historischen Zahnprodukten?</p>
+            <div id="zahnLabContent"></div></div>`;
+    }
+    function renderZahnZutat() {
+        if (zahnZutatIdx >= ZAHN_ZUTATEN.length) {
+            document.getElementById('zahnLabContent').innerHTML = `<div class="fade-in">
+                <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">${zahnLabScore} von ${ZAHN_ZUTATEN.length} richtig</p>
+                <p style="font-size:0.9em; font-style:italic;">${zahnLabScore >= 6 ? 'Meister-Chemiker! Du hättest Prof. Dr. Seider Konkurrenz gemacht.' : zahnLabScore >= 4 ? 'Guter Riecher! Die meisten fallen auf Diamantstaub rein.' : 'Die Wahrheit ist verrückter als die Fiktion – wer hätte Kokain in Zahnpasta vermutet?'}</p>
+                <button class="btn" style="margin-top:10px;" onclick="next()">Weiter – Werbe-Tricks</button></div>`;
+            return;
+        }
+        const z = ZAHN_ZUTATEN[zahnZutatIdx];
+        document.getElementById('zahnLabContent').innerHTML = `<div class="fade-in">
+            <div class="step-indicator" style="margin-bottom:8px;">${ZAHN_ZUTATEN.map((_, i) => `<div class="step-dot ${i < zahnZutatIdx ? 'done' : i === zahnZutatIdx ? 'active' : ''}"></div>`).join('')}</div>
+            <div style="font-size:2.5em; margin:8px 0;">${z.emoji}</div>
+            <p style="font-size:1.1em; font-weight:bold;">${z.name}</p>
+            <p style="font-size:0.9em; margin:10px 0;">War das WIRKLICH in historischen Zahnprodukten?</p>
+            <button class="btn" style="margin-top:5px;" onclick="checkZahnZutat(true)">✓ JA, echt!</button>
+            <button class="btn" style="margin-top:5px;" onclick="checkZahnZutat(false)">✗ NEIN, Fake!</button>
+            <div id="zahnLabFb" style="min-height:40px; margin-top:8px;"></div></div>`;
+    }
+    function checkZahnZutat(answer) {
+        const z = ZAHN_ZUTATEN[zahnZutatIdx];
+        const correct = answer === z.echt;
+        if (correct) { zahnLabScore++; playTone(523, 200); } else { playTone(200, 200); }
+        document.getElementById('zahnLabFb').innerHTML = `
+            <p style="color:${correct ? 'lime' : '#ff6347'}; font-weight:bold;">${correct ? '✓ Richtig!' : '✗ Falsch!'}</p>
+            <div class="info-box" style="font-size:0.8em; margin-top:5px;">${z.erklaerung}</div>
+            <button class="btn" style="margin-top:8px; font-size:0.85em;" onclick="zahnZutatIdx++; renderZahnZutat();">Nächste Zutat →</button>`;
+        document.querySelectorAll('#zahnLabor .btn').forEach((b,i) => { if (i < 2) b.disabled = true; });
+    }
+
+    // --- Werbe-Professor ---
+    const WERBE_CLAIMS = [
+        { claim: "Prof. Dr. Seider's Zahn-Pulver – Empfohlen von der k.u.k. Hofapotheke!", echt: false, erklaerung: "FAKE! Es gab keine offizielle Empfehlung. Den 'Prof. Dr.' hat sich der Hersteller vermutlich ausgedacht – akademische Titel auf Verpackungen waren damals nicht geschützt." },
+        { claim: "Odol Mundwasser – Von über 10.000 Zahnärzten empfohlen!", echt: true, erklaerung: "ECHT! Odol war ab 1893 ein Riesenerfolg und wurde tatsächlich von Zahnärzten empfohlen. Die Firma existiert heute noch." },
+        { claim: "Cocaine Toothache Drops – Sofortige Schmerzlinderung für nur 15 Cents!", echt: true, erklaerung: "ECHT! Kokain-Zahntropfen waren bis ca. 1914 frei verkäuflich. Sie wirkten auch – nur die Nebenwirkungen kannte man noch nicht." },
+        { claim: "Doramad Radioaktive Zahnpasta – Ihre Zähne strahlen durch Thorium-X!", echt: true, erklaerung: "LEIDER ECHT! In den 1940ern in Deutschland produziert. Radioaktivität galt damals als 'gesund'. Die Paste enthielt echtes Thorium." },
+        { claim: "Dr. Sheffield's Creme Dentifrice – Die erste Zahnpasta in der Tube!", echt: true, erklaerung: "ECHT! 1886 in Connecticut erfunden. Vorher gab es nur Pulver und Pasten in Dosen. Die Tube war eine Revolution." },
+        { claim: "Kaiser Franz Joseph's Geheim-Rezeptur – Das Zahnpulver des Kaisers!", echt: false, erklaerung: "FAKE! Der Kaiser hatte zwar Zahnprobleme, aber keine eigene Zahnpulver-Marke. Solche 'kaiserlichen' Empfehlungen waren reines Marketing." },
+        { claim: "Pepsodent – Entfernt den Film auf Ihren Zähnen! (1920er)", echt: true, erklaerung: "ECHT und GENIAL! Die Werbekampagne von Claude Hopkins machte 'den Film auf den Zähnen' zum Problem, das vorher niemand kannte. Klassisches 'Problem-erschaffen-dann-lösen'-Marketing." }
+    ];
+    let werbeIdx = 0, werbeScore = 0;
+
+    function buildWerbeProfessorUI() {
+        werbeIdx = 0; werbeScore = 0;
+        return `<div class="game-area" id="werbeArea" style="text-align:center;">
+            <p style="font-size:0.85em; color:rgba(253,245,230,0.5);">Historische Werbung: Echt oder Schwindel?</p>
+            <div id="werbeContent"></div></div>`;
+    }
+    function renderWerbeClaim() {
+        if (werbeIdx >= WERBE_CLAIMS.length) {
+            document.getElementById('werbeContent').innerHTML = `<div class="fade-in">
+                <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">${werbeScore} von ${WERBE_CLAIMS.length} erkannt</p>
+                <p style="font-size:0.9em; font-style:italic;">${werbeScore >= 5 ? 'Werbe-Profi! Dich hätte man 1900 nicht reingelegt.' : werbeScore >= 3 ? 'Nicht schlecht! Aber die Werbe-Profis von damals hätten dich erwischt.' : 'Die Werbung von 1900 war raffinierter als du denkst!'}</p>
+                <button class="btn" style="margin-top:10px;" onclick="next()">Weiter – Reflexion</button></div>`;
+            return;
+        }
+        const w = WERBE_CLAIMS[werbeIdx];
+        document.getElementById('werbeContent').innerHTML = `<div class="fade-in">
+            <div class="step-indicator" style="margin-bottom:8px;">${WERBE_CLAIMS.map((_, i) => `<div class="step-dot ${i < werbeIdx ? 'done' : i === werbeIdx ? 'active' : ''}"></div>`).join('')}</div>
+            <div style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px; margin:10px 0;">
+                <p style="font-size:0.75em; color:rgba(253,245,230,0.4);">HISTORISCHE WERBUNG</p>
+                <p style="font-size:1em; font-style:italic; font-weight:bold; color:var(--gold);">"${w.claim}"</p>
+            </div>
+            <button class="btn" style="margin-top:5px;" onclick="checkWerbe(true)">✓ Echte Werbung!</button>
+            <button class="btn" style="margin-top:5px;" onclick="checkWerbe(false)">✗ Erfundener Schwindel!</button>
+            <div id="werbeFb" style="min-height:40px; margin-top:8px;"></div></div>`;
+    }
+    function checkWerbe(answer) {
+        const w = WERBE_CLAIMS[werbeIdx];
+        const correct = answer === w.echt;
+        if (correct) { werbeScore++; playTone(523, 200); } else { playTone(200, 200); }
+        document.getElementById('werbeFb').innerHTML = `
+            <p style="color:${correct ? 'lime' : '#ff6347'}; font-weight:bold;">${correct ? '✓ Richtig!' : '✗ Falsch!'}</p>
+            <div class="info-box" style="font-size:0.8em; margin-top:5px;">${w.erklaerung}</div>
+            <button class="btn" style="margin-top:8px; font-size:0.85em;" onclick="werbeIdx++; renderWerbeClaim();">Nächster Claim →</button>`;
+        document.querySelectorAll('#werbeArea .btn').forEach((b,i) => { if (i < 2) b.disabled = true; });
+    }
+
+    // --- Zahnpulver Erfolg ---
+    function buildZahnpulverErfolgUI() {
+        return `<div class="fade-in">
+            <div class="erfolg-icon">🦷</div>
+            <h1 style="font-size:1.1em;">Das Lächeln der Monarchie</h1>
+            <p style="font-size:0.95em; font-style:italic;">"Ein strahlendes Lächeln war ein unschätzbarer Vorteil – damals wie heute."</p>
+            <div class="erfolg-stats">
+                <div class="erfolg-stat"><div class="label">Inhaltsstoffe erkannt</div><div class="value">${zahnLabScore || '?'}/${ZAHN_ZUTATEN.length}</div></div>
+                <div class="erfolg-stat"><div class="label">Werbe-Tricks erkannt</div><div class="value">${werbeScore || '?'}/${WERBE_CLAIMS.length}</div></div>
+                <div class="erfolg-stat"><div class="label">Preis 1900</div><div class="value">0,50-1,50 Kr.</div></div>
+                <div class="erfolg-stat"><div class="label">Heute vergleichbar</div><div class="value">5-15€</div></div>
+            </div>
+            <div class="fun-facts"><h3>Was das Pulver verrät:</h3><ul>
+                <li><strong>Kokain in Zahnprodukten</strong> war bis 1920 legal. Sogar für Kinder!</li>
+                <li>Der Titel <strong>"Prof. Dr."</strong> auf der Packung war vermutlich frei erfunden – akademische Titel auf Produkten waren nicht geschützt.</li>
+                <li>Die Holzstäbchen sind <strong>5000 Jahre altes Prinzip</strong> – Kaustäbchen aus dem alten Ägypten funktionieren genauso.</li>
+                <li>Erst <strong>1945</strong> kam Fluorid in die Zahnpasta. Vorher war Karies eine Volkskrankheit – mit 30 fehlten den meisten schon Zähne.</li>
+            </ul></div>
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal spielen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
+    // SIEMENS GRS 1 GLEICHRICHTERRÖHRE (NEU)
+    // =============================================
+    const SIEMENS_DEF = {
+        titel: "Die Gleichrichterröhre",
+        schritte: [
+            {
+                typ: "info",
+                titel: "GRS 1 – Wien, November 1912",
+                beschreibung: "Diese Glasglocke ist kein Schmuckstück. Sie ist eine <em>Siemens Austria GRS 1 Gleichrichterröhre</em> – geboren im November 1912.<br><br>Ihre Aufgabe: den wilden Wechselstrom zähmen und in braven Gleichstrom verwandeln. Ohne sie kein Radio, kein Telefon, keine moderne Welt.<br><br>Seltenheit: 8/10. Erhaltung: 9/10. Eines der ältesten erhaltenen Elektronik-Bauteile Österreichs."
+            },
+            {
+                typ: "strom-verstehen",
+                titel: "Strom zähmen – verstehst du wie?",
+                beschreibung: "Wechselstrom, Gleichstrom, Röhre... Klingt kompliziert? Ist es nicht. Lass es dir erklären – interaktiv!"
+            },
+            {
+                typ: "funk-mission",
+                titel: "Die Funk-Mission: Wien → Linz, 1913",
+                beschreibung: "Du bist Ingenieur Dr. Anton Gruber. Dein Auftrag: Die erste Langstrecken-Funkübertragung von Wien nach Linz. Die GRS 1 ist dein Herzstück."
+            },
+            {
+                typ: "tech-evolution",
+                titel: "Evolution der Elektronik",
+                beschreibung: "Von der Röhre zum Chip – wie wurde aus DIESEM Glaskolben dein Smartphone?"
+            },
+            {
+                typ: "siemens-erfolg",
+                titel: "Das Flüstern der Ätherwellen",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Strom verstehen ---
+    const STROM_SCHRITTE = [
+        { titel: "Was ist Wechselstrom?", emoji: "〰️", text: "Strom aus der Steckdose wechselt 50× pro Sekunde die Richtung. Wie eine Schaukel – hin und her, hin und her. Gut für Transport über weite Strecken, aber schlecht für empfindliche Geräte.", frage: "Was macht Wechselstrom?", optionen: ["Wechselt ständig die Richtung", "Fließt nur in eine Richtung", "Fließt gar nicht"], richtig: 0 },
+        { titel: "Was ist Gleichstrom?", emoji: "➡️", text: "Gleichstrom fließt nur in EINE Richtung – wie ein Fluss. Batterien liefern Gleichstrom. Dein Handy braucht Gleichstrom. Aber aus der Steckdose kommt Wechselstrom. Problem!", frage: "Was braucht dein Handy?", optionen: ["Gleichstrom", "Wechselstrom", "Gar keinen Strom"], richtig: 0 },
+        { titel: "Die Röhre als Einbahnstraße", emoji: "🚦", text: "Die GRS 1 ist eine Einbahnstraße für Elektronen. Strom kann nur in EINE Richtung durch – von der heißen Kathode zur Anode. Die andere Hälfte der Wechselstrom-Welle wird gesperrt. Ergebnis: Gleichstrom!", frage: "Was macht die Röhre mit dem Strom?", optionen: ["Lässt ihn nur in eine Richtung durch", "Macht ihn stärker", "Speichert ihn"], richtig: 0 },
+        { titel: "Wozu das Vakuum?", emoji: "🫧", text: "Im Inneren der Glasglocke ist fast nichts – ein Vakuum. Warum? Weil Luft die Elektronen bremst! Im Vakuum fliegen sie ungestört von Kathode zu Anode. Das Glas schützt dieses ‚Nichts'.", frage: "Warum ist Vakuum in der Röhre?", optionen: ["Elektronen fliegen ungebremst", "Es sieht schöner aus", "Damit sie nicht explodiert"], richtig: 0 }
+    ];
+    let stromIdx = 0, stromScore = 0;
+
+    function buildStromVerstehenUI() {
+        stromIdx = 0; stromScore = 0;
+        return `<div class="game-area" id="stromArea" style="text-align:center;"><div id="stromContent"></div></div>`;
+    }
+    function renderStromSchritt() {
+        if (stromIdx >= STROM_SCHRITTE.length) {
+            document.getElementById('stromContent').innerHTML = `<div class="fade-in">
+                <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">${stromScore} von ${STROM_SCHRITTE.length} richtig</p>
+                <p style="font-size:0.9em;">${stromScore >= 3 ? 'Du verstehst, was 1912 Hightech war!' : 'Keine Sorge – auch die Ingenieure brauchten Jahre dafür.'}</p>
+                <button class="btn" style="margin-top:10px;" onclick="next()">Weiter – Die Funk-Mission</button></div>`;
+            return;
+        }
+        const s = STROM_SCHRITTE[stromIdx];
+        document.getElementById('stromContent').innerHTML = `<div class="fade-in">
+            <div class="step-indicator" style="margin-bottom:8px;">${STROM_SCHRITTE.map((_, i) => `<div class="step-dot ${i < stromIdx ? 'done' : i === stromIdx ? 'active' : ''}"></div>`).join('')}</div>
+            <div style="font-size:2.5em; margin:5px 0;">${s.emoji}</div>
+            <p style="color:var(--gold); font-weight:bold;">${s.titel}</p>
+            <div class="info-box" style="font-size:0.85em;">${s.text}</div>
+            <p style="font-weight:bold; margin:10px 0; font-size:0.95em;">${s.frage}</p>
+            ${s.optionen.map((opt, i) => `<button class="btn" style="margin-top:5px; font-size:0.85em; padding:10px;" onclick="checkStrom(${stromIdx},${i})">${opt}</button>`).join('')}
+            <div id="stromFb" style="min-height:30px; margin-top:8px;"></div></div>`;
+    }
+    function checkStrom(sIdx, aIdx) {
+        const s = STROM_SCHRITTE[sIdx];
+        const correct = aIdx === s.richtig;
+        if (correct) { stromScore++; playTone(523, 200); } else { playTone(200, 200); }
+        document.getElementById('stromFb').innerHTML = `
+            <p style="color:${correct ? 'lime' : '#ff6347'}; font-weight:bold;">${correct ? '✓ Richtig!' : '✗ Nicht ganz.'}</p>
+            <button class="btn" style="margin-top:8px; font-size:0.85em;" onclick="stromIdx++; renderStromSchritt();">Weiter →</button>`;
+        document.querySelectorAll('#stromArea .btn').forEach((b,i) => { if (i < s.optionen.length) b.disabled = true; });
+    }
+
+    // --- Funk-Mission ---
+    const FUNK_SZENEN = [
+        { titel: "Das Labor – Februar 1913", text: "Du bist Dr. Anton Gruber, Ingenieur bei Siemens Austria. Vor dir liegt die neue GRS 1, frisch aus der Werkstatt. Dein Ziel: Die erste Langstrecken-Funkübertragung von Wien nach Linz. Aber zuerst musst du den Sender bauen.", frage: "Womit beginnst du?",
+            optionen: [
+                { text: "GRS 1 vorsichtig in den Schaltkreis einbauen – Gleichstrom ist die Basis", folge: "Klug! Ohne stabilen Gleichstrom funktioniert kein Sender. Du verbindest die Röhre behutsam – die hohen Spannungen erfordern perfekte Isolation.", punkte: 2 },
+                { text: "Erstmal die Antenne auf dem Dach aufbauen", folge: "Ambitioniert, aber ohne Sender nützt die beste Antenne nichts. Du verschwendest einen Tag auf dem kalten Dach.", punkte: 0 },
+                { text: "Leopold, den Assistenten, Kaffee kochen lassen", folge: "Leopold brummt, aber der Kaffee hilft. Allerdings verlierst du wertvolle Zeit.", punkte: 1 }
+            ]
+        },
+        { titel: "Der erste Test", text: "Die GRS 1 glüht warm und orange. Der Gleichstrom fließt stabil. Aber der Sender summt bedrohlich laut. Leopold sieht besorgt aus.", frage: "Was tust du?",
+            optionen: [
+                { text: "Spannung langsam reduzieren und Isolierung prüfen", folge: "Perfekt! Ein lockerer Kontakt verursachte das Summen. Du fixierst ihn, und der Sender läuft sauber. Leopold atmet auf.", punkte: 2 },
+                { text: "Weitermachen – ein bisschen Summen ist normal", folge: "KNALL! Ein Funke springt über, der Sender fällt aus. Du brauchst 2 Tage für die Reparatur. Die GRS 1 hat es überlebt – gerade so.", punkte: 0 },
+                { text: "Alles abschalten und von vorne beginnen", folge: "Sicher, aber übervorsichtig. Du verlierst einen Tag, obwohl nur ein kleiner Kontakt locker war.", punkte: 1 }
+            ]
+        },
+        { titel: "Der große Tag – Frühling 1913", text: "Der Sender ist bereit. Vertreter des Post- und Telegraphenwesens, Militärs und ein Journalist sind gekommen. Die Nachricht soll von Wien nach Linz gefunkt werden. Alle Augen ruhen auf dir.", frage: "Die GRS 1 glüht. Du greifst zum Mikrofon...",
+            optionen: [
+                { text: "Ruhig und klar sprechen: 'Hier ist der Wiener Versuchssender...'", folge: "Deine Stimme ist fest. Die Wellen tragen die Botschaft über die Donau, über Niederösterreich, bis nach Linz. Minuten vergehen... Dann: 'HERR DOKTOR! Telegramm aus Linz – sie haben es empfangen!' Jubel bricht aus!", punkte: 2 },
+                { text: "Vor Aufregung stottern und nochmal ansetzen", folge: "Verständlich! Aber die Übertragung gelingt beim zweiten Versuch. Der Journalist notiert: 'Nach anfänglichen Schwierigkeiten...'", punkte: 1 },
+                { text: "Leopold vorsprechen lassen – er hat die ruhigeren Nerven", folge: "Leopold spricht klar, aber die Ehre gebührt dir. Der Journalist schreibt: 'Assistent Leopold übertrug die historische Nachricht.' Autsch.", punkte: 1 }
+            ]
+        }
+    ];
+    let funkIdx = 0, funkScore = 0;
+
+    function buildFunkMissionUI() {
+        funkIdx = 0; funkScore = 0;
+        return `<div class="game-area" id="funkArea" style="text-align:center;"><div id="funkContent"></div></div>`;
+    }
+    function renderFunkSzene() {
+        if (funkIdx >= FUNK_SZENEN.length) {
+            let rang = funkScore >= 5 ? "Meister-Ingenieur" : funkScore >= 3 ? "Vielversprechender Techniker" : "Lehrling";
+            document.getElementById('funkContent').innerHTML = `<div class="fade-in">
+                <div style="font-size:2.5em;">${funkScore >= 5 ? '📡' : funkScore >= 3 ? '⚡' : '🔧'}</div>
+                <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">${rang}</p>
+                <p style="font-size:0.9em;">${funkScore} von ${FUNK_SZENEN.length * 2} Punkten</p>
+                <div class="info-box" style="font-style:italic; font-size:0.85em;">${funkScore >= 5 ? 'Die GRS 1 hat ihre Aufgabe meisterhaft erfüllt – und du auch. Wien-Linz: verbunden!' : 'Die Nachricht kam an – wenn auch mit Umwegen. Hauptsache, die GRS 1 hat überlebt!'}</div>
+                <button class="btn" style="margin-top:15px;" onclick="next()">Weiter – Evolution</button></div>`;
+            return;
+        }
+        const s = FUNK_SZENEN[funkIdx];
+        document.getElementById('funkContent').innerHTML = `<div class="fade-in">
+            <div class="step-indicator" style="margin-bottom:8px;">${FUNK_SZENEN.map((_, i) => `<div class="step-dot ${i < funkIdx ? 'done' : i === funkIdx ? 'active' : ''}"></div>`).join('')}</div>
+            <p style="color:var(--gold); font-weight:bold;">${s.titel}</p>
+            <div class="info-box" style="font-size:0.85em; text-align:left;">${s.text}</div>
+            <p style="font-weight:bold; margin:12px 0 8px;">${s.frage}</p>
+            ${s.optionen.map((opt, i) => `<button class="btn" style="margin-top:5px; font-size:0.8em; padding:10px; text-align:left;" onclick="checkFunk(${funkIdx},${i})">${opt.text}</button>`).join('')}
+            <div id="funkFb" style="min-height:40px; margin-top:8px;"></div></div>`;
+    }
+    function checkFunk(sIdx, aIdx) {
+        const s = FUNK_SZENEN[sIdx]; const opt = s.optionen[aIdx];
+        funkScore += opt.punkte;
+        if (opt.punkte === 2) playTone(523, 200); else if (opt.punkte === 1) playTone(400, 200); else playTone(200, 200);
+        const col = opt.punkte === 2 ? "lime" : opt.punkte === 1 ? "orange" : "#ff6347";
+        const icon = opt.punkte === 2 ? "✓ Perfekt!" : opt.punkte === 1 ? "○ Geht so..." : "✗ Nicht ideal.";
+        document.getElementById('funkFb').innerHTML = `
+            <p style="color:${col}; font-weight:bold;">${icon}</p>
+            <div class="info-box" style="font-size:0.8em; margin-top:5px;">${opt.folge}</div>
+            <button class="btn" style="margin-top:8px; font-size:0.85em;" onclick="funkIdx++; renderFunkSzene();">Weiter →</button>`;
+        document.querySelectorAll('#funkContent .btn').forEach((b,i) => { if (i < s.optionen.length) b.disabled = true; });
+    }
+
+    // --- Tech Evolution ---
+    const TECH_STUFEN = [
+        { jahr: "1904", name: "Flemings Diode", emoji: "💡", text: "John Ambrose Fleming erfindet die erste Vakuumröhre. Sie kann nur eines: Strom in eine Richtung durchlassen. Simpel – aber revolutionär.", vs: "So groß wie eine Faust" },
+        { jahr: "1912", name: "DIESE GRS 1", emoji: "⚡", text: "Siemens Austria baut die GRS 1 – eine Leistungsröhre für industrielle Anwendungen. Sie kann genug Gleichstrom für einen Funksender liefern. Ein technisches Meisterwerk.", vs: "So groß wie eine Wasserflasche" },
+        { jahr: "1947", name: "Der Transistor", emoji: "🔬", text: "Bell Labs erfindet den Transistor: Er macht dasselbe wie eine Röhre, aber aus einem winzigen Kristall. Kein Vakuum, keine Hitze, kein Glas. Die Röhre ist tot.", vs: "So groß wie ein Stecknadelkopf" },
+        { jahr: "1971", name: "Der Mikroprozessor", emoji: "💻", text: "Intel 4004: 2.300 Transistoren auf einem Chip so groß wie ein Fingernagel. Die Rechenleistung eines ganzen Raums voller Röhren – in deiner Handfläche.", vs: "2.300 Transistoren = 1 Chip" },
+        { jahr: "2025", name: "Dein Smartphone", emoji: "📱", text: "Der Apple M4 Chip hat 28 MILLIARDEN Transistoren. Jeder einzelne tut im Prinzip dasselbe wie die GRS 1: Strom in eine Richtung lenken. Nur eben 28 Milliarden Mal gleichzeitig.", vs: "28.000.000.000 'Röhren'" }
+    ];
+    let techIdx = 0;
+
+    function buildTechEvolutionUI() {
+        techIdx = 0;
+        return `<div class="game-area" id="techArea" style="text-align:center;"><div id="techContent"></div>
+            <button class="btn" id="techNextBtn" onclick="techNextStep()">Nächster Schritt →</button></div>`;
+    }
+    function renderTechStufe() {
+        if (techIdx >= TECH_STUFEN.length) {
+            document.getElementById('techContent').innerHTML = `<div class="fade-in">
+                <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">Von 1 Röhre zu 28 Milliarden</p>
+                <p style="font-size:0.9em;">In 113 Jahren wurde die GRS 1 durch 28 Milliarden unsichtbare Nachkommen ersetzt. Aber das Prinzip? Ist GENAU dasselbe.</p></div>`;
+            document.getElementById('techNextBtn').innerText = 'Weiter – Reflexion';
+            document.getElementById('techNextBtn').onclick = () => next();
+            return;
+        }
+        const t = TECH_STUFEN[techIdx];
+        document.getElementById('techContent').innerHTML = `<div class="fade-in">
+            <div class="step-indicator" style="margin-bottom:8px;">${TECH_STUFEN.map((_, i) => `<div class="step-dot ${i < techIdx ? 'done' : i === techIdx ? 'active' : ''}"></div>`).join('')}</div>
+            <div style="font-size:2.5em; margin:5px 0;">${t.emoji}</div>
+            <p style="color:var(--gold); font-weight:bold;">${t.jahr} – ${t.name}</p>
+            <div class="info-box" style="font-size:0.85em;">${t.text}</div>
+            <p style="font-size:0.85em; background:rgba(184,134,11,0.2); border-radius:8px; padding:8px; margin-top:8px;">📏 ${t.vs}</p></div>`;
+        playTone(300 + techIdx * 80, 150);
+    }
+    function techNextStep() { techIdx++; renderTechStufe(); }
+
+    // --- Siemens Erfolg ---
+    function buildSiemensErfolgUI() {
+        return `<div class="fade-in">
+            <div class="erfolg-icon">⚡</div>
+            <h1 style="font-size:1.1em;">Das Flüstern der Ätherwellen</h1>
+            <p style="font-size:0.95em; font-style:italic;">"Ich war mehr als Glas und Metall – ich war ein Kanal der Hoffnung und des Fortschritts."</p>
+            <div class="erfolg-stats">
+                <div class="erfolg-stat"><div class="label">Strom verstanden</div><div class="value">${stromScore || '?'}/${STROM_SCHRITTE.length}</div></div>
+                <div class="erfolg-stat"><div class="label">Funk-Punkte</div><div class="value">${funkScore || '?'}/${FUNK_SZENEN.length * 2}</div></div>
+                <div class="erfolg-stat"><div class="label">Baujahr</div><div class="value">Nov. 1912</div></div>
+                <div class="erfolg-stat"><div class="label">Bewertung</div><div class="value">8,7/10</div></div>
+            </div>
+            <div class="fun-facts"><h3>Warum diese Röhre wichtig ist:</h3><ul>
+                <li>Die GRS 1 kostete <strong>50-150 Kronen</strong> – ein Arbeiter verdiente nur wenige Kronen pro Tag. Elektronik war Luxus.</li>
+                <li>Sie ermöglichte eine der ersten <strong>Langstrecken-Funkübertragungen</strong> in Österreich: Wien → Linz.</li>
+                <li>Dein Smartphone enthält <strong>28 Milliarden</strong> winzige Nachfolger dieser Röhre. Das Prinzip ist identisch.</li>
+                <li>Ohne Gleichrichterröhren gäbe es kein Radio, kein Fernsehen, kein Internet. Diese Glasglocke ist der <strong>Urahn der digitalen Welt</strong>.</li>
+            </ul></div>
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal spielen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
     // JAGDSTOCK / PIRSCHSTOCK
     // =============================================
     const JAGDSTOCK_DEF = {
@@ -3014,6 +3404,8 @@
     artefakte["pfeife"] = PFEIFE_DEF;
     artefakte["odhner"] = ODHNER_DEF;
     artefakte["jagdstock"] = JAGDSTOCK_DEF;
+    artefakte["zahnpulver"] = ZAHNPULVER_DEF;
+    artefakte["siemens"] = SIEMENS_DEF;
 
     const urlParams = new URLSearchParams(window.location.search);
     const objektKey = urlParams.get('objekt');
@@ -3034,7 +3426,9 @@
                 <button class="btn" onclick="window.location.search='?objekt=araeometer'">Aräometer (Baumé-Hydrometer)</button>
                 <button class="btn" onclick="window.location.search='?objekt=pfeife'">Meerschaumpfeife (Drachenkopf)</button>
                 <button class="btn" onclick="window.location.search='?objekt=odhner'">Odhner Rechenmaschine</button>
-                <button class="btn" onclick="window.location.search='?objekt=jagdstock'">Jagdstock / Pirschstock</button>`;
+                <button class="btn" onclick="window.location.search='?objekt=jagdstock'">Jagdstock / Pirschstock</button>
+                <button class="btn" onclick="window.location.search='?objekt=zahnpulver'">Prof. Dr. Seider's Zahn-Pulver</button>
+                <button class="btn" onclick="window.location.search='?objekt=siemens'">Siemens GRS 1 Röhre</button>`;
             return;
         }
 
@@ -3151,6 +3545,24 @@
         } else if (schritt.typ === "pfeife-erfolg") {
             html += buildPfeifeErfolgUI();
 
+        } else if (schritt.typ === "zahn-zeitreise") {
+            html += buildZahnZeitreiseUI();
+        } else if (schritt.typ === "zahn-labor") {
+            html += buildZahnLaborUI();
+        } else if (schritt.typ === "werbe-professor") {
+            html += buildWerbeProfessorUI();
+        } else if (schritt.typ === "zahnpulver-erfolg") {
+            html += buildZahnpulverErfolgUI();
+
+        } else if (schritt.typ === "strom-verstehen") {
+            html += buildStromVerstehenUI();
+        } else if (schritt.typ === "funk-mission") {
+            html += buildFunkMissionUI();
+        } else if (schritt.typ === "tech-evolution") {
+            html += buildTechEvolutionUI();
+        } else if (schritt.typ === "siemens-erfolg") {
+            html += buildSiemensErfolgUI();
+
         } else if (schritt.typ === "wald-lauschen") {
             html += buildWaldLauschenUI();
         } else if (schritt.typ === "pirsch-adventure") {
@@ -3179,6 +3591,8 @@
             || schritt.typ === "feldtel-verbindung" || schritt.typ === "feldtel-buchstabieren" || schritt.typ === "feldtel-abhoeren" || schritt.typ === "feldtel-stillepost" || schritt.typ === "feldtel-erfolg"
             || schritt.typ === "schwimm-quiz" || schritt.typ === "leopold-mission" || schritt.typ === "dichte-labor" || schritt.typ === "araeometer-erfolg"
             || schritt.typ === "drache-fragt" || schritt.typ === "patina" || schritt.typ === "handwerk-ki" || schritt.typ === "pfeife-erfolg"
+            || schritt.typ === "zahn-zeitreise" || schritt.typ === "zahn-labor" || schritt.typ === "werbe-professor" || schritt.typ === "zahnpulver-erfolg"
+            || schritt.typ === "strom-verstehen" || schritt.typ === "funk-mission" || schritt.typ === "tech-evolution" || schritt.typ === "siemens-erfolg"
             || schritt.typ === "wald-lauschen" || schritt.typ === "pirsch-adventure" || schritt.typ === "survival-check" || schritt.typ === "jagdstock-erfolg"
             || schritt.typ === "rechen-zeitreise" || schritt.typ === "rechen-methoden" || schritt.typ === "rechen-duell" || schritt.typ === "odhner-erfolg") {
             // Diese haben eigene Navigation
@@ -3201,6 +3615,12 @@
         if (schritt.typ === "feldtel-buchstabieren") renderBuchstFrage();
         if (schritt.typ === "feldtel-abhoeren") renderAbhoerFrage();
         if (schritt.typ === "drache-fragt") renderDracheFrage();
+        if (schritt.typ === "zahn-zeitreise") renderZahnEpoche();
+        if (schritt.typ === "zahn-labor") renderZahnZutat();
+        if (schritt.typ === "werbe-professor") renderWerbeClaim();
+        if (schritt.typ === "strom-verstehen") renderStromSchritt();
+        if (schritt.typ === "funk-mission") renderFunkSzene();
+        if (schritt.typ === "tech-evolution") renderTechStufe();
         if (schritt.typ === "wald-lauschen") renderWaldGeraeusch();
         if (schritt.typ === "pirsch-adventure") renderPirschSzene();
         if (schritt.typ === "rechen-zeitreise") renderEpoche();
