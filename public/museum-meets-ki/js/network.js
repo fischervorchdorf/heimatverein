@@ -7,13 +7,13 @@
     'use strict';
 
     const modules = [
-        { id: 'was-ist-ki', label: 'Was ist KI?', icon: '🧠', desc: 'Grundlagen der künstlichen Intelligenz', href: null, x: 0.5, y: 0.18 },
-        { id: 'ki-in-filmen', label: 'KI in Filmen', icon: '🎬', desc: 'Von HAL 9000 bis Ex Machina', href: null, x: 0.22, y: 0.35 },
+        { id: 'was-ist-ki', label: 'Was ist KI?', icon: '🧠', desc: 'Grundlagen der künstlichen Intelligenz', href: 'was-ist-ki.html', x: 0.5, y: 0.18 },
+        { id: 'ki-in-filmen', label: 'KI in Filmen', icon: '🎬', desc: 'Von HAL 9000 bis Ex Machina', href: 'ki-in-filmen.html', x: 0.22, y: 0.35 },
         { id: 'train-ai', label: 'KI trainieren', icon: '🎯', desc: 'Trainiere deine eigene KI', href: 'train-ai.html', x: 0.78, y: 0.35 },
         { id: 'deepfake', label: 'Deepfake Test', icon: '🔍', desc: 'Erkenne die Fälschung', href: 'deepfake.html', x: 0.22, y: 0.58 },
         { id: 'energy', label: 'Energieverbrauch', icon: '⚡', desc: 'Was KI an Strom verbraucht', href: 'energy.html', x: 0.78, y: 0.58 },
         { id: 'world', label: 'KI weltweit', icon: '🌍', desc: 'Regulierung rund um den Globus', href: 'world.html', x: 0.35, y: 0.78 },
-        { id: 'zukunft', label: 'Zukunft der KI', icon: '🚀', desc: 'Was kommt als Nächstes?', href: null, x: 0.65, y: 0.78 }
+        { id: 'zukunft', label: 'Zukunft der KI', icon: '🚀', desc: 'Was kommt als Nächstes?', href: 'zukunft.html', x: 0.65, y: 0.78 }
     ];
 
     // Connections between modules (indices)

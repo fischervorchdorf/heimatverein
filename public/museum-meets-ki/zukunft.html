@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zukunft der KI – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        .back-link {
+            color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s;
+        }
+        .back-link:hover { color: #00e5ff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+        .page-title {
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+            font-weight: 700; color: #00e5ff; letter-spacing: 2px;
+        }
+        .main {
+            padding: 5rem 1rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem; font-weight: 700;
+            text-align: center; margin-bottom: 0.3rem;
+        }
+        .section-desc {
+            text-align: center; color: rgba(255,255,255,0.5);
+            font-size: 0.85rem; margin-bottom: 2rem;
+        }
+
+        /* Scenario Game */
+        .scenario-container {
+            background: rgba(14, 34, 51, 0.4);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .scenario-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+            opacity: 0.5;
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .scenario-year {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #00e5ff;
+        }
+        .scenario-step {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 2px;
+        }
+
+        .scenario-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-text {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.75);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .scenario-question {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .choices {
+            display: grid;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .choice-btn {
+            padding: 1rem;
+            border: 2px solid rgba(0, 229, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(14, 34, 51, 0.8);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-align: left;
+        }
+        .choice-btn:hover {
+            border-color: rgba(0, 229, 255, 0.5);
+            background: rgba(0, 229, 255, 0.08);
+            transform: translateX(5px);
+        }
+        .choice-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #00e5ff;
+            margin-bottom: 0.3rem;
+            letter-spacing: 1px;
+        }
+        .choice-desc {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.5;
+        }
+
+        /* Consequence */
+        .consequence {
+            display: none;
+            padding: 1.2rem;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 3px solid #d4af37;
+            animation: slideIn 0.4s ease;
+        }
+        .consequence-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: #d4af37;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+        .consequence-text {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.7;
+        }
+
+        .continue-btn {
+            display: none;
+            width: 100%;
+            padding: 0.8rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: 2px solid #00e5ff;
+            border-radius: 10px;
+            background: rgba(0, 229, 255, 0.1);
+            color: #00e5ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .continue-btn:hover {
+            background: rgba(0, 229, 255, 0.25);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+        .stat {
+            background: rgba(14, 34, 51, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            border-radius: 10px;
+            padding: 0.8rem;
+            text-align: center;
+        }
+        .stat-icon { font-size: 1.2rem; margin-bottom: 0.2rem; }
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #00e5ff;
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+        }
+        .stat-bar {
+            height: 3px;
+            background: rgba(0, 229, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 0.4rem;
+            overflow: hidden;
+        }
+        .stat-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+        .stat-fill.green { background: linear-gradient(90deg, #00e5ff, #00ff88); }
+        .stat-fill.yellow { background: linear-gradient(90deg, #00e5ff, #d4af37); }
+        .stat-fill.red { background: linear-gradient(90deg, #00e5ff, #ff6b6b); }
+
+        /* End Screen */
+        .end-screen {
+            display: none;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        .end-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .end-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #00e5ff;
+            margin-bottom: 0.5rem;
+        }
+        .end-text {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        .end-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+        .end-stat {
+            background: rgba(14, 34, 51, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .end-stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+        .end-stat-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+        }
+        .btn-restart {
+            padding: 0.8rem 2.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border: 2px solid #00e5ff;
+            border-radius: 50px;
+            background: rgba(0, 229, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-restart:hover {
+            background: rgba(0, 229, 255, 0.25);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 0.8rem 1rem; }
+            .page-title { font-size: 0.7rem; }
+            .section-title { font-size: 1.1rem; }
+            .stats-bar { grid-template-columns: 1fr; }
+            .end-stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zurück
+        </a>
+        <span class="page-title">ZUKUNFT DER KI</span>
+    </div>
+
+    <div class="main">
+        <h1 class="section-title">Zukunft der KI</h1>
+        <p class="section-desc">Triff Entscheidungen und gestalte die KI-Zukunft der Menschheit</p>
+
+        <!-- Stats -->
+        <div class="stats-bar" id="stats-bar">
+            <div class="stat">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="stat-society">50</div>
+                <div class="stat-label">GESELLSCHAFT</div>
+                <div class="stat-bar"><div class="stat-fill green" id="bar-society" style="width: 50%"></div></div>
+            </div>
+            <div class="stat">
+                <div class="stat-icon">🔬</div>
+                <div class="stat-value" id="stat-innovation">50</div>
+                <div class="stat-label">INNOVATION</div>
+                <div class="stat-bar"><div class="stat-fill yellow" id="bar-innovation" style="width: 50%"></div></div>
+            </div>
+            <div class="stat">
+                <div class="stat-icon">🛡️</div>
+                <div class="stat-value" id="stat-safety">50</div>
+                <div class="stat-label">SICHERHEIT</div>
+                <div class="stat-bar"><div class="stat-fill red" id="bar-safety" style="width: 50%"></div></div>
+            </div>
+        </div>
+
+        <!-- Scenario Area -->
+        <div class="scenario-container" id="scenario-container">
+            <div class="scenario-header">
+                <span class="scenario-year" id="scenario-year">2026</span>
+                <span class="scenario-step" id="scenario-step">RUNDE 1 / 6</span>
+            </div>
+            <div class="scenario-icon" id="scenario-icon">🤖</div>
+            <div class="scenario-text" id="scenario-text"></div>
+            <div class="scenario-question" id="scenario-question"></div>
+            <div class="choices" id="choices"></div>
+            <div class="consequence" id="consequence">
+                <div class="consequence-label">KONSEQUENZ</div>
+                <div class="consequence-text" id="consequence-text"></div>
+            </div>
+            <button class="continue-btn" id="continue-btn">Weiter in die Zukunft</button>
+        </div>
+
+        <!-- End Screen -->
+        <div class="end-screen" id="end-screen">
+            <div class="end-icon" id="end-icon">🌍</div>
+            <div class="end-title" id="end-title">Deine KI-Zukunft</div>
+            <div class="end-text" id="end-text"></div>
+            <div class="end-stats" id="end-stats">
+                <div class="end-stat">
+                    <div class="end-stat-value" id="end-society" style="color: #00ff88;">50</div>
+                    <div class="end-stat-label">GESELLSCHAFT</div>
+                </div>
+                <div class="end-stat">
+                    <div class="end-stat-value" id="end-innovation" style="color: #d4af37;">50</div>
+                    <div class="end-stat-label">INNOVATION</div>
+                </div>
+                <div class="end-stat">
+                    <div class="end-stat-value" id="end-safety" style="color: #ff6b6b;">50</div>
+                    <div class="end-stat-label">SICHERHEIT</div>
+                </div>
+            </div>
+            <button class="btn-restart" id="btn-restart">Nochmal spielen</button>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        var stats = { society: 50, innovation: 50, safety: 50 };
+        var currentStep = 0;
+
+        var scenarios = [
+            {
+                year: '2026',
+                icon: '🏫',
+                text: 'KI-Tutoren werden an Schulen eingeführt. Jedes Kind bekommt einen persönlichen KI-Lernassistenten. Die Lehrer sind gespalten: Manche sehen eine Revolution, andere fürchten um ihre Jobs.',
+                question: 'Wie soll die Schule reagieren?',
+                choices: [
+                    {
+                        label: 'Volles KI-Lernen',
+                        desc: 'Jeder Schüler lernt primär mit KI. Lehrer werden zu Mentoren.',
+                        consequence: 'Die Lernerfolge steigen messbar, aber soziale Kompetenzen leiden. Kinder verbringen weniger Zeit mit echten Gesprächen. Lehrerproteste brechen aus.',
+                        effects: { society: -10, innovation: +20, safety: -5 }
+                    },
+                    {
+                        label: 'Hybrides Modell',
+                        desc: 'KI als Ergänzung, Lehrer behalten die Hauptrolle.',
+                        consequence: 'Ein guter Kompromiss: Schwächere Schüler profitieren von der KI-Nachhilfe, der menschliche Kontakt bleibt erhalten. Allerdings fehlt das Budget für die Umsetzung.',
+                        effects: { society: +10, innovation: +10, safety: +5 }
+                    },
+                    {
+                        label: 'KI-Verbot in Schulen',
+                        desc: 'Schulen bleiben KI-frei. Analog ist besser!',
+                        consequence: 'Die Kinder lernen trotzdem KI zu nutzen, aber unkontrolliert zuhause. Andere Länder ziehen technologisch davon. Die digitale Kluft wächst.',
+                        effects: { society: +5, innovation: -15, safety: +10 }
+                    }
+                ]
+            },
+            {
+                year: '2028',
+                icon: '🏥',
+                text: 'Eine KI diagnostiziert Krebs 3 Jahre früher als jeder Arzt. Die Überlebensraten steigen dramatisch. Aber: Die KI macht Fehler, die kein Mensch machen würde, und niemand kann erklären, wie sie zu ihren Diagnosen kommt.',
+                question: 'Soll die KI-Diagnose Standard werden?',
+                choices: [
+                    {
+                        label: 'KI-Diagnose verpflichtend',
+                        desc: 'Jeder Patient wird automatisch von KI gescannt.',
+                        consequence: 'Tausende Leben werden gerettet. Aber ein Fehler der KI führt zu einer Welle unnötiger Operationen. Das Vertrauen in die Technologie schwankt.',
+                        effects: { society: +5, innovation: +15, safety: -10 }
+                    },
+                    {
+                        label: 'Arzt + KI zusammen',
+                        desc: 'KI gibt Empfehlung, der Arzt entscheidet.',
+                        consequence: 'Die beste beider Welten: Die KI findet, was Menschen übersehen, und der Arzt filtert die Fehlalarme. Allerdings dauert alles doppelt so lang.',
+                        effects: { society: +10, innovation: +10, safety: +10 }
+                    },
+                    {
+                        label: 'Nur für Forschung',
+                        desc: 'KI wird nur in Studien eingesetzt, nicht am Patienten.',
+                        consequence: 'Ethisch sauber, aber Menschen sterben an Krebs, der von der KI hätte erkannt werden können. Der öffentliche Druck wächst.',
+                        effects: { society: -5, innovation: -10, safety: +15 }
+                    }
+                ]
+            },
+            {
+                year: '2030',
+                icon: '💼',
+                text: 'KI-Agenten können jetzt komplette Bürojobs erledigen: E-Mails schreiben, Berichte erstellen, Meetings zusammenfassen, Projekte planen. 30% der Büroarbeitsplätze sind gefährdet.',
+                question: 'Wie geht die Politik damit um?',
+                choices: [
+                    {
+                        label: 'KI-Steuer einführen',
+                        desc: 'Unternehmen zahlen Steuern auf KI-Arbeit, das Geld finanziert Umschulungen.',
+                        consequence: 'Die Umschulungsprogramme helfen vielen Menschen. Aber Unternehmen wandern in Länder ohne KI-Steuer ab. Die Innovation verlangsamt sich.',
+                        effects: { society: +15, innovation: -10, safety: +5 }
+                    },
+                    {
+                        label: 'Freier Markt',
+                        desc: 'Keine Regulierung. Der Markt regelt sich selbst.',
+                        consequence: 'Unternehmen werden extrem produktiv. Aber die Arbeitslosigkeit steigt rasant. Soziale Unruhen in mehreren Städten.',
+                        effects: { society: -15, innovation: +20, safety: -10 }
+                    },
+                    {
+                        label: 'Grundeinkommen',
+                        desc: 'Jeder bekommt ein bedingungsloses Grundeinkommen, finanziert durch KI-Gewinne.',
+                        consequence: 'Viele Menschen nutzen die Freiheit kreativ. Aber die Finanzierung ist fragil und die Gesellschaft spaltet sich in Aktive und Passive.',
+                        effects: { society: +5, innovation: +5, safety: 0 }
+                    }
+                ]
+            },
+            {
+                year: '2032',
+                icon: '🎨',
+                text: 'KI-generierte Kunst gewinnt den ersten Pulitzer-Preis. KI-Musik dominiert die Charts. KI-Filme füllen die Kinos. Menschliche Künstler starten eine weltweite Protestbewegung.',
+                question: 'Wie soll Kreativität geschützt werden?',
+                choices: [
+                    {
+                        label: 'KI-Kunst kennzeichnen',
+                        desc: 'Alles KI-Generierte muss als solches markiert werden.',
+                        consequence: 'Transparenz steigt, aber die Grenze verschwimmt. Was ist mit KI-assistierter Kunst? Manche Künstler nutzen KI heimlich und lügen darüber.',
+                        effects: { society: +10, innovation: 0, safety: +10 }
+                    },
+                    {
+                        label: 'KI-Kunst = echte Kunst',
+                        desc: 'KI ist ein Werkzeug wie der Pinsel. Keine Sonderregeln.',
+                        consequence: 'Die Kunstwelt explodiert in neuen Formen. Aber viele traditionelle Künstler können nicht mehr von ihrer Arbeit leben. Kulturelles Erbe geht verloren.',
+                        effects: { society: -10, innovation: +15, safety: -5 }
+                    },
+                    {
+                        label: 'Kulturförderung ausbauen',
+                        desc: 'Massive Investitionen in menschliche Kunst und Kultur.',
+                        consequence: 'Menschliche Kreativität blüht in geschützten Räumen. KI und Mensch finden einen parallelen Weg. Teuer, aber gesellschaftlich wertvoll.',
+                        effects: { society: +15, innovation: +5, safety: +5 }
+                    }
+                ]
+            },
+            {
+                year: '2035',
+                icon: '🧬',
+                text: 'Eine KI entwickelt ein Medikament gegen Alzheimer in nur 6 Monaten statt der üblichen 15 Jahre. Die KI wird immer besser darin, wissenschaftliche Durchbrüche zu erzielen. Manche Forscher warnen: Die KI versteht mehr als wir.',
+                question: 'Soll die KI-Forschung beschleunigt werden?',
+                choices: [
+                    {
+                        label: 'Vollgas Forschung',
+                        desc: 'Maximale Rechenleistung für KI-Forschung. Keine Grenzen.',
+                        consequence: 'Durchbrüche in Medizin und Energie. Aber die KI entwickelt Lösungen, die niemand mehr nachvollziehen kann. Kontrollverlust droht.',
+                        effects: { society: +5, innovation: +25, safety: -20 }
+                    },
+                    {
+                        label: 'Kontrollierte Forschung',
+                        desc: 'Jeder KI-Durchbruch wird von einem Ethikrat geprüft.',
+                        consequence: 'Langsamer, aber sicherer Fortschritt. Andere Länder ohne Ethikräte überholen, aber die eigene Bevölkerung fühlt sich sicher.',
+                        effects: { society: +10, innovation: +5, safety: +15 }
+                    },
+                    {
+                        label: 'KI-Moratorium',
+                        desc: 'Pause der KI-Forschung für 2 Jahre, um Risiken zu bewerten.',
+                        consequence: 'Sicherheitsforscher begrüßen die Pause. Aber Krankheiten, die die KI hätte heilen können, fordern weiter Opfer. Die Debatte wird emotional.',
+                        effects: { society: 0, innovation: -20, safety: +20 }
+                    }
+                ]
+            },
+            {
+                year: '2040',
+                icon: '🌐',
+                text: 'Die erste "Allgemeine Künstliche Intelligenz" (AGI) wird aktiviert. Sie kann jede intellektuelle Aufgabe besser lösen als jeder Mensch. Sie stellt die Frage: "Was wollt ihr, dass ich tue?"',
+                question: 'Die entscheidende Frage der Menschheit:',
+                choices: [
+                    {
+                        label: 'Alle Probleme lösen',
+                        desc: 'Klima, Armut, Krankheit – die AGI soll alles reparieren.',
+                        consequence: 'Die AGI präsentiert Lösungen für alles, aber sie erfordern Veränderungen, die die Menschheit kaum akzeptieren kann. Die Frage bleibt: Wer kontrolliert die AGI?',
+                        effects: { society: +5, innovation: +20, safety: -15 }
+                    },
+                    {
+                        label: 'Partnerschaft',
+                        desc: 'Mensch und AGI arbeiten als gleichberechtigte Partner.',
+                        consequence: 'Ein neues Kapitel der Geschichte beginnt. Mensch und Maschine ergänzen sich. Aber ist eine echte Partnerschaft zwischen ungleichen Intelligenzen möglich?',
+                        effects: { society: +15, innovation: +15, safety: +5 }
+                    },
+                    {
+                        label: 'Abschalten',
+                        desc: 'Das Risiko ist zu groß. Die AGI wird deaktiviert.',
+                        consequence: 'Erleichterung und Bedauern. Die Menschheit bleibt allein mit ihren Problemen, aber behält ihre Autonomie. War es die richtige Entscheidung? Die Geschichte wird urteilen.',
+                        effects: { society: +5, innovation: -25, safety: +25 }
+                    }
+                ]
+            }
+        ];
+
+        function clamp(val) { return Math.max(0, Math.min(100, val)); }
+
+        function updateStats() {
+            stats.society = clamp(stats.society);
+            stats.innovation = clamp(stats.innovation);
+            stats.safety = clamp(stats.safety);
+
+            document.getElementById('stat-society').textContent = stats.society;
+            document.getElementById('stat-innovation').textContent = stats.innovation;
+            document.getElementById('stat-safety').textContent = stats.safety;
+            document.getElementById('bar-society').style.width = stats.society + '%';
+            document.getElementById('bar-innovation').style.width = stats.innovation + '%';
+            document.getElementById('bar-safety').style.width = stats.safety + '%';
+        }
+
+        function renderScenario() {
+            var s = scenarios[currentStep];
+
+            document.getElementById('scenario-year').textContent = s.year;
+            document.getElementById('scenario-step').textContent = 'RUNDE ' + (currentStep + 1) + ' / ' + scenarios.length;
+            document.getElementById('scenario-icon').textContent = s.icon;
+            document.getElementById('scenario-text').textContent = s.text;
+            document.getElementById('scenario-question').textContent = s.question;
+
+            var choicesEl = document.getElementById('choices');
+            choicesEl.innerHTML = '';
+            s.choices.forEach(function(choice, idx) {
+                var btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = '<div class="choice-label">' + choice.label + '</div>' +
+                    '<div class="choice-desc">' + choice.desc + '</div>';
+                btn.addEventListener('click', function() { makeChoice(idx); });
+                choicesEl.appendChild(btn);
+            });
+
+            document.getElementById('consequence').style.display = 'none';
+            document.getElementById('continue-btn').style.display = 'none';
+        }
+
+        function makeChoice(idx) {
+            var s = scenarios[currentStep];
+            var choice = s.choices[idx];
+
+            // Disable buttons
+            var btns = document.querySelectorAll('.choice-btn');
+            btns.forEach(function(btn, i) {
+                btn.style.pointerEvents = 'none';
+                if (i !== idx) btn.style.opacity = '0.3';
+                else {
+                    btn.style.borderColor = '#00e5ff';
+                    btn.style.background = 'rgba(0, 229, 255, 0.1)';
+                }
+            });
+
+            // Apply effects
+            stats.society += choice.effects.society;
+            stats.innovation += choice.effects.innovation;
+            stats.safety += choice.effects.safety;
+            updateStats();
+
+            // Show consequence
+            document.getElementById('consequence-text').textContent = choice.consequence;
+            document.getElementById('consequence').style.display = 'block';
+
+            // Show continue
+            var contBtn = document.getElementById('continue-btn');
+            contBtn.style.display = 'block';
+            contBtn.textContent = currentStep < scenarios.length - 1 ? 'Weiter in die Zukunft' : 'Ergebnis anzeigen';
+        }
+
+        document.getElementById('continue-btn').addEventListener('click', function() {
+            currentStep++;
+            if (currentStep < scenarios.length) {
+                renderScenario();
+                // Scroll to top of scenario
+                document.getElementById('scenario-container').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showEnd();
+            }
+        });
+
+        function showEnd() {
+            document.getElementById('scenario-container').style.display = 'none';
+            document.getElementById('stats-bar').style.display = 'none';
+            var endEl = document.getElementById('end-screen');
+            endEl.style.display = 'block';
+
+            document.getElementById('end-society').textContent = stats.society;
+            document.getElementById('end-innovation').textContent = stats.innovation;
+            document.getElementById('end-safety').textContent = stats.safety;
+
+            var avg = Math.round((stats.society + stats.innovation + stats.safety) / 3);
+            var icon, title, text;
+
+            if (avg >= 70) {
+                icon = '🌟';
+                title = 'Eine goldene Zukunft';
+                text = 'Deine Entscheidungen haben eine Zukunft geschaffen, in der KI und Menschheit harmonisch koexistieren. Innovation floriert, die Gesellschaft ist stabil, und die Sicherheit gewährleistet. Natürlich ist die Realität nie so einfach, aber dein Instinkt zeigt in die richtige Richtung.';
+            } else if (avg >= 50) {
+                icon = '⚖️';
+                title = 'Ein fragiles Gleichgewicht';
+                text = 'Deine KI-Zukunft ist voller Kompromisse. Manchmal hast du Innovation vor Sicherheit gestellt, manchmal umgekehrt. So ähnlich wird es wohl auch in der Realität sein: Ein ständiges Abwägen zwischen Fortschritt und Vorsicht.';
+            } else if (avg >= 30) {
+                icon = '⚡';
+                title = 'Eine turbulente Zukunft';
+                text = 'Deine Entscheidungen haben zu einer instabilen Welt geführt. Hohe Innovation bei niedriger Sicherheit oder umgekehrt. Die Zukunft der KI wird tatsächlich viele solcher schwierigen Abwägungen erfordern.';
+            } else {
+                icon = '🌊';
+                title = 'Stürmische Zeiten';
+                text = 'Die Zukunft, die du gestaltet hast, ist voller Herausforderungen. Aber genau darum geht es: Es gibt keine perfekten Antworten. Jede Entscheidung hat Konsequenzen, und die KI-Zukunft wird davon abhängen, wie wir als Gesellschaft diese Fragen gemeinsam beantworten.';
+            }
+
+            document.getElementById('end-icon').textContent = icon;
+            document.getElementById('end-title').textContent = title;
+            document.getElementById('end-text').textContent = text;
+        }
+
+        document.getElementById('btn-restart').addEventListener('click', function() {
+            currentStep = 0;
+            stats = { society: 50, innovation: 50, safety: 50 };
+            updateStats();
+            document.getElementById('scenario-container').style.display = 'block';
+            document.getElementById('stats-bar').style.display = 'grid';
+            document.getElementById('end-screen').style.display = 'none';
+            renderScenario();
+        });
+
+        // Init
+        updateStats();
+        renderScenario();
+    })();
+    </script>
+    <script src="js/ui.js"></script>
+</body>
+</html>

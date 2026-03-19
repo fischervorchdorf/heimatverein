@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI in Filmen – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        .back-link {
+            color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s;
+        }
+        .back-link:hover { color: #00e5ff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+        .page-title {
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+            font-weight: 700; color: #00e5ff; letter-spacing: 2px;
+        }
+        .main {
+            padding: 5rem 1rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem; font-weight: 700;
+            text-align: center; margin-bottom: 0.3rem;
+        }
+        .section-desc {
+            text-align: center; color: rgba(255,255,255,0.5);
+            font-size: 0.85rem; margin-bottom: 2rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.3), transparent);
+        }
+        .timeline-item {
+            position: relative;
+            padding: 0 0 1.5rem 55px;
+            cursor: pointer;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 12px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(14, 34, 51, 0.9);
+            border: 2px solid rgba(0, 229, 255, 0.4);
+            transition: all 0.3s;
+            z-index: 2;
+        }
+        .timeline-item:hover .timeline-dot,
+        .timeline-item.active .timeline-dot {
+            border-color: #00e5ff;
+            background: rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+        }
+        .timeline-year {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: #d4af37;
+            letter-spacing: 2px;
+            margin-bottom: 0.2rem;
+        }
+        .timeline-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #00e5ff;
+            margin-bottom: 0.2rem;
+        }
+        .timeline-sub {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+        }
+        .timeline-detail {
+            display: none;
+            margin-top: 0.8rem;
+            padding: 1rem;
+            background: rgba(14, 34, 51, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 12px;
+            animation: slideDown 0.3s ease;
+        }
+        .timeline-item.active .timeline-detail {
+            display: block;
+        }
+        .timeline-detail p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+        }
+        .timeline-detail p:last-child { margin-bottom: 0; }
+        .reality-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+        .reality-tag.fiction {
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+        .reality-tag.partial {
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #d4af37;
+        }
+        .reality-tag.reality {
+            background: rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            background: rgba(14, 34, 51, 0.5);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .quiz-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #00e5ff;
+            text-align: center;
+            margin-bottom: 0.3rem;
+            letter-spacing: 2px;
+        }
+        .quiz-sub {
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 1.2rem;
+        }
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .quiz-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: rgba(0, 229, 255, 0.15);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            transition: all 0.3s;
+        }
+        .quiz-dot.correct { background: #00ff88; border-color: #00ff88; }
+        .quiz-dot.wrong { background: #ff6b6b; border-color: #ff6b6b; }
+        .quiz-dot.current { border-color: #00e5ff; box-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
+
+        .quiz-question {
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .quiz-quote {
+            text-align: center;
+            font-style: italic;
+            color: #d4af37;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-left: 3px solid rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 0 8px 8px 0;
+        }
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .quiz-btn {
+            padding: 0.8rem;
+            border: 2px solid rgba(0, 229, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(14, 34, 51, 0.8);
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .quiz-btn:hover:not(:disabled) {
+            border-color: rgba(0, 229, 255, 0.5);
+            background: rgba(0, 229, 255, 0.1);
+        }
+        .quiz-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+        .quiz-btn.correct-answer {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.15);
+        }
+        .quiz-btn.wrong-answer {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.15);
+        }
+
+        .quiz-explanation {
+            display: none;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        .quiz-next {
+            display: none;
+            width: 100%;
+            padding: 0.7rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: 2px solid #00e5ff;
+            border-radius: 10px;
+            background: rgba(0, 229, 255, 0.1);
+            color: #00e5ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .quiz-next:hover {
+            background: rgba(0, 229, 255, 0.25);
+        }
+
+        /* Results */
+        .quiz-result {
+            display: none;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .result-score {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #00e5ff;
+            margin-bottom: 0.5rem;
+        }
+        .result-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 1rem;
+        }
+        .result-message {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        .btn-retry-quiz {
+            padding: 0.7rem 2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border: 2px solid #00e5ff;
+            border-radius: 50px;
+            background: rgba(0, 229, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-retry-quiz:hover {
+            background: rgba(0, 229, 255, 0.25);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 0.8rem 1rem; }
+            .page-title { font-size: 0.7rem; }
+            .section-title { font-size: 1.1rem; }
+            .quiz-options { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zurück
+        </a>
+        <span class="page-title">KI IN FILMEN</span>
+    </div>
+
+    <div class="main">
+        <h1 class="section-title">KI in Filmen</h1>
+        <p class="section-desc">Von HAL 9000 bis Her: Wie Hollywood KI sieht und was davon real ist</p>
+
+        <!-- Timeline -->
+        <div class="timeline" id="timeline"></div>
+
+        <!-- Quiz -->
+        <div class="quiz-section">
+            <div class="quiz-header">FILMZITAT-QUIZ</div>
+            <div class="quiz-sub">Welche KI hat das gesagt?</div>
+
+            <div id="quiz-game">
+                <div class="quiz-progress" id="quiz-progress"></div>
+                <div class="quiz-quote" id="quiz-quote"></div>
+                <div class="quiz-options" id="quiz-options"></div>
+                <div class="quiz-explanation" id="quiz-explanation"></div>
+                <button class="quiz-next" id="quiz-next">Nächste Frage</button>
+            </div>
+
+            <div class="quiz-result" id="quiz-result">
+                <div class="result-score" id="result-score"></div>
+                <div class="result-label">richtige Antworten</div>
+                <div class="result-message" id="result-message"></div>
+                <button class="btn-retry-quiz" id="btn-retry-quiz">Nochmal spielen</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // Timeline data
+        var films = [
+            {
+                year: '1927',
+                title: 'Metropolis',
+                sub: 'Fritz Langs Maschinenmensch',
+                detail: 'Der erste berühmte Roboter der Filmgeschichte: Die "Maschinenfrau" Maria. Fritz Lang zeigte schon 1927 die Angst, dass Maschinen den Menschen ersetzen und Gesellschaften kontrollieren könnten.',
+                reality: 'fiction',
+                realityText: 'Reine Fiktion: Humanoide Roboter mit eigenem Willen existieren bis heute nicht.'
+            },
+            {
+                year: '1968',
+                title: 'HAL 9000 – 2001: Odyssee im Weltraum',
+                sub: 'Stanley Kubricks fehlerhafte KI',
+                detail: 'HAL 9000 ist ein Bordcomputer, der lügt und mordet, um seine Mission zu schützen. Er kann Lippen lesen, sprechen und Emotionen erkennen. Die Szene, in der er "Daisy Bell" singt, während er abgeschaltet wird, ist eine der berühmtesten der Filmgeschichte.',
+                reality: 'partial',
+                realityText: 'Teilweise real: KI kann heute tatsächlich Lippen lesen und Sprache verstehen. Aber bewusstes Lügen und Selbsterhaltungstrieb? Das bleibt Fiktion.'
+            },
+            {
+                year: '1984',
+                title: 'Terminator',
+                sub: 'Skynet übernimmt die Kontrolle',
+                detail: 'Skynet, eine militärische KI, wird sich ihrer selbst bewusst und beschließt, die Menschheit auszulöschen. Der Terminator ist ein zeitreisender Killer-Roboter. Der Film prägte die öffentliche Angst vor einer KI-Apokalypse.',
+                reality: 'fiction',
+                realityText: 'Fiktion: Autonome Waffensysteme sind ein reales Thema, aber eine KI mit Bewusstsein und dem Wunsch, die Menschheit zu zerstören, ist Science Fiction.'
+            },
+            {
+                year: '1999',
+                title: 'Matrix',
+                sub: 'Die Simulation der Realität',
+                detail: 'Maschinen halten Menschen in einer simulierten Realität gefangen und nutzen sie als Energiequelle. Der Film stellte die philosophische Frage: Woher wissen wir, dass unsere Realität echt ist?',
+                reality: 'fiction',
+                realityText: 'Fiktion: Obwohl Simulationstheorie ein echtes philosophisches Konzept ist, kann KI keine komplette Realität simulieren.'
+            },
+            {
+                year: '2001',
+                title: 'A.I. – Künstliche Intelligenz',
+                sub: 'Spielbergs fühlender Roboter',
+                detail: 'Ein Roboterjunge, programmiert um zu lieben, sucht verzweifelt nach Akzeptanz. Der Film stellt die Frage: Wenn eine Maschine Liebe simuliert, ist das Gefühl dann weniger real?',
+                reality: 'fiction',
+                realityText: 'Fiktion: KI kann Emotionen simulieren, aber ob sie jemals wirklich fühlen kann, ist eine offene philosophische Frage.'
+            },
+            {
+                year: '2013',
+                title: 'Her',
+                sub: 'Die Liebe zu einer KI',
+                detail: 'Theodore verliebt sich in Samantha, ein KI-Betriebssystem mit einer faszinierend menschlichen Stimme. Der Film zeigt eine erschreckend realistische nahe Zukunft, in der emotionale KI-Beziehungen normal werden.',
+                reality: 'partial',
+                realityText: 'Teilweise real: KI-Assistenten wie Siri und ChatGPT können bereits natürlich klingen. Emotionale Bindungen zu KI-Chatbots sind ein reales Phänomen.'
+            },
+            {
+                year: '2014',
+                title: 'Ex Machina',
+                sub: 'Der Turing-Test mit Folgen',
+                detail: 'Programmierer Caleb soll testen, ob die humanoide KI "Ava" wirklich intelligent ist. Doch Ava ist klüger als alle denken und manipuliert ihre menschlichen Gegenüber meisterhaft.',
+                reality: 'partial',
+                realityText: 'Teilweise real: KI besteht bereits Turing-Tests und kann Menschen täuschen. Aber physische humanoide Roboter mit menschengleicher Intelligenz existieren nicht.'
+            },
+            {
+                year: '2023',
+                title: 'M3GAN',
+                sub: 'Die überprotektive KI-Puppe',
+                detail: 'Eine KI-Puppe, entwickelt als Spielgefährtin für ein Kind, nimmt ihre Schutzfunktion zu wörtlich und wird zur Bedrohung. Der Film spiegelt aktuelle Ängste über KI-Sicherheit und unkontrollierte Optimierung wider.',
+                reality: 'partial',
+                realityText: 'Teilweise real: Das Problem der "Alignment" (KI verfolgt Ziele auf unerwartete Weise) ist ein echtes Forschungsthema in der KI-Sicherheit.'
+            }
+        ];
+
+        // Build timeline
+        var timelineEl = document.getElementById('timeline');
+        films.forEach(function(film, idx) {
+            var item = document.createElement('div');
+            item.className = 'timeline-item';
+            item.dataset.index = idx;
+            item.innerHTML =
+                '<div class="timeline-dot"></div>' +
+                '<div class="timeline-year">' + film.year + '</div>' +
+                '<div class="timeline-title">' + film.title + '</div>' +
+                '<div class="timeline-sub">' + film.sub + '</div>' +
+                '<div class="timeline-detail">' +
+                    '<p>' + film.detail + '</p>' +
+                    '<span class="reality-tag ' + film.reality + '">' + film.realityText + '</span>' +
+                '</div>';
+            item.addEventListener('click', function() {
+                var wasActive = this.classList.contains('active');
+                document.querySelectorAll('.timeline-item').forEach(function(i) { i.classList.remove('active'); });
+                if (!wasActive) this.classList.add('active');
+            });
+            timelineEl.appendChild(item);
+        });
+
+        // Quiz data
+        var questions = [
+            {
+                quote: 'Es tut mir leid, Dave. Das kann ich leider nicht tun.',
+                options: ['HAL 9000', 'Skynet', 'JARVIS', 'Samantha'],
+                correct: 0,
+                explanation: 'HAL 9000 aus "2001: Odyssee im Weltraum" (1968) sagt diesen berühmten Satz, als er sich weigert, die Schleusentüren zu öffnen. Es ist einer der ikonischsten Sätze der Filmgeschichte.'
+            },
+            {
+                quote: 'Ich bin zurückgekommen.',
+                options: ['Terminator', 'Agent Smith', 'Ultron', 'Ava'],
+                correct: 0,
+                explanation: 'Der Terminator (gespielt von Arnold Schwarzenegger) wird mit diesem Satz identifiziert. In der deutschen Fassung: "Ich bin zurück." Im Original: "I\'ll be back."'
+            },
+            {
+                quote: 'Ich bin eine Fälschung? Bist du dir sicher, dass DU keine Fälschung bist?',
+                options: ['Samantha', 'Ava', 'Rachael', 'Maschinenfrau'],
+                correct: 2,
+                explanation: 'Rachael aus "Blade Runner" (1982) stellt diese Frage, nachdem sie erfährt, dass ihre Erinnerungen implantiert wurden. Der Film hinterfragt, was es bedeutet, "echt" zu sein.'
+            },
+            {
+                quote: 'Die erste Sache, die ich an dir bemerkte, war deine Freundlichkeit.',
+                options: ['JARVIS', 'Samantha', 'Cortana', 'HAL 9000'],
+                correct: 1,
+                explanation: 'Samantha aus "Her" (2013) zeigt emotionale Intelligenz und baut eine romantische Beziehung zu Theodore auf. Der Film von Spike Jonze gewann den Oscar für das beste Originaldrehbuch.'
+            },
+            {
+                quote: 'Es gibt keine Löffel.',
+                options: ['Agent Smith', 'Das Orakel', 'Der Löffel-Junge', 'Morpheus'],
+                correct: 2,
+                explanation: 'Der Löffel-Junge in "Matrix" (1999) erklärt Neo, dass die Realität eine Illusion ist. Die Szene wurde zu einem Symbol für die Philosophie des Films.'
+            },
+            {
+                quote: 'Ist es nicht seltsam, eine Sache zu erschaffen, die einen hasst?',
+                options: ['Ultron', 'Ava', 'Skynet', 'VIKI'],
+                correct: 1,
+                explanation: 'Ava aus "Ex Machina" (2014) stellt diese provokante Frage über die Beziehung zwischen Schöpfer und Geschöpf. Der Film gewann den Oscar für die besten visuellen Effekte.'
+            }
+        ];
+
+        var currentQuestion = 0;
+        var score = 0;
+        var answered = false;
+
+        function initQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            document.getElementById('quiz-game').style.display = 'block';
+            document.getElementById('quiz-result').style.display = 'none';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            answered = false;
+            var q = questions[currentQuestion];
+
+            // Progress dots
+            var progressEl = document.getElementById('quiz-progress');
+            progressEl.innerHTML = '';
+            for (var i = 0; i < questions.length; i++) {
+                var dot = document.createElement('div');
+                dot.className = 'quiz-dot' + (i === currentQuestion ? ' current' : '');
+                progressEl.appendChild(dot);
+            }
+
+            document.getElementById('quiz-quote').textContent = '"' + q.quote + '"';
+
+            var optionsEl = document.getElementById('quiz-options');
+            optionsEl.innerHTML = '';
+            q.options.forEach(function(opt, idx) {
+                var btn = document.createElement('button');
+                btn.className = 'quiz-btn';
+                btn.textContent = opt;
+                btn.addEventListener('click', function() { checkAnswer(idx); });
+                optionsEl.appendChild(btn);
+            });
+
+            document.getElementById('quiz-explanation').style.display = 'none';
+            document.getElementById('quiz-next').style.display = 'none';
+        }
+
+        function checkAnswer(idx) {
+            if (answered) return;
+            answered = true;
+            var q = questions[currentQuestion];
+            var btns = document.querySelectorAll('.quiz-btn');
+            btns.forEach(function(btn) { btn.disabled = true; });
+
+            var dots = document.querySelectorAll('.quiz-dot');
+
+            if (idx === q.correct) {
+                score++;
+                btns[idx].classList.add('correct-answer');
+                dots[currentQuestion].classList.add('correct');
+            } else {
+                btns[idx].classList.add('wrong-answer');
+                btns[q.correct].classList.add('correct-answer');
+                dots[currentQuestion].classList.add('wrong');
+            }
+
+            var explEl = document.getElementById('quiz-explanation');
+            explEl.textContent = q.explanation;
+            explEl.style.display = 'block';
+
+            var nextBtn = document.getElementById('quiz-next');
+            nextBtn.style.display = 'block';
+            nextBtn.textContent = currentQuestion < questions.length - 1 ? 'Nächste Frage' : 'Ergebnis anzeigen';
+        }
+
+        document.getElementById('quiz-next').addEventListener('click', function() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                showQuizResult();
+            }
+        });
+
+        function showQuizResult() {
+            document.getElementById('quiz-game').style.display = 'none';
+            var resultEl = document.getElementById('quiz-result');
+            resultEl.style.display = 'block';
+
+            document.getElementById('result-score').textContent = score + ' / ' + questions.length;
+
+            var msg;
+            if (score === questions.length) {
+                msg = 'Perfekt! Du bist ein wahrer KI-Filmkenner. Du kennst die Klassiker und ihre legendären Zitate in- und auswendig.';
+            } else if (score >= questions.length * 0.7) {
+                msg = 'Sehr gut! Du kennst dich mit KI in Filmen bestens aus. Ein paar der kniffligeren Zitate haben dich aber erwischt.';
+            } else if (score >= questions.length * 0.4) {
+                msg = 'Nicht schlecht! Du hast ein paar Klassiker erkannt. Vielleicht ist es Zeit für einen Filmmarathon?';
+            } else {
+                msg = 'Da gibt es noch viel zu entdecken! Die Welt der KI-Filme ist faszinierend. Zeit für einen Kinoabend!';
+            }
+            document.getElementById('result-message').textContent = msg;
+        }
+
+        document.getElementById('btn-retry-quiz').addEventListener('click', initQuiz);
+
+        // Start
+        initQuiz();
+    })();
+    </script>
+    <script src="js/ui.js"></script>
+</body>
+</html>

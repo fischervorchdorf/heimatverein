@@ -13,13 +13,7 @@
         { svg: dogSVG(2), label: 'dog', hint: 'Wedelnder Schwanz, treuer Blick' },
         { svg: catSVG(2), label: 'cat', hint: 'Eingerollter Schwanz, runde Ohren' },
         { svg: dogSVG(3), label: 'dog', hint: 'Hängende Zunge, große Pfoten' },
-        { svg: catSVG(3), label: 'cat', hint: 'Geschmeidige Silhouette' },
-        { svg: dogSVG(4), label: 'dog', hint: 'Kräftiger Körperbau' },
-        { svg: catSVG(4), label: 'cat', hint: 'Aufgestellter Schwanz' },
-        { svg: dogSVG(5), label: 'dog', hint: 'Breite Brust, muskulös' },
-        { svg: catSVG(5), label: 'cat', hint: 'Elegante Haltung' },
-        { svg: dogSVG(6), label: 'dog', hint: 'Große Nase, Schlappohren' },
-        { svg: catSVG(6), label: 'cat', hint: 'Schlanker Körper' }
+        { svg: catSVG(3), label: 'cat', hint: 'Geschmeidige Silhouette' }
     ];
 
     function dogSVG(variant) {
@@ -183,7 +177,7 @@
         text.textContent = `Trainingsgenauigkeit: ${accuracy}%`;
 
         // Simulate epochs
-        const epoch = Math.min(Math.floor(totalAnswered / 3) + 1, 4);
+        const epoch = Math.min(Math.floor(totalAnswered / 2) + 1, 3);
         epochText.textContent = `Epoche ${epoch}`;
 
         // Color based on accuracy

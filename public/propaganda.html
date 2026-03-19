@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Propaganda-Analyse | Museum Vorchdorf</title>
+    <style>
+        :root {
+            --matrix-green: #00ff41;
+            --dark-bg: #0a0a0a;
+            --panel-bg: #151515;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Linke Seite: Das Artefakt */
+        .artifact-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 2px solid var(--matrix-green);
+            background: radial-gradient(circle, #222 0%, #0a0a0a 100%);
+            padding: 20px;
+            position: relative;
+        }
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: var(--matrix-green);
+            opacity: 0.3;
+            box-shadow: 0 0 15px var(--matrix-green);
+            animation: scan 3s infinite linear;
+            z-index: 10;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .artifact-image {
+            max-width: 80%;
+            border: 1px solid #444;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        /* Rechte Seite: KI-Interface */
+        .interface-section {
+            flex: 1.2;
+            padding: 40px;
+            overflow-y: auto;
+            background: var(--panel-bg);
+        }
+        h1 { color: var(--matrix-green); font-family: monospace; font-size: 1.5rem; }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: transparent;
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            padding: 12px;
+            cursor: pointer;
+            font-family: monospace;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        .btn:hover, .btn.active {
+            background: var(--matrix-green);
+            color: black;
+            font-weight: bold;
+        }
+        #output-area {
+            background: #000;
+            border-radius: 5px;
+            padding: 25px;
+            min-height: 300px;
+            border: 1px solid #333;
+            line-height: 1.6;
+        }
+        .headline {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .label {
+            font-family: monospace;
+            color: var(--matrix-green);
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .glitch-text {
+            font-family: monospace;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            margin-top: 20px;
+        }
+
+        /* Responsive: Stack on mobile */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                overflow-y: auto;
+            }
+            .artifact-section {
+                border-right: none;
+                border-bottom: 2px solid var(--matrix-green);
+                min-height: 50vh;
+            }
+            .interface-section {
+                padding: 20px;
+            }
+            .headline {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="artifact-section">
+    <div class="scan-line"></div>
+    <div style="font-family: monospace; color: var(--matrix-green); margin-bottom: 10px;">[SCANNING ARTIFACT: ML-22NN99]</div>
+    <div style="width: 300px; height: 400px; background: #333; display: flex; align-items: center; text-align: center; border: 2px dashed #666;">
+        HIER BILD VOM ZÜNDHOLZ EINSETZEN (src="...")
+    </div>
+    <p style="font-size: 0.8rem; margin-top: 20px;">USA, ca. 1942 - Match Corp. of America</p>
+</div>
+<div class="interface-section">
+    <h1>PROPAGANDA-REKONSTRUKTION v1.0</h1>
+    <p>Wählen Sie eine mediale Linse, um die Botschaft zu transformieren:</p>
+
+    <div class="mode-selector">
+        <button class="btn" onclick="updateText('krone')">Boulevard (Krone)</button>
+        <button class="btn" onclick="updateText('standard')">Analytisch (Standard)</button>
+        <button class="btn" onclick="updateText('oon')">Regional (OÖN)</button>
+        <button class="btn" onclick="updateText('presse')">Wirtschaft (Presse)</button>
+    </div>
+    <div id="output-area">
+        <span id="label" class="label">STATUS: BEREIT...</span>
+        <span id="headline" class="headline">Warten auf Eingabe...</span>
+        <div id="content">Bitte wählen Sie eine Analyse-Methode aus dem obigen Menü.</div>
+        <div class="glitch-text" id="metadata">> Algorithmus: GPT-4_PRO_MODEL<br>> Location: Vorchdorf_Archive</div>
+    </div>
+</div>
+<script>
+    const data = {
+        krone: {
+            label: "MODUS: BOULEVARD / EMOTIONAL",
+            headline: "STIEFEL-SCHOCK! Wie dieses kleine Heftchen Hitler das Fürchten lehrte!",
+            content: "Ein unscheinbares Stück Pappe als Geheimwaffe der Freiheit! Mit dem brutalen Slogan 'Zertritt sie!' mobilisierten die USA ein ganzes Volk. Jeder Streich, ein Schlag gegen das Böse. Lesen Sie hier, wie ein Arbeiter aus Chicago mit einem Zündholz zum Kriegshelden wurde!",
+            meta: "> Trigger: Wut/Stolz | Sentiment: Aggressiv"
+        },
+        standard: {
+            label: "MODUS: KRITISCH / ANALYTISCH",
+            headline: "Die Ästhetik der Vernichtung: Wenn Alltagsgegenstände Ideologie atmen.",
+            content: "Das Objekt dekonstruiert die Grenze zwischen privatem Konsum und staatlicher Mobilisierung. Die Karikatur des 'Feindes' unter dem Stiefel ist eine bewusste Entmenschlichung, die statistisch auf maximale Wirksamkeit getrimmt wurde. Ein Vorläufer heutiger Microtargeting-Algorithmen.",
+            meta: "> Diskursanalyse: Dekonstruktion | Sentiment: Neutral-Kritisch"
+        },
+        oon: {
+            label: "MODUS: REGIONAL / SACHLICH",
+            headline: "Vom Sammlerstück zur Zeitgeschichte: Die Psychologie der Pflicht.",
+            content: "Das Archiv Vorchdorf präsentiert ein seltenes Exponat amerikanischer Kriegspropaganda. Das Zündholzbriefchen der 'Match Corp.' zeigt eindrucksvoll, wie der Alltag der Zivilbevölkerung instrumentalisiert wurde. Ein lokaler Blick auf eine globale Katastrophe.",
+            meta: "> Fokus: Regionalgeschichte/Vorchdorf | Sentiment: Sachlich"
+        },
+        presse: {
+            label: "MODUS: ELITÄR / WIRTSCHAFTLICH",
+            headline: "War Bonds: Die erfolgreichste Crowdfunding-Kampagne der Geschichte.",
+            content: "Effizienz in der Kommunikation: Wie die US-Regierung Werbeflächen im Millimeterbereich nutzte, um Milliarden an privatem Kapital für die Rüstungsindustrie zu generieren. Eine Case-Study in Sachen Skalierbarkeit von Botschaften.",
+            meta: "> Analyse: ROI/Skalierung | Sentiment: Technokratisch"
+        }
+    };
+    function updateText(mode) {
+        document.getElementById('label').innerText = data[mode].label;
+        document.getElementById('headline').innerText = data[mode].headline;
+        document.getElementById('content').innerText = data[mode].content;
+        document.getElementById('metadata').innerHTML = data[mode].meta + "<br>> AI_REWRITE_COMPLETE";
+
+        // Button-Style Update
+        const btns = document.querySelectorAll('.btn');
+        btns.forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+</script>
+</body>
+</html>

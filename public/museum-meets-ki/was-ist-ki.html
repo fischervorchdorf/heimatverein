@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Was ist KI? – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        .back-link {
+            color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s;
+        }
+        .back-link:hover { color: #00e5ff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+        .page-title {
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+            font-weight: 700; color: #00e5ff; letter-spacing: 2px;
+        }
+        .main {
+            padding: 5rem 1rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem; font-weight: 700;
+            text-align: center; margin-bottom: 0.3rem;
+        }
+        .section-desc {
+            text-align: center; color: rgba(255,255,255,0.5);
+            font-size: 0.85rem; margin-bottom: 2rem;
+        }
+
+        /* Neural Network Visualization */
+        .nn-container {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        #nn-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .nn-label {
+            position: absolute;
+            bottom: 8px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.7rem;
+            color: rgba(0, 229, 255, 0.5);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            background: rgba(14, 34, 51, 0.8);
+            border: 2px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-area input:focus {
+            border-color: #00e5ff;
+        }
+        .input-area input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        .send-btn {
+            padding: 0.8rem 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 1px;
+            border: 2px solid #00e5ff;
+            border-radius: 12px;
+            background: rgba(0, 229, 255, 0.1);
+            color: #00e5ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .send-btn:hover {
+            background: rgba(0, 229, 255, 0.25);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+        .send-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Output Terminal */
+        .output-terminal {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 12px;
+            padding: 1.2rem;
+            min-height: 120px;
+            margin-bottom: 2rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+        .output-terminal .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: #00e5ff;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .step-label {
+            color: #00e5ff;
+            font-weight: bold;
+        }
+        .step-content {
+            color: rgba(255,255,255,0.7);
+        }
+        .step-highlight {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        /* Concept Cards */
+        .concepts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .concept-card {
+            background: rgba(14, 34, 51, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 14px;
+            padding: 1.2rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .concept-card:hover {
+            border-color: rgba(0, 229, 255, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.1);
+        }
+        .concept-card.active {
+            border-color: #00e5ff;
+            background: rgba(0, 229, 255, 0.08);
+        }
+        .concept-icon {
+            font-size: 2rem;
+            margin-bottom: 0.6rem;
+        }
+        .concept-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #00e5ff;
+            margin-bottom: 0.4rem;
+            letter-spacing: 1px;
+        }
+        .concept-text {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.6;
+        }
+        .concept-detail {
+            display: none;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(0, 229, 255, 0.1);
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.7;
+        }
+        .concept-card.active .concept-detail {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Fun Fact Banner */
+        .fun-fact {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(212, 175, 55, 0.08));
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 14px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .fun-fact-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: #d4af37;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+        .fun-fact-text {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .header { padding: 0.8rem 1rem; }
+            .page-title { font-size: 0.7rem; }
+            .section-title { font-size: 1.1rem; }
+            .nn-container { height: 240px; }
+            .input-area { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zurück
+        </a>
+        <span class="page-title">WAS IST KI?</span>
+    </div>
+
+    <div class="main">
+        <h1 class="section-title">Was ist KI?</h1>
+        <p class="section-desc">Schick ein Wort durch ein neuronales Netzwerk und sieh, wie KI "denkt"</p>
+
+        <div class="nn-container">
+            <canvas id="nn-canvas"></canvas>
+            <div class="nn-label">NEURONALES NETZWERK &mdash; LIVE SIMULATION</div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="word-input" placeholder="Gib ein Wort ein (z.B. Katze, Sonne, Musik...)" maxlength="20">
+            <button class="send-btn" id="btn-send">Senden</button>
+        </div>
+
+        <div class="output-terminal" id="terminal">
+            <span class="step-label">&gt; System bereit.</span><br>
+            <span class="step-content">Gib ein Wort ein und beobachte, wie ein neuronales Netzwerk es verarbeitet.</span><br>
+            <span class="cursor"></span>
+        </div>
+
+        <h2 style="font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: #00e5ff; letter-spacing: 2px; margin-bottom: 1rem; text-align: center;">GRUNDKONZEPTE</h2>
+
+        <div class="concepts">
+            <div class="concept-card" data-concept="0">
+                <div class="concept-icon">🧠</div>
+                <div class="concept-title">Neuronales Netz</div>
+                <div class="concept-text">Inspiriert vom menschlichen Gehirn</div>
+                <div class="concept-detail">Ein neuronales Netzwerk besteht aus vielen kleinen Recheneinheiten ("Neuronen"), die in Schichten angeordnet sind. Jedes Neuron empfängt Signale, verrechnet sie und gibt das Ergebnis weiter. Genau wie Nervenzellen im Gehirn, die durch Synapsen verbunden sind. Je mehr Schichten, desto komplexer die Muster, die erkannt werden können.</div>
+            </div>
+            <div class="concept-card" data-concept="1">
+                <div class="concept-icon">📊</div>
+                <div class="concept-title">Training</div>
+                <div class="concept-text">Lernen durch Millionen Beispiele</div>
+                <div class="concept-detail">KI lernt nicht wie ein Mensch durch Verstehen, sondern durch Statistik. Man zeigt ihr Millionen Beispiele und sie passt ihre inneren Gewichte an, bis sie Muster erkennt. Das ist wie ein Kind, das durch tausende Bilder von Hunden lernt, was ein "Hund" ist. Dieser Prozess braucht enorme Rechenleistung.</div>
+            </div>
+            <div class="concept-card" data-concept="2">
+                <div class="concept-icon">⚖️</div>
+                <div class="concept-title">Gewichte</div>
+                <div class="concept-text">Die "Stärke" der Verbindungen</div>
+                <div class="concept-detail">Jede Verbindung zwischen Neuronen hat ein Gewicht (eine Zahl). Hohe Gewichte bedeuten: "Dieses Signal ist wichtig!" Niedrige Gewichte bedeuten: "Ignorier das eher." Beim Training werden diese Gewichte millionenfach angepasst, bis das Ergebnis stimmt. GPT-4 hat geschätzt 1,7 Billionen solcher Gewichte.</div>
+            </div>
+            <div class="concept-card" data-concept="3">
+                <div class="concept-icon">🎯</div>
+                <div class="concept-title">Vorhersage</div>
+                <div class="concept-text">KI rät das nächste Wort</div>
+                <div class="concept-detail">Moderne Sprach-KIs wie ChatGPT funktionieren verblüffend einfach: Sie sagen das wahrscheinlichste nächste Wort vorher. "Die Katze sitzt auf dem ___" → "Dach" (72%), "Tisch" (15%), "Stuhl" (8%). Durch Milliarden solcher Vorhersagen entsteht etwas, das wie "Intelligenz" wirkt, obwohl es Statistik ist.</div>
+            </div>
+            <div class="concept-card" data-concept="4">
+                <div class="concept-icon">🤖</div>
+                <div class="concept-title">Starke vs. Schwache KI</div>
+                <div class="concept-text">Was KI kann und was nicht</div>
+                <div class="concept-detail"><strong>Schwache KI</strong> (das, was es heute gibt): Kann eine bestimmte Aufgabe gut lösen, z.B. Schach spielen, Bilder erkennen oder Texte schreiben. <strong>Starke KI</strong> (existiert noch nicht): Könnte wie ein Mensch denken, lernen und verstehen. Experten sind sich uneinig, ob das jemals möglich sein wird.</div>
+            </div>
+            <div class="concept-card" data-concept="5">
+                <div class="concept-icon">💡</div>
+                <div class="concept-title">Halluzination</div>
+                <div class="concept-text">Wenn KI überzeugend lügt</div>
+                <div class="concept-detail">KI "versteht" nicht wirklich, was sie sagt. Sie erzeugt statistisch wahrscheinliche Texte. Manchmal erfindet sie Fakten, die komplett falsch sind, aber überzeugend klingen. Das nennt man "Halluzination". Deshalb sollte man KI-Antworten immer überprüfen, besonders bei Fakten, Zitaten oder wissenschaftlichen Angaben.</div>
+            </div>
+        </div>
+
+        <div class="fun-fact" id="fun-fact">
+            <div class="fun-fact-label">WUSSTEST DU?</div>
+            <div class="fun-fact-text" id="fun-fact-text">Das menschliche Gehirn hat etwa 86 Milliarden Neuronen. Die größten KI-Modelle haben "nur" einige Billionen Verbindungen, verbrauchen aber trotzdem so viel Strom wie eine Kleinstadt.</div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // Neural network canvas visualization
+        const canvas = document.getElementById('nn-canvas');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        const layers = [3, 5, 6, 5, 3];
+        let nodes = [];
+        let connections = [];
+        let activeSignals = [];
+        let animTime = 0;
+        let isProcessing = false;
+
+        function resize() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            W = rect.width;
+            H = rect.height;
+            canvas.width = W * devicePixelRatio;
+            canvas.height = H * devicePixelRatio;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx.scale(devicePixelRatio, devicePixelRatio);
+            buildNetwork();
+        }
+
+        function buildNetwork() {
+            nodes = [];
+            connections = [];
+            const padX = W < 500 ? 40 : 70;
+            const padY = 30;
+            const layerSpacing = (W - padX * 2) / (layers.length - 1);
+
+            for (let l = 0; l < layers.length; l++) {
+                const count = layers[l];
+                const layerNodes = [];
+                const spacing = (H - padY * 2) / (count + 1);
+                for (let n = 0; n < count; n++) {
+                    layerNodes.push({
+                        x: padX + l * layerSpacing,
+                        y: padY + spacing * (n + 1),
+                        activation: 0,
+                        layer: l
+                    });
+                }
+                nodes.push(layerNodes);
+            }
+
+            for (let l = 0; l < nodes.length - 1; l++) {
+                for (const from of nodes[l]) {
+                    for (const to of nodes[l + 1]) {
+                        connections.push({
+                            from: from,
+                            to: to,
+                            weight: Math.random() * 0.6 + 0.2,
+                            active: 0
+                        });
+                    }
+                }
+            }
+        }
+
+        function fireNetwork() {
+            if (isProcessing) return;
+            isProcessing = true;
+            activeSignals = [];
+
+            // Activate input layer
+            for (const node of nodes[0]) {
+                node.activation = 1;
+            }
+
+            // Cascade through layers with delay
+            for (let l = 0; l < nodes.length; l++) {
+                setTimeout(function() {
+                    for (const node of nodes[l]) {
+                        node.activation = 1;
+                    }
+                    // Light up connections from this layer
+                    for (const conn of connections) {
+                        if (conn.from.layer === l) {
+                            conn.active = 1;
+                            // Create traveling signal
+                            activeSignals.push({
+                                from: conn.from,
+                                to: conn.to,
+                                progress: 0,
+                                speed: 0.02 + Math.random() * 0.02
+                            });
+                        }
+                    }
+                }, l * 400);
+            }
+
+            // Reset after animation
+            setTimeout(function() {
+                for (const layer of nodes) {
+                    for (const node of layer) {
+                        node.activation = 0;
+                    }
+                }
+                for (const conn of connections) {
+                    conn.active = 0;
+                }
+                isProcessing = false;
+            }, (nodes.length + 1) * 400);
+        }
+
+        function draw() {
+            requestAnimationFrame(draw);
+            animTime += 0.016;
+            ctx.clearRect(0, 0, W, H);
+
+            // Draw connections
+            for (const conn of connections) {
+                ctx.beginPath();
+                ctx.moveTo(conn.from.x, conn.from.y);
+                ctx.lineTo(conn.to.x, conn.to.y);
+                const alpha = conn.active > 0 ? 0.4 : 0.06;
+                ctx.strokeStyle = conn.active > 0
+                    ? `rgba(0, 229, 255, ${alpha})`
+                    : `rgba(0, 229, 255, ${alpha})`;
+                ctx.lineWidth = conn.active > 0 ? 1.5 : 0.5;
+                ctx.stroke();
+            }
+
+            // Draw traveling signals
+            for (let i = activeSignals.length - 1; i >= 0; i--) {
+                const sig = activeSignals[i];
+                sig.progress += sig.speed;
+                if (sig.progress >= 1) {
+                    activeSignals.splice(i, 1);
+                    continue;
+                }
+                const x = sig.from.x + (sig.to.x - sig.from.x) * sig.progress;
+                const y = sig.from.y + (sig.to.y - sig.from.y) * sig.progress;
+                const glow = Math.sin(sig.progress * Math.PI);
+
+                const grad = ctx.createRadialGradient(x, y, 0, x, y, 6 + glow * 4);
+                grad.addColorStop(0, `rgba(0, 229, 255, ${0.6 + glow * 0.4})`);
+                grad.addColorStop(1, 'rgba(0, 229, 255, 0)');
+                ctx.beginPath();
+                ctx.arc(x, y, 6 + glow * 4, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+            }
+
+            // Draw nodes
+            for (const layer of nodes) {
+                for (const node of layer) {
+                    const pulse = Math.sin(animTime * 2 + node.x * 0.01) * 0.1 + 0.9;
+                    const r = W < 500 ? 6 : 8;
+                    const glowR = r + (node.activation > 0 ? 12 : 4);
+
+                    // Glow
+                    const grad = ctx.createRadialGradient(node.x, node.y, r * 0.5, node.x, node.y, glowR);
+                    grad.addColorStop(0, node.activation > 0
+                        ? 'rgba(0, 229, 255, 0.4)'
+                        : `rgba(0, 229, 255, ${0.08 * pulse})`);
+                    grad.addColorStop(1, 'rgba(0, 229, 255, 0)');
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, glowR, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Node
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+                    ctx.fillStyle = node.activation > 0
+                        ? 'rgba(0, 229, 255, 0.9)'
+                        : `rgba(0, 229, 255, ${0.25 * pulse})`;
+                    ctx.fill();
+                }
+            }
+
+            // Layer labels
+            const labels = ['Eingabe', 'Verborgen 1', 'Verborgen 2', 'Verborgen 3', 'Ausgabe'];
+            ctx.font = `${W < 500 ? '8px' : '10px'} Orbitron, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            for (let l = 0; l < nodes.length; l++) {
+                ctx.fillText(labels[l], nodes[l][0].x, 18);
+            }
+        }
+
+        resize();
+        draw();
+        window.addEventListener('resize', resize);
+
+        // Process word through network
+        const input = document.getElementById('word-input');
+        const btn = document.getElementById('btn-send');
+        const terminal = document.getElementById('terminal');
+
+        const responses = {
+            'katze': { category: 'Tier', confidence: '94%', associations: ['Fell', 'Schnurren', 'Haustier', 'Miau'] },
+            'hund': { category: 'Tier', confidence: '96%', associations: ['Bellen', 'Treue', 'Gassi', 'Pfote'] },
+            'sonne': { category: 'Astronomie', confidence: '91%', associations: ['Licht', 'Wärme', 'Stern', 'Tag'] },
+            'musik': { category: 'Kunst', confidence: '89%', associations: ['Melodie', 'Rhythmus', 'Klang', 'Emotion'] },
+            'auto': { category: 'Fahrzeug', confidence: '95%', associations: ['Motor', 'Straße', 'Fahren', 'Geschwindigkeit'] },
+            'essen': { category: 'Nahrung', confidence: '88%', associations: ['Hunger', 'Kochen', 'Geschmack', 'Mahlzeit'] },
+            'computer': { category: 'Technologie', confidence: '97%', associations: ['Rechnen', 'Software', 'Bildschirm', 'Daten'] },
+            'schule': { category: 'Bildung', confidence: '90%', associations: ['Lernen', 'Lehrer', 'Wissen', 'Klasse'] },
+            'wasser': { category: 'Element', confidence: '93%', associations: ['Trinken', 'Ozean', 'Regen', 'Leben'] },
+            'liebe': { category: 'Emotion', confidence: '78%', associations: ['Herz', 'Gefühl', 'Verbundenheit', 'Glück'] },
+        };
+
+        const defaultCategories = ['Objekt', 'Konzept', 'Aktivität', 'Eigenschaft', 'Abstrakt'];
+        const defaultAssociations = [
+            ['Bedeutung', 'Kontext', 'Muster', 'Sprache'],
+            ['Form', 'Funktion', 'Eigenschaft', 'Relation'],
+            ['Bezug', 'Verbindung', 'Kategorie', 'Semantik']
+        ];
+
+        function processWord(word) {
+            btn.disabled = true;
+            fireNetwork();
+
+            const lower = word.toLowerCase().trim();
+            const known = responses[lower];
+            const category = known ? known.category : defaultCategories[Math.floor(Math.random() * defaultCategories.length)];
+            const confidence = known ? known.confidence : (Math.floor(Math.random() * 30) + 60) + '%';
+            const associations = known ? known.associations : defaultAssociations[Math.floor(Math.random() * defaultAssociations.length)];
+
+            terminal.innerHTML = '';
+            const steps = [
+                { label: 'SCHRITT 1: Tokenisierung', content: `"${word}" → Token [${Array.from(word).map(function(c, i) { return i; }).join(', ')}]`, delay: 200 },
+                { label: 'SCHRITT 2: Embedding', content: `Token → Vektor [${(Math.random() * 2 - 1).toFixed(3)}, ${(Math.random() * 2 - 1).toFixed(3)}, ${(Math.random() * 2 - 1).toFixed(3)}, ...]`, delay: 600 },
+                { label: 'SCHRITT 3: Verarbeitung', content: `Durchlaufe ${layers.length} Schichten mit ${connections.length} Verbindungen...`, delay: 1000 },
+                { label: 'SCHRITT 4: Aktivierung', content: `Stärkste Neuronen-Cluster: "${category}" (Gewicht: ${(Math.random() * 0.4 + 0.6).toFixed(3)})`, delay: 1400 },
+                { label: 'SCHRITT 5: Ausgabe', content: `Kategorie: "${category}" | Konfidenz: ${confidence}`, delay: 1800, highlight: true },
+                { label: 'ASSOZIATIONEN', content: associations.join(' → '), delay: 2200, highlight: true }
+            ];
+
+            steps.forEach(function(step) {
+                setTimeout(function() {
+                    const line = document.createElement('div');
+                    line.style.animation = 'fadeIn 0.3s ease';
+                    line.innerHTML = '<span class="step-label">&gt; ' + step.label + '</span><br>' +
+                        '<span class="' + (step.highlight ? 'step-highlight' : 'step-content') + '">' + step.content + '</span>';
+                    terminal.appendChild(line);
+                    terminal.scrollTop = terminal.scrollHeight;
+                }, step.delay);
+            });
+
+            setTimeout(function() {
+                const cursor = document.createElement('span');
+                cursor.className = 'cursor';
+                terminal.appendChild(cursor);
+                btn.disabled = false;
+            }, 2500);
+        }
+
+        btn.addEventListener('click', function() {
+            const word = input.value.trim();
+            if (word) processWord(word);
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const word = input.value.trim();
+                if (word) processWord(word);
+            }
+        });
+
+        // Concept cards toggle
+        document.querySelectorAll('.concept-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                const wasActive = this.classList.contains('active');
+                document.querySelectorAll('.concept-card').forEach(function(c) { c.classList.remove('active'); });
+                if (!wasActive) this.classList.add('active');
+            });
+        });
+
+        // Rotating fun facts
+        const funFacts = [
+            'Das menschliche Gehirn hat etwa 86 Milliarden Neuronen. Die größten KI-Modelle haben "nur" einige Billionen Verbindungen, verbrauchen aber trotzdem so viel Strom wie eine Kleinstadt.',
+            'Das Wort "Künstliche Intelligenz" wurde 1956 auf einer Konferenz in Dartmouth (USA) erfunden. Die Forscher dachten, sie würden das Problem in einem Sommer lösen.',
+            'ChatGPT erreichte 100 Millionen Nutzer in nur 2 Monaten. Instagram brauchte 2,5 Jahre, TikTok 9 Monate.',
+            'KI kann keine Dinge "verstehen". Sie erkennt statistische Muster in Daten. Ob eine KI jemals wirklich "denken" kann, ist eine der großen philosophischen Fragen unserer Zeit.',
+            'Die meisten KI-Modelle können nicht zählen. Frag eine KI, wie viele "r" im Wort "Erdbeere" sind und sie wird oft falsch antworten.'
+        ];
+        let factIdx = 0;
+        setInterval(function() {
+            factIdx = (factIdx + 1) % funFacts.length;
+            const el = document.getElementById('fun-fact-text');
+            el.style.opacity = '0';
+            setTimeout(function() {
+                el.textContent = funFacts[factIdx];
+                el.style.opacity = '1';
+            }, 300);
+        }, 8000);
+
+        // Auto-fire network every few seconds for ambience
+        setInterval(function() {
+            if (!isProcessing) fireNetwork();
+        }, 5000);
+    })();
+    </script>
+    <script src="js/ui.js"></script>
+</body>
+</html>

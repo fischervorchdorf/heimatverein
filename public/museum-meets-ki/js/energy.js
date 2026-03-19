@@ -93,10 +93,8 @@
             scaleEl.textContent = 'Normaler Tagesverbrauch eines KI-Nutzers';
         } else if (queries <= 1000) {
             scaleEl.textContent = 'Power-User-Level';
-        } else if (queries <= 10000) {
-            scaleEl.textContent = 'Kleines Unternehmen';
         } else {
-            scaleEl.textContent = 'Enterprise-Level KI-Nutzung';
+            scaleEl.textContent = 'Kleines Unternehmen';
         }
     }
 
