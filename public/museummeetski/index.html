@@ -246,6 +246,359 @@
     // MEERSCHAUMPFEIFE
     // =============================================
     // =============================================
+    // JAGDSTOCK / PIRSCHSTOCK
+    // =============================================
+    const JAGDSTOCK_DEF = {
+        titel: "Der Pirschstock",
+        schritte: [
+            {
+                typ: "info",
+                titel: "Förster Alois' treuer Begleiter",
+                beschreibung: "Vor dir steht ein Jagdstock mit Sitzfunktion – ein <em>Pirschstock</em>. Eschenholz, Schmiedeeisen, handgefertigt um 1885 im Salzkammergut.<br><br>Ein geniales Multitool: Wanderstock, tragbarer Sitz, Gewehrauflage – alles in einem. Förster Alois Gruber erbte ihn von seinem Vater und nutzte ihn jahrzehntelang in den Wäldern um Vorchdorf.<br><br>Die Patina erzählt von unzähligen Morgenstunden im Wald, von Geduld, Kälte und einem harten Winter 1902..."
+            },
+            {
+                typ: "wald-lauschen",
+                titel: "Waldgeräusche-Detektiv",
+                beschreibung: "Du sitzt auf dem Pirschstock, es ist 5 Uhr früh. Still. Lausche – und entscheide: Was war das?"
+            },
+            {
+                typ: "pirsch-adventure",
+                titel: "Die Pirsch – Winter 1902",
+                beschreibung: "Du bist Förster Alois. Jahrhundertwinter. Das Wild hungert, Wilderer treiben ihr Unwesen. Dein Pirschstock ist dein einziger Begleiter."
+            },
+            {
+                typ: "survival-check",
+                titel: "Survival-Check",
+                beschreibung: "Jahrhundertwinter 1902. Du musst raus ins Revier. Packe klug – dein Leben könnte davon abhängen."
+            },
+            {
+                typ: "jagdstock-erfolg",
+                titel: "Der alte Freund",
+                beschreibung: ""
+            }
+        ]
+    };
+
+    // --- Waldgeräusche-Detektiv ---
+    const WALDGERAEUSCHE = [
+        {
+            sound: "🔊 *KNACK*",
+            beschreibung: "Ein einzelner, trockener Laut. Etwas Schweres hat einen Ast zertreten.",
+            optionen: ["Hirsch", "Wilderer", "Herabfallender Ast"],
+            richtig: 0,
+            erklaerung: "Ein Hirsch! Das Gewicht und der einzelne Tritt verraten ein großes Tier. Wilderer wären leiser, ein Ast klingt anders."
+        },
+        {
+            sound: "🔊 *tik-tik-tik-tik*",
+            beschreibung: "Schnelles, rhythmisches Klopfen an einem Baumstamm, hoch oben.",
+            optionen: ["Specht", "Eichhörnchen", "Regen"],
+            richtig: 0,
+            erklaerung: "Ein Specht! Das gleichmäßige Klopfen in kurzen Serien ist unverwechselbar. Alois wusste: Wo der Specht klopft, ist der Wald gesund."
+        },
+        {
+            sound: "🔊 *raschel... raschel-raschel*",
+            beschreibung: "Leises Rascheln im Laub, bodennah, dann Stille, dann wieder Rascheln.",
+            optionen: ["Maus", "Schlange", "Wind"],
+            richtig: 0,
+            erklaerung: "Eine Maus! Das Stop-and-Go verrät ein kleines Tier, das Nahrung sucht. Schlangen gleiten gleichmäßiger."
+        },
+        {
+            sound: "🔊 *KRÄCHZ-KRÄCHZ-KRÄCHZ*",
+            beschreibung: "Laute, heisere Rufe von oben. Mehrere Stimmen.",
+            optionen: ["Krähen – Alarm!", "Raubvögel auf Jagd", "Elstern beim Spielen"],
+            richtig: 0,
+            erklaerung: "Krähen-Alarm! Wenn Krähen so schreien, warnen sie vor einem Feind. Alois wusste: Entweder ein Fuchs – oder ein Mensch, der nicht hierher gehört."
+        },
+        {
+            sound: "🔊 *knirsch... knirsch... knirsch*",
+            beschreibung: "Gleichmäßige, schwere Schritte auf gefrorenem Schnee. Regelmäßig wie ein Metronom.",
+            optionen: ["Wilderer!", "Wanderer", "Reh"],
+            richtig: 0,
+            erklaerung: "Wilderer! Nur ein Mensch geht so gleichmäßig. Rehe trippeln, Wanderer reden. Diese Schritte sind leise und zielgerichtet – jemand will nicht gehört werden."
+        },
+        {
+            sound: "🔊 *wuuuusch... Stille*",
+            beschreibung: "Ein kurzes, tiefes Rauschen über deinem Kopf, dann absolute Stille.",
+            optionen: ["Eule", "Fledermaus", "Windstoß"],
+            richtig: 0,
+            erklaerung: "Eine Eule! Ihr Flug ist fast lautlos – nur ein kurzes Luftrauschen. Die Stille danach sagt: Alles im Wald hält den Atem an."
+        }
+    ];
+    let waldIdx = 0, waldScore = 0;
+
+    function buildWaldLauschenUI() {
+        waldIdx = 0; waldScore = 0;
+        return `
+        <div class="game-area" id="waldArea" style="text-align:center;">
+            <div style="font-size:2em; margin-bottom:5px;">🌲🦌🌲</div>
+            <p style="font-size:0.85em; color:rgba(253,245,230,0.5);">Es ist 5 Uhr früh. Der Wald erwacht. Du sitzt auf dem Pirschstock und lauschst...</p>
+            <div id="waldContent"></div>
+        </div>`;
+    }
+
+    function renderWaldGeraeusch() {
+        if (waldIdx >= WALDGERAEUSCHE.length) {
+            const prozent = Math.round(waldScore / WALDGERAEUSCHE.length * 100);
+            let bewertung = prozent >= 80 ? "Meisterjäger! Alois wäre stolz." : prozent >= 50 ? "Guter Instinkt! Mit etwas Übung wirst du zum Profi." : "Der Wald hat noch viele Geheimnisse für dich...";
+            document.getElementById('waldContent').innerHTML = `
+                <div class="fade-in">
+                    <div style="font-size:2.5em; margin:10px 0;">${prozent >= 80 ? '🏆' : prozent >= 50 ? '👂' : '🌿'}</div>
+                    <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">${waldScore} von ${WALDGERAEUSCHE.length} erkannt</p>
+                    <p style="font-size:0.9em; font-style:italic;">${bewertung}</p>
+                    <button class="btn" style="margin-top:15px;" onclick="next()">Weiter – Die Pirsch beginnt</button>
+                </div>`;
+            return;
+        }
+        const g = WALDGERAEUSCHE[waldIdx];
+        document.getElementById('waldContent').innerHTML = `
+            <div class="fade-in">
+                <div class="step-indicator" style="margin-bottom:8px;">
+                    ${WALDGERAEUSCHE.map((_, i) => `<div class="step-dot ${i < waldIdx ? 'done' : i === waldIdx ? 'active' : ''}"></div>`).join('')}
+                </div>
+                <div style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px; margin:10px 0;">
+                    <p style="font-size:1.5em; margin:0; letter-spacing:3px;">${g.sound}</p>
+                    <p style="font-size:0.85em; color:rgba(253,245,230,0.6); margin-top:8px;">${g.beschreibung}</p>
+                </div>
+                <p style="font-size:0.95em; font-weight:bold;">Was war das?</p>
+                ${g.optionen.map((opt, i) => `<button class="btn" style="margin-top:5px; font-size:0.9em; padding:10px;" onclick="checkWald(${waldIdx},${i})">${opt}</button>`).join('')}
+                <div id="waldFb" style="min-height:40px; margin-top:8px;"></div>
+            </div>`;
+    }
+
+    function checkWald(gIdx, aIdx) {
+        const g = WALDGERAEUSCHE[gIdx];
+        const correct = aIdx === g.richtig;
+        if (correct) { waldScore++; playTone(523, 200); } else { playTone(200, 200); }
+        document.getElementById('waldFb').innerHTML = `
+            <p style="color:${correct ? 'lime' : '#ff6347'}; font-weight:bold; font-size:0.95em;">${correct ? '✓ Richtig!' : '✗ Nicht ganz...'}</p>
+            <div class="info-box" style="font-size:0.8em; margin-top:5px;">${g.erklaerung}</div>
+            <button class="btn" style="margin-top:8px; font-size:0.85em;" onclick="waldIdx++; renderWaldGeraeusch();">Nächstes Geräusch →</button>`;
+        // Disable buttons
+        document.querySelectorAll('#waldContent .btn').forEach((b, i) => { if (i < g.optionen.length) b.disabled = true; });
+    }
+
+    // --- Pirsch-Adventure ---
+    const PIRSCH_SZENEN = [
+        {
+            titel: "Morgengrauen",
+            text: "Dezember 1902. Der Jahrhundertwinter hat das Salzkammergut im Griff. Du bist Förster Alois Gruber. 4 Uhr früh, -18°C. Du musst raus – das Wild hungert, die Futterstellen müssen kontrolliert werden. Du steckst den Pirschstock in den Rucksack.",
+            frage: "Welchen Weg nimmst du zum Revier?",
+            optionen: [
+                { text: "Den Waldweg am Bach entlang – geschützt aber länger", folge: "Kluge Wahl! Am Bach ist der Schnee weniger tief, und du kannst Tierspuren im weichen Ufer lesen. Nach einer Stunde erreichst du die erste Futterstelle.", punkte: 2 },
+                { text: "Direkt durch den Wald – Abkürzung", folge: "Mutig, aber der Schnee liegt hüfttief. Du brauchst doppelt so lang und bist erschöpft. Der Pirschstock hilft als Stütze, aber du verlierst wertvolle Kraft.", punkte: 0 },
+                { text: "Den Bergrücken über die Lichtung", folge: "Oben ist der Schnee vom Wind verweht – weniger tief. Aber der Wind peitscht dir ins Gesicht. Du erreichst das Revier mit klammen Fingern, aber mit gutem Überblick über das Tal.", punkte: 1 }
+            ]
+        },
+        {
+            titel: "Die Futterstelle",
+            text: "An der Futterstelle angekommen, siehst du: Das Heu ist fast aufgebraucht, aber dafür viele Spuren. Rehwild, Hasen... und etwas Seltsames. Tiefe, breite Spuren, die zum Waldrand führen.",
+            frage: "Was tust du?",
+            optionen: [
+                { text: "Den Pirschstock als Sitz aufklappen und warten – beobachten, was kommt", folge: "Geduld zahlt sich aus! Du klappst den Stock auf, setzt dich still hin. Nach 20 Minuten: Ein kapitaler Hirsch tritt aus dem Wald. Ein Achtender! Er frisst am Heu. Du kannst ihn beobachten und sein Zustand beurteilen.", punkte: 2 },
+                { text: "Den seltsamen Spuren sofort folgen", folge: "Die Spuren führen tief in den Wald. Du verlierst eine Stunde – sie gehörten einem Dachs, der sich einen neuen Bau gräbt. Interessant, aber nicht dringend.", punkte: 0 },
+                { text: "Erst Heu nachfüllen, dann beobachten", folge: "Praktisch gedacht! Aber das Geräusch beim Heu-Nachfüllen verscheucht ein Reh, das gerade aus dem Wald treten wollte.", punkte: 1 }
+            ]
+        },
+        {
+            titel: "Die Entdeckung",
+            text: "Am späten Vormittag kontrollierst du den Nordteil des Reviers. Plötzlich: Frische Spuren im Schnee. Stiefel. Groß. Daneben: Blut. Und Schleifspur. Jemand hat hier Wild erlegt – und schleift es weg. Wilderer!",
+            frage: "Wie reagierst du?",
+            optionen: [
+                { text: "Den Spuren folgen, aber vorsichtig und mit dem Stock als Gewehrauflage bereit", folge: "Klug! Du folgst den Spuren mit dem Gewehr über der Schulter. Den Pirschstock hältst du griffbereit. Nach 500 Metern siehst du zwei Gestalten an einem erlegten Hirsch.", punkte: 2 },
+                { text: "Sofort zurück ins Dorf und die Gendarmerie holen", folge: "Sicher, aber bis du zurück bist, sind die Wilderer über alle Berge. Die Spuren verwehen im Wind. Du findest nur noch den ausgeweideten Hirsch.", punkte: 1 },
+                { text: "Laut rufen, um die Wilderer zu verscheuchen", folge: "Die Wilderer hören dich und verschwinden. Du findest den toten Hirsch, aber keine Spur der Täter. Immerhin – sie haben ihre Beute zurückgelassen.", punkte: 1 }
+            ]
+        },
+        {
+            titel: "Die Konfrontation",
+            text: "Du stehst 30 Meter von den Wilderern entfernt. Zwei Männer, abgerissene Kleidung, hungrige Gesichter. Einer hat ein altes Gewehr. Der Hirsch liegt zwischen euch. Es wird langsam dunkel.",
+            frage: "Was tust du?",
+            optionen: [
+                { text: "Stock in den Boden rammen, Gewehr auflegen, klar und ruhig ansprechen", folge: "Du rammst den Pirschstock in den gefrorenen Boden, legst das Gewehr auf – eine felsenfeste Auflage. 'Halt! Förster Gruber! Legt die Waffen nieder!' Deine Stimme ist ruhig, dein Anschlag stabil. Die Wilderer sehen den festen Lauf. Sie lassen den Hirsch fallen und verschwinden in der Dunkelheit.", punkte: 2 },
+                { text: "Verhandeln – die Männer haben offensichtlich Hunger", folge: "Du versuchst zu reden. Einer der Männer greift nervös zum Gewehr. Die Situation ist angespannt. Am Ende ziehen sie ab, aber du fühlst dich unsicher.", punkte: 1 },
+                { text: "Warnschuss in die Luft", folge: "Der Schuss hallt durch den Wald. Die Wilderer erschrecken und fliehen. Aber der Knall verscheucht auch alles Wild im Umkreis von Kilometern.", punkte: 1 }
+            ]
+        }
+    ];
+    let pirschIdx = 0, pirschScore = 0;
+
+    function buildPirschAdventureUI() {
+        pirschIdx = 0; pirschScore = 0;
+        return `<div class="game-area" id="pirschArea" style="text-align:center;"><div id="pirschContent"></div></div>`;
+    }
+
+    function renderPirschSzene() {
+        if (pirschIdx >= PIRSCH_SZENEN.length) {
+            let rang = pirschScore >= 7 ? "Meisterförster" : pirschScore >= 4 ? "Erfahrener Jäger" : "Grünschnabel";
+            let rangEmoji = pirschScore >= 7 ? "🏅" : pirschScore >= 4 ? "🦌" : "🌱";
+            document.getElementById('pirschContent').innerHTML = `
+                <div class="fade-in">
+                    <div style="font-size:2.5em;">${rangEmoji}</div>
+                    <p style="color:var(--gold); font-weight:bold; font-size:1.2em;">${rang}</p>
+                    <p style="font-size:0.9em;">${pirschScore} von ${PIRSCH_SZENEN.length * 2} Punkten</p>
+                    <div class="info-box" style="font-size:0.85em; font-style:italic;">
+                        ${pirschScore >= 7
+                            ? "Alois hätte dich als Gehilfen genommen. Du denkst wie ein Förster: geduldig, klug und entschlossen."
+                            : pirschScore >= 4
+                            ? "Nicht schlecht! Du hast gute Instinkte, aber der Wald hat noch viel zu lehren."
+                            : "Der Wald ist ein strenger Lehrmeister. Aber jeder Förster hat mal klein angefangen."}
+                    </div>
+                    <button class="btn" style="margin-top:15px;" onclick="next()">Weiter – Survival-Check</button>
+                </div>`;
+            return;
+        }
+        const s = PIRSCH_SZENEN[pirschIdx];
+        document.getElementById('pirschContent').innerHTML = `
+            <div class="fade-in">
+                <div class="step-indicator" style="margin-bottom:8px;">
+                    ${PIRSCH_SZENEN.map((_, i) => `<div class="step-dot ${i < pirschIdx ? 'done' : i === pirschIdx ? 'active' : ''}"></div>`).join('')}
+                </div>
+                <p style="color:var(--gold); font-weight:bold; font-size:1em;">${s.titel}</p>
+                <div class="info-box" style="font-size:0.85em; text-align:left;">${s.text}</div>
+                <p style="font-weight:bold; margin:12px 0 8px; font-size:0.95em;">${s.frage}</p>
+                ${s.optionen.map((opt, i) => `<button class="btn" style="margin-top:5px; font-size:0.8em; padding:10px; text-align:left;" onclick="checkPirsch(${pirschIdx},${i})">${opt.text}</button>`).join('')}
+                <div id="pirschFb" style="min-height:40px; margin-top:8px;"></div>
+            </div>`;
+    }
+
+    function checkPirsch(sIdx, aIdx) {
+        const s = PIRSCH_SZENEN[sIdx];
+        const opt = s.optionen[aIdx];
+        pirschScore += opt.punkte;
+        if (opt.punkte === 2) playTone(523, 200); else if (opt.punkte === 1) playTone(400, 200); else playTone(200, 200);
+        const icon = opt.punkte === 2 ? "✓ Perfekt!" : opt.punkte === 1 ? "○ Geht so..." : "✗ Nicht ideal.";
+        const col = opt.punkte === 2 ? "lime" : opt.punkte === 1 ? "orange" : "#ff6347";
+        document.getElementById('pirschFb').innerHTML = `
+            <p style="color:${col}; font-weight:bold;">${icon}</p>
+            <div class="info-box" style="font-size:0.8em; margin-top:5px;">${opt.folge}</div>
+            <button class="btn" style="margin-top:8px; font-size:0.85em;" onclick="pirschIdx++; renderPirschSzene();">Weiter →</button>`;
+        document.querySelectorAll('#pirschContent .btn').forEach((b, i) => { if (i < s.optionen.length) b.disabled = true; });
+    }
+
+    // --- Survival-Check ---
+    const SURVIVAL_ITEMS = [
+        { name: "Warme Wolldecke", emoji: "🧣", essential: true, erklaerung: "Bei -18°C überlebenswichtig! Alois wickelte sich in Pausen darin ein." },
+        { name: "Feldflasche mit heißem Tee", emoji: "☕", essential: true, erklaerung: "Warme Flüssigkeit hält die Körpertemperatur oben. Alois schwor auf Kräutertee mit Honig." },
+        { name: "Brotzeit (Speck & Brot)", emoji: "🍞", essential: true, erklaerung: "Energie für den ganzen Tag. Speck hat die meisten Kalorien pro Gramm – perfekt für die Kälte." },
+        { name: "Streichhölzer & Zunder", emoji: "🔥", essential: true, erklaerung: "Feuer machen kann im Notfall den Unterschied zwischen Leben und Tod bedeuten." },
+        { name: "Feldstecher (Fernglas)", emoji: "🔭", essential: true, erklaerung: "Unverzichtbar! Damit erkennt man Wild und Wilderer auf Distanz – ohne sich zu verraten." },
+        { name: "Taschenkompass", emoji: "🧭", essential: false, erklaerung: "Alois brauchte keinen – er kannte sein Revier. Aber für einen Neuling kann er lebensrettend sein." },
+        { name: "Taschenmesser", emoji: "🔪", essential: true, erklaerung: "Das Schweizer Armeemesser des 19. Jahrhunderts. Schneiden, schnitzen, reparieren – unverzichtbar." },
+        { name: "Laterne", emoji: "🏮", essential: false, erklaerung: "Im Dunkeln nützlich, aber das Licht verscheucht jedes Wild. Alois ließ sie meist zu Hause." },
+        { name: "Notizbuch & Bleistift", emoji: "📝", essential: false, erklaerung: "Alois notierte Wildbestand, Futterstellen und verdächtige Spuren. Bürokratie gab es auch 1902!" },
+        { name: "Schnaps (‚Für den Notfall')", emoji: "🥃", essential: false, erklaerung: "Achtung Mythos! Alkohol WÄRMT NICHT. Er erweitert die Blutgefäße und man kühlt schneller aus. Alois wusste das." }
+    ];
+    let selectedItems = new Set();
+
+    function buildSurvivalCheckUI() {
+        selectedItems = new Set();
+        return `
+        <div class="game-area" id="survivalArea" style="text-align:center;">
+            <p style="font-size:0.85em; color:rgba(253,245,230,0.5);">Dein Pirschstock ist immer dabei. Wähle <strong>5 weitere Gegenstände</strong> für den Tag im Winterwald.</p>
+            <div id="survivalGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:10px 0;">
+                ${SURVIVAL_ITEMS.map((item, i) => `
+                    <button class="btn survival-item" id="si_${i}" style="font-size:0.75em; padding:8px; text-align:left; border:2px solid transparent;" onclick="toggleSurvival(${i})">
+                        <span style="font-size:1.3em;">${item.emoji}</span><br>${item.name}
+                    </button>
+                `).join('')}
+            </div>
+            <p id="survivalCount" style="font-size:0.85em; color:var(--gold);">0 / 5 gewählt</p>
+            <button class="btn" id="survivalSubmit" style="display:none; margin-top:10px;" onclick="checkSurvival()">Rucksack packen!</button>
+            <div id="survivalResult" style="margin-top:10px;"></div>
+        </div>`;
+    }
+
+    function toggleSurvival(idx) {
+        if (selectedItems.has(idx)) {
+            selectedItems.delete(idx);
+            document.getElementById('si_'+idx).style.borderColor = 'transparent';
+            document.getElementById('si_'+idx).style.background = '';
+        } else if (selectedItems.size < 5) {
+            selectedItems.add(idx);
+            document.getElementById('si_'+idx).style.borderColor = 'var(--gold)';
+            document.getElementById('si_'+idx).style.background = 'rgba(184,134,11,0.2)';
+            playTone(400 + selectedItems.size * 40, 100);
+        }
+        document.getElementById('survivalCount').innerText = selectedItems.size + ' / 5 gewählt';
+        document.getElementById('survivalSubmit').style.display = selectedItems.size === 5 ? 'block' : 'none';
+    }
+
+    function checkSurvival() {
+        let essentialCount = 0;
+        let results = [];
+        SURVIVAL_ITEMS.forEach((item, i) => {
+            const picked = selectedItems.has(i);
+            if (picked && item.essential) essentialCount++;
+            if (picked) results.push({ ...item, picked: true, correct: item.essential });
+            else if (item.essential) results.push({ ...item, picked: false, correct: false }); // missed essential
+        });
+        const totalEssential = SURVIVAL_ITEMS.filter(i => i.essential).length;
+
+        let bewertung = essentialCount >= 5 ? "Perfekt! Du überlebst den Jahrhundertwinter!" :
+                        essentialCount >= 3 ? "Solide Auswahl – du kommst durch den Tag." :
+                        "Hmm... Alois hätte dir einiges beigebracht.";
+
+        document.getElementById('survivalResult').innerHTML = `
+            <div class="fade-in">
+                <p style="color:var(--gold); font-weight:bold; font-size:1.1em;">${essentialCount} von ${totalEssential} überlebenswichtigen Items</p>
+                <p style="font-style:italic; font-size:0.9em; margin-bottom:10px;">${bewertung}</p>
+                ${SURVIVAL_ITEMS.map((item, i) => {
+                    const picked = selectedItems.has(i);
+                    const icon = picked && item.essential ? '✅' : picked && !item.essential ? '🟡' : !picked && item.essential ? '❌' : '⬜';
+                    return `<div style="text-align:left; font-size:0.75em; padding:4px 0; border-bottom:1px solid rgba(253,245,230,0.1);">
+                        ${icon} <strong>${item.emoji} ${item.name}</strong> – ${item.erklaerung}
+                    </div>`;
+                }).join('')}
+                <button class="btn" style="margin-top:15px;" onclick="next()">Weiter – Reflexion</button>
+            </div>`;
+        document.getElementById('survivalGrid').style.display = 'none';
+        document.getElementById('survivalCount').style.display = 'none';
+        document.getElementById('survivalSubmit').style.display = 'none';
+    }
+
+    // --- Jagdstock Erfolg ---
+    function buildJagdstockErfolgUI() {
+        return `
+        <div class="fade-in">
+            <div class="erfolg-icon">🦌</div>
+            <h1 style="font-size:1.1em;">Der alte Freund</h1>
+            <p style="font-size:0.95em; font-style:italic;">"Guter Freund", murmelte Alois, "auf dich ist Verlass."</p>
+
+            <div class="erfolg-stats">
+                <div class="erfolg-stat">
+                    <div class="label">Geräusche erkannt</div>
+                    <div class="value">${waldScore || '?'}/${WALDGERAEUSCHE.length}</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Pirsch-Punkte</div>
+                    <div class="value">${pirschScore || '?'}/${PIRSCH_SZENEN.length * 2}</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Alter</div>
+                    <div class="value">~140 Jahre</div>
+                </div>
+                <div class="erfolg-stat">
+                    <div class="label">Material</div>
+                    <div class="value">Esche & Eisen</div>
+                </div>
+            </div>
+
+            <div class="fun-facts">
+                <h3>Was der Stock erzählt:</h3>
+                <ul>
+                    <li>Der Pirschstock kostete <strong>3-6 Gulden</strong> – mehrere Tageslöhne eines Arbeiters. Heute wäre ein handgefertigtes Equivalent 200-400€ wert.</li>
+                    <li>Im Winter 1902 fiel so viel Schnee, dass selbst alte Vorchdorfer von einem <strong>"Jahrhundertwinter"</strong> sprachen. Alois war täglich im Revier.</li>
+                    <li>Jagd war bis ins 20. Jahrhundert ein <strong>Privileg des Adels</strong>. Förster wie Alois waren die Hüter – zwischen Wildschutz und Wilderern.</li>
+                    <li>Moderne Pirschstöcke aus <strong>Carbon wiegen 400g</strong>. Dieser hier: fast 3 kg. Aber er hält vermutlich noch weitere 100 Jahre.</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="aktuellerSchritt=0; render();">Nochmal spielen</button>
+            <button class="btn" style="background:transparent; border:2px solid var(--gold); color:var(--gold);" onclick="window.location.search=''">Zur Übersicht</button>
+        </div>`;
+    }
+
+    // =============================================
     // ODHNER RECHENMASCHINE
     // =============================================
     const ODHNER_DEF = {
@@ -2660,6 +3013,7 @@
     artefakte["araeometer"] = ARAEOMETER_DEF;
     artefakte["pfeife"] = PFEIFE_DEF;
     artefakte["odhner"] = ODHNER_DEF;
+    artefakte["jagdstock"] = JAGDSTOCK_DEF;
 
     const urlParams = new URLSearchParams(window.location.search);
     const objektKey = urlParams.get('objekt');
@@ -2679,7 +3033,8 @@
                 <button class="btn" onclick="window.location.search='?objekt=feldtelefon'">Feldtelefon (Feldfernsprecher)</button>
                 <button class="btn" onclick="window.location.search='?objekt=araeometer'">Aräometer (Baumé-Hydrometer)</button>
                 <button class="btn" onclick="window.location.search='?objekt=pfeife'">Meerschaumpfeife (Drachenkopf)</button>
-                <button class="btn" onclick="window.location.search='?objekt=odhner'">Odhner Rechenmaschine</button>`;
+                <button class="btn" onclick="window.location.search='?objekt=odhner'">Odhner Rechenmaschine</button>
+                <button class="btn" onclick="window.location.search='?objekt=jagdstock'">Jagdstock / Pirschstock</button>`;
             return;
         }
 
@@ -2796,6 +3151,15 @@
         } else if (schritt.typ === "pfeife-erfolg") {
             html += buildPfeifeErfolgUI();
 
+        } else if (schritt.typ === "wald-lauschen") {
+            html += buildWaldLauschenUI();
+        } else if (schritt.typ === "pirsch-adventure") {
+            html += buildPirschAdventureUI();
+        } else if (schritt.typ === "survival-check") {
+            html += buildSurvivalCheckUI();
+        } else if (schritt.typ === "jagdstock-erfolg") {
+            html += buildJagdstockErfolgUI();
+
         } else if (schritt.typ === "rechen-zeitreise") {
             html += buildRechenZeitreiseUI();
         } else if (schritt.typ === "rechen-methoden") {
@@ -2815,6 +3179,7 @@
             || schritt.typ === "feldtel-verbindung" || schritt.typ === "feldtel-buchstabieren" || schritt.typ === "feldtel-abhoeren" || schritt.typ === "feldtel-stillepost" || schritt.typ === "feldtel-erfolg"
             || schritt.typ === "schwimm-quiz" || schritt.typ === "leopold-mission" || schritt.typ === "dichte-labor" || schritt.typ === "araeometer-erfolg"
             || schritt.typ === "drache-fragt" || schritt.typ === "patina" || schritt.typ === "handwerk-ki" || schritt.typ === "pfeife-erfolg"
+            || schritt.typ === "wald-lauschen" || schritt.typ === "pirsch-adventure" || schritt.typ === "survival-check" || schritt.typ === "jagdstock-erfolg"
             || schritt.typ === "rechen-zeitreise" || schritt.typ === "rechen-methoden" || schritt.typ === "rechen-duell" || schritt.typ === "odhner-erfolg") {
             // Diese haben eigene Navigation
         } else if (schritt.typ === "game") {
@@ -2836,6 +3201,8 @@
         if (schritt.typ === "feldtel-buchstabieren") renderBuchstFrage();
         if (schritt.typ === "feldtel-abhoeren") renderAbhoerFrage();
         if (schritt.typ === "drache-fragt") renderDracheFrage();
+        if (schritt.typ === "wald-lauschen") renderWaldGeraeusch();
+        if (schritt.typ === "pirsch-adventure") renderPirschSzene();
         if (schritt.typ === "rechen-zeitreise") renderEpoche();
         if (schritt.typ === "rechen-methoden") renderMethode();
         if (schritt.typ === "rechen-duell") renderDuellAufgabe();
