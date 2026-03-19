@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Museum meets KI – Ausstellungsdokument</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap');
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f5f0e8;
+    --accent: #c42e2e;
+    --accent2: #2e5c8a;
+    --gold: #b8860b;
+    --muted: #6b6560;
+    --light-line: #d4cfc5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @page {
+    size: A4 landscape;
+    margin: 0mm;
+  }
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      background: none;
+      margin: 0;
+      padding: 0;
+    }
+    .page {
+      page-break-after: always;
+      page-break-inside: avoid;
+      margin: 0;
+      width: 100%;
+      height: 100vh;
+      box-shadow: none;
+    }
+    .page:last-child { page-break-after: avoid; }
+  }
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--ink);
+    background: #333;
+    line-height: 1.5;
+    font-size: 11pt;
+    margin: 0;
+    padding: 0;
+  }
+  .page {
+    width: 297mm;
+    height: 210mm;
+    background: var(--paper);
+    margin: 10px auto;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+  }
+  /* ===== PAGE 1: COVER ===== */
+  .cover {
+    display: flex;
+    height: 100%;
+  }
+  .cover-left {
+    width: 45%;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30mm 15mm 30mm 20mm;
+    position: relative;
+  }
+  .cover-left::after {
+    content: '';
+    position: absolute;
+    right: -40mm;
+    top: 0;
+    bottom: 0;
+    width: 80mm;
+    background: var(--ink);
+    clip-path: polygon(50% 0, 100% 0, 50% 100%, 0 100%);
+    z-index: 1;
+  }
+  .cover-right {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 30mm 20mm 30mm 50mm;
+    position: relative;
+    z-index: 2;
+  }
+  .cover-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8mm;
+  }
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36pt;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 6mm;
+  }
+  .cover-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 14pt;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 10mm;
+  }
+  .cover-right .cover-claim {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 10pt;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 90mm;
+    text-align: right;
+    border-right: 3px solid var(--accent);
+    padding-right: 5mm;
+  }
+  .cover-left .cover-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 72pt;
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--paper);
+    opacity: 0.12;
+    position: absolute;
+    bottom: 15mm;
+    left: 15mm;
+    z-index: 0;
+  }
+  .cover-left-content {
+    position: relative;
+    z-index: 2;
+  }
+  .cover-left-content .museum-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 4mm;
+  }
+  .cover-left-content .museum-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16pt;
+    font-weight: 700;
+    margin-bottom: 2mm;
+  }
+  .cover-left-content .museum-date {
+    font-size: 10pt;
+    opacity: 0.7;
+  }
+  .cover-footer {
+    position: absolute;
+    bottom: 8mm;
+    right: 20mm;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.5pt;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+  /* ===== PAGE 2: DAS ARTEFAKT ===== */
+  .page-inner {
+    padding: 12mm 18mm 15mm 18mm;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 3mm;
+    margin-bottom: 5mm;
+  }
+  .page-header .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28pt;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .page-header .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18pt;
+    font-weight: 700;
+    flex: 1;
+    margin-left: 5mm;
+  }
+  .page-header .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.5pt;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .content-area {
+    flex: 1;
+    display: flex;
+    gap: 8mm;
+  }
+  .col { flex: 1; }
+  .col-wide { flex: 1.5; }
+  .col-narrow { flex: 0.8; }
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 12pt;
+    font-weight: 700;
+    margin-bottom: 2mm;
+    color: var(--ink);
+  }
+  h4 {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 9.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 1.5mm;
+  }
+  p, .text-block {
+    font-size: 9.5pt;
+    line-height: 1.55;
+    text-align: justify;
+    hyphens: auto;
+    margin-bottom: 3mm;
+  }
+  .text-sm { font-size: 8.5pt; }
+  .pull-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 13pt;
+    font-style: italic;
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding: 3mm 0 3mm 5mm;
+    margin: 4mm 0;
+    line-height: 1.4;
+  }
+  .info-box {
+    background: rgba(46, 92, 138, 0.08);
+    border-left: 3px solid var(--accent2);
+    padding: 3mm 4mm;
+    margin: 3mm 0;
+    font-size: 9pt;
+  }
+  .info-box h4 { color: var(--accent2); margin-bottom: 1mm; }
+  .warn-box {
+    background: rgba(196, 46, 46, 0.07);
+    border-left: 3px solid var(--accent);
+    padding: 3mm 4mm;
+    margin: 3mm 0;
+    font-size: 9pt;
+  }
+  .divider {
+    height: 1px;
+    background: var(--light-line);
+    margin: 3mm 0;
+  }
+  .divider-v {
+    width: 1px;
+    background: var(--light-line);
+    align-self: stretch;
+  }
+  /* Newspaper style boxes */
+  .newspaper-card {
+    border: 1px solid var(--light-line);
+    padding: 3mm 4mm;
+    margin-bottom: 3mm;
+    position: relative;
+  }
+  .newspaper-card .np-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--ink);
+    display: inline-block;
+    padding: 0.5mm 2mm;
+    margin-bottom: 2mm;
+  }
+  .newspaper-card .np-name.krone { background: var(--accent); }
+  .newspaper-card .np-name.ooen { background: #2d6a2e; }
+  .newspaper-card .np-name.standard { background: var(--accent2); }
+  .newspaper-card .np-name.presse { background: #5c3d8f; }
+  .newspaper-card .np-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 10.5pt;
+    font-weight: 700;
+    margin-bottom: 1.5mm;
+    line-height: 1.25;
+  }
+  .newspaper-card .np-text {
+    font-size: 8.5pt;
+    line-height: 1.45;
+  }
+  /* Comparison table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+    margin-top: 2mm;
+  }
+  .compare-table th {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    padding: 2mm 3mm;
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .compare-table td {
+    padding: 1.5mm 3mm;
+    border-bottom: 1px solid var(--light-line);
+    vertical-align: top;
+  }
+  .compare-table tr:nth-child(even) td {
+    background: rgba(0,0,0,0.02);
+  }
+  /* Pro/Con columns */
+  .pro-con {
+    display: flex;
+    gap: 5mm;
+  }
+  .pro-col, .con-col {
+    flex: 1;
+    padding: 3mm 4mm;
+    font-size: 8.5pt;
+  }
+  .pro-col {
+    background: rgba(45, 106, 46, 0.08);
+    border-left: 3px solid #2d6a2e;
+  }
+  .con-col {
+    background: rgba(196, 46, 46, 0.07);
+    border-left: 3px solid var(--accent);
+  }
+  .pro-col h4 { color: #2d6a2e; }
+  .con-col h4 { color: var(--accent); }
+  .pro-con li {
+    margin-bottom: 1mm;
+    line-height: 1.4;
+  }
+  ul {
+    padding-left: 4mm;
+    margin-bottom: 2mm;
+  }
+  li {
+    font-size: 9pt;
+    line-height: 1.45;
+    margin-bottom: 1mm;
+  }
+  .page-num {
+    position: absolute;
+    bottom: 6mm;
+    right: 18mm;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    color: var(--muted);
+  }
+  .page-num-left {
+    position: absolute;
+    bottom: 6mm;
+    left: 18mm;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6pt;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  /* Propaganda timeline visual */
+  .timeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 3mm 0;
+  }
+  .timeline-node {
+    text-align: center;
+    flex: 1;
+  }
+  .timeline-dot {
+    width: 8mm;
+    height: 8mm;
+    border-radius: 50%;
+    background: var(--accent);
+    margin: 0 auto 1.5mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 7pt;
+    font-weight: 700;
+  }
+  .timeline-dot.blue { background: var(--accent2); }
+  .timeline-dot.dark { background: var(--ink); }
+  .timeline-label {
+    font-size: 7pt;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .timeline-line {
+    height: 2px;
+    flex: 0.5;
+    background: var(--light-line);
+    margin-bottom: 5mm;
+  }
+  /* Big number decorations */
+  .big-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48pt;
+    font-weight: 900;
+    color: var(--accent);
+    opacity: 0.1;
+    position: absolute;
+  }
+  .footer-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4mm;
+    background: var(--ink);
+  }
+  .accent-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2mm;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 33%, var(--gold) 33%, var(--gold) 66%, var(--accent2) 66%, var(--accent2) 100%);
+  }
+  /* Stamp/seal decoration */
+  .stamp {
+    width: 22mm;
+    height: 22mm;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.5pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    transform: rotate(-12deg);
+    line-height: 1.2;
+  }
+  .zwei-col { display: flex; gap: 6mm; }
+  .zwei-col > div { flex: 1; }
+  .highlight-word {
+    background: linear-gradient(180deg, transparent 55%, rgba(196,46,46,0.15) 55%);
+    padding: 0 1px;
+  }
+</style>
+</head>
+<body>
+<!-- ==================== PAGE 1: COVER ==================== -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-left">
+      <div class="cover-big">KI</div>
+      <div class="cover-left-content">
+        <div class="museum-line">Heimat- und Kulturverein Vorchdorf</div>
+        <div class="museum-name">Museum meets KI</div>
+        <div class="museum-date">Sonderausstellung · März 2026</div>
+      </div>
+    </div>
+    <div class="cover-right">
+      <div class="cover-tag">Ausstellungsbegleiter</div>
+      <div class="cover-title">Von Propaganda<br>zu Algorithmen</div>
+      <div class="cover-subtitle">Wie Manipulation funktioniert –<br>damals mit Streichhölzern,<br>heute mit künstlicher Intelligenz</div>
+      <div class="cover-claim">
+        Ein Streichholzheftchen aus dem Zweiten Weltkrieg zeigt uns:
+        Propaganda war schon immer Teil des Alltags. Heute übernehmen
+        Algorithmen diese Rolle – unsichtbar, skalierbar und gefährlicher
+        denn je.
+      </div>
+    </div>
+  </div>
+  <div class="cover-footer">MUSEUM MEETS KI · VORCHDORF · 2026</div>
+</div>
+<!-- ==================== PAGE 2: DAS ARTEFAKT ==================== -->
+<div class="page">
+  <div class="accent-stripe"></div>
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Das Artefakt – Ein Streichholz erzählt Geschichte</span>
+      <span class="section-tag">Propaganda im Alltag</span>
+    </div>
+    <div class="content-area">
+      <div class="col">
+        <h3>„Der stille Funke der Pflicht"</h3>
+        <p class="text-sm" style="font-style: italic; color: var(--muted); margin-bottom: 1mm;">Text 1 · Essayistisch-lyrisch, verdichtet, zeitlos</p>
+        <p class="text-sm">
+          Ich bin ein kleines Zeugnis einer großen Zeit. Ein Streichholzheftchen, geboren in den rauen Jahren des Zweiten Weltkriegs, gefertigt von der Match Corp. of America in Chicago. Meine Hülle aus Karton und meine Reihe von Zündhölzern mögen unscheinbar wirken, doch ich trage eine Botschaft, die einst das Herz einer Nation bewegte: „Buy War Bonds and Stamps – Close Cover Before Striking."
+        </p>
+        <p class="text-sm">
+          Ich erinnere mich an die Hände, die mich hielten. Die zitternden Hände eines Soldaten, der im Feld eine Zigarette anzündete und dabei meine Botschaft las, die ihn an die Heimat erinnerte. Die entschlossenen Hände einer Fabrikarbeiterin, deren Schicht endete, als sie meine Hülle zuklappte und ihre Gedanken zu ihrem Bruder an der Front wanderten.
+        </p>
+        <p class="text-sm">
+          Ich war mehr als nur ein Feuerbringer; ich war ein stummer Mahner, ein kleiner Botschafter der Pflicht und des Patriotismus. Auf meiner Rückseite prangte eine noch direktere Aufforderung: „STEP ON IT! WORK TO CRUSH THE AXIS!" Ein stilisierter Stiefel zertrat die Karikaturen der Feinde.
+        </p>
+        <p class="text-sm">
+          Die Jahre vergingen, der Krieg endete. Meine Botschaft verhallte, wurde zu einem Echo einer vergangenen Ära. Heute bin ich ein Relikt, eine Erinnerung an eine Zeit, in der jeder kleine Beitrag zählte. Ich stehe hier, ein stummer Zeuge des Wandels. Meine Flammen sind erloschen, doch meine Geschichte brennt weiter.
+        </p>
+      </div>
+      <div class="divider-v"></div>
+      <div class="col">
+        <h3>„Der Funke der Pflicht"</h3>
+        <p class="text-sm" style="font-style: italic; color: var(--muted); margin-bottom: 1mm;">Text 2 · Narrativ-realistisch, szenisch, konkret</p>
+        <p class="text-sm">
+          Ich bin ein kleiner, unscheinbarer Zeuge einer gewaltigen Zeit – des Zweiten Weltkriegs. Meine Pappe, vergilbt und doch standhaft, trägt die Botschaft, die einst Millionen Herzen erreichte: „Buy WAR BONDS AND STAMPS".
+        </p>
+        <p class="text-sm">
+          Ich erinnere mich lebhaft an jenen Abend im späten Herbst 1943, als die Fabrikhalle im Herzen Chicagos summte wie ein Bienenstock. Rauch lag in der Luft, vermischt mit dem Geruch von Metall und menschlichem Schweiß. Ein junger Mann, sein Gesicht gezeichnet von der Müdigkeit einer Doppelschicht, zog mich aus seiner Hosentasche. Seine Hände, rau von der Arbeit an der Fließbandmaschine, zitterten leicht. Er war Joe, ein Schweißer, dessen älterer Bruder an der Front in Italien kämpfte.
+        </p>
+        <p class="text-sm">
+          Joes Blick fiel auf meine Vorderseite, auf den entschlossenen Soldaten, der dort abgebildet war. Dann drehte er mich, und die drastische Botschaft auf meiner Rückseite, „STEP ON IT! WORK TO CRUSH THE AXIS!", schien ihn persönlich anzusprechen. Er zog ein Zündholz heraus, schloss bedächtig meine Hülle und strich den Kopf über die Reibefläche. Ein scharfer Geruch von Schwefel, dann die kleine, tanzende Flamme.
+        </p>
+        <p class="text-sm">
+          Am nächsten Zahltag, so wusste ich, würde Joe einen weiteren Teil seines schwer verdienten Lohns in Kriegsanleihen investieren. Ich war mehr als nur ein Feuerzeug; ich war ein täglicher Anstoß, eine stille Mahnung an die Pflicht. Ein kleiner Funke, der die Flamme des Patriotismus am Brennen hielt.
+        </p>
+      </div>
+      <div class="divider-v"></div>
+      <div class="col-narrow">
+        <div class="info-box" style="margin-top: 0;">
+          <h4>Was Sie gerade gelesen haben</h4>
+          <p class="text-sm">Beide Texte wurden von <strong>Künstlicher Intelligenz</strong> verfasst – mit derselben Aufgabe, aber in unterschiedlichen Stilen. Die KI wählte zufällig aus vier Stilrichtungen.</p>
+        </div>
+        <div class="divider"></div>
+        <h4>Der Vergleich</h4>
+        <table class="compare-table">
+          <tr><th>Aspekt</th><th>Text 1</th><th>Text 2</th></tr>
+          <tr><td><strong>Zeit</strong></td><td>diffus, rückblickend</td><td>exakt, historisch</td></tr>
+          <tr><td><strong>Bewegung</strong></td><td>statisch</td><td>dynamisch</td></tr>
+          <tr><td><strong>Haltung</strong></td><td>meditativ</td><td>erzählerisch</td></tr>
+          <tr><td><strong>Nähe</strong></td><td>distanziert</td><td>intim</td></tr>
+          <tr><td><strong>Sprache</strong></td><td>= Bedeutung</td><td>= Erlebnis</td></tr>
+          <tr><td><strong>Ideal für</strong></td><td>Ausstellung</td><td>Lesung</td></tr>
+        </table>
+        <div class="divider"></div>
+        <div class="pull-quote" style="font-size: 10pt;">
+          „Text 1 fragt: Was bedeutete dieses Objekt für eine Epoche?<br><br>
+          Text 2 zeigt: Wie wirkte es in einem konkreten Leben?"
+        </div>
+        <div class="stamp" style="margin: 3mm auto 0;">
+          KI-generiert<br>·<br>Chat-GPT<br>2025
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar"></div>
+  <span class="page-num">02</span>
+  <span class="page-num-left">MUSEUM MEETS KI · VORCHDORF</span>
+</div>
+<!-- ==================== PAGE 3: PROPAGANDA DAMALS → KI HEUTE ==================== -->
+<div class="page">
+  <div class="accent-stripe"></div>
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Von Streichhölzern zu Algorithmen – Propaganda im Wandel</span>
+      <span class="section-tag">Manipulation gestern & heute</span>
+    </div>
+    <div class="content-area">
+      <div class="col">
+        <h3>Propaganda auf dem Streichholz</h3>
+        <p>Im Zweiten Weltkrieg war Propaganda allgegenwärtig – nicht nur auf Plakaten und im Radio, sondern auf den alltäglichsten Gegenständen. Streichholzheftchen wurden zu Miniatur-Plakaten: „Buy War Bonds", „Crush the Axis". Millionenfach verteilt, trafen diese Botschaften die Menschen dort, wo sie am wenigsten mit Beeinflussung rechneten – beim Anzünden einer Zigarette.</p>
+        <div class="pull-quote">
+          Die wirksamste Propaganda ist jene, die man nicht als solche erkennt.
+        </div>
+        <p>Das Prinzip war simpel und effektiv: Wiederholung erzeugt Normalität. Wer die Botschaft hundertmal täglich sieht, stellt sie nicht mehr infrage. Sie wird Teil des Alltags, Teil des Denkens.</p>
+        <div class="divider"></div>
+        <h3>Die Mechanik dahinter</h3>
+        <p>Die Propagandatechniken des 20. Jahrhunderts folgten klaren Mustern: <strong>Emotionalisierung</strong> (Feindbilder, Patriotismus), <strong>Vereinfachung</strong> (Slogans statt Argumente), <strong>Omnipräsenz</strong> (jeder Gegenstand als Trägermedium) und <strong>Normalisierung</strong> (Wiederholung bis zur Selbstverständlichkeit).</p>
+      </div>
+      <div class="divider-v"></div>
+      <div class="col" style="flex: 1.3;">
+        <h3>KI als Propagandawerkzeug des 21. Jahrhunderts</h3>
+        <p>Was früher Streichhölzer und Plakate erledigten, übernehmen heute Algorithmen – unsichtbar, personalisiert und in einer Geschwindigkeit und Reichweite, die jeden historischen Vergleich sprengt.</p>
+        <div class="timeline" style="margin: 5mm 0;">
+          <div class="timeline-node">
+            <div class="timeline-dot">1940</div>
+            <div class="timeline-label">Streichholz<br>Plakat, Radio</div>
+          </div>
+          <div class="timeline-line"></div>
+          <div class="timeline-node">
+            <div class="timeline-dot blue">1960</div>
+            <div class="timeline-label">Fernsehen<br>Massenmedien</div>
+          </div>
+          <div class="timeline-line"></div>
+          <div class="timeline-node">
+            <div class="timeline-dot blue">2010</div>
+            <div class="timeline-label">Social Media<br>Filterblasen</div>
+          </div>
+          <div class="timeline-line"></div>
+          <div class="timeline-node">
+            <div class="timeline-dot dark">2025</div>
+            <div class="timeline-label">KI-generiert<br>Personalisiert</div>
+          </div>
+        </div>
+        <p>Der entscheidende Unterschied: Historische Propaganda war <strong>sichtbar</strong>. Man konnte das Plakat identifizieren, den Slogan erkennen, den Absender benennen. KI-gesteuerte Beeinflussung ist <strong>unsichtbar</strong>. Sie kennt Ihre Vorlieben, Ihre Ängste, Ihre Schwächen – und nutzt sie.</p>
+        <div class="warn-box">
+          <h4 style="color: var(--accent);">⚠ Die neue Dimension</h4>
+          <p class="text-sm">Wer heute über nahezu unbegrenzte finanzielle Mittel verfügt, kann mit KI eine maßgeschneiderte Realität für Millionen von Menschen erschaffen. Deepfakes, generierte Nachrichtenartikel, automatisierte Social-Media-Kampagnen – die Werkzeuge sind da, die Kosten sinken täglich. Was früher eine ganze Propagandaabteilung brauchte, erledigt heute ein einzelner Prompt.</p>
+        </div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="col-narrow">
+        <h4>Damals vs. Heute</h4>
+        <table class="compare-table">
+          <tr><th>Aspekt</th><th>1940er</th><th>2020er</th></tr>
+          <tr><td><strong>Medium</strong></td><td>Plakate, Heftchen</td><td>Feeds, Chats</td></tr>
+          <tr><td><strong>Targeting</strong></td><td>Alle gleich</td><td>Individuell</td></tr>
+          <tr><td><strong>Sichtbar?</strong></td><td>Ja</td><td>Nein</td></tr>
+          <tr><td><strong>Absender</strong></td><td>Erkennbar</td><td>Verschleiert</td></tr>
+          <tr><td><strong>Kosten</strong></td><td>Hoch</td><td>Minimal</td></tr>
+          <tr><td><strong>Reichweite</strong></td><td>National</td><td>Global</td></tr>
+          <tr><td><strong>Tempo</strong></td><td>Wochen</td><td>Sekunden</td></tr>
+          <tr><td><strong>Korrektur</strong></td><td>Möglich</td><td>Zu spät</td></tr>
+        </table>
+        <div class="divider"></div>
+        <div class="info-box">
+          <h4>Denkanstoß</h4>
+          <p class="text-sm">Das Streichholzheftchen trug seinen Auftraggeber offen: die US-Regierung. Wer steckt hinter dem Algorithmus, der entscheidet, welche Nachricht Sie morgen früh als Erstes sehen?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar"></div>
+  <span class="page-num">03</span>
+  <span class="page-num-left">MUSEUM MEETS KI · VORCHDORF</span>
+</div>
+<!-- ==================== PAGE 4: KI & MEINUNGSBILDUNG ==================== -->
+<div class="page">
+  <div class="accent-stripe"></div>
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Wie KI unsere Köpfe formt – ohne dass wir es merken</span>
+      <span class="section-tag">Die unsichtbare Beeinflussung</span>
+    </div>
+    <div class="content-area">
+      <div class="col" style="flex: 1.2;">
+        <h3>Die stille Übernahme des Denkens</h3>
+        <p>Künstliche Intelligenz beeinflusst unsere Meinungsbildung auf Wegen, die wir oft nicht einmal wahrnehmen. Es beginnt nicht mit einer offensichtlichen Lüge – es beginnt mit der <span class="highlight-word">Auswahl dessen, was wir sehen</span>.</p>
+        <p>Algorithmen entscheiden, welche Nachrichten in unserem Feed erscheinen, welche Produkte uns empfohlen werden, welche politischen Botschaften uns erreichen. Diese Entscheidungen basieren nicht auf journalistischer Qualität oder gesellschaftlicher Relevanz, sondern auf einem einzigen Kriterium: <strong>Engagement</strong>. Was Klicks, Verweildauer und Emotionen erzeugt, wird bevorzugt – unabhängig von Wahrheit oder Nutzen.</p>
+        <div class="pull-quote">
+          Der gefährlichste Algorithmus ist nicht jener, der lügt – sondern jener, der die Wahrheit so auswählt, dass nur eine Version davon übrig bleibt.
+        </div>
+        <h3>Die Werkzeuge der Einflussnahme</h3>
+        <p><strong>Deepfakes</strong> erzeugen täuschend echte Videos von Personen, die Dinge sagen, die sie nie gesagt haben. <strong>Generierte Texte</strong> fluten soziale Netzwerke mit scheinbar authentischen Meinungen. <strong>Personalisierte Desinformation</strong> spricht gezielt Ängste und Vorurteile einzelner Menschen an. <strong>Bot-Netzwerke</strong> simulieren gesellschaftliche Mehrheiten, die es nicht gibt.</p>
+      </div>
+      <div class="divider-v"></div>
+      <div class="col" style="flex: 1.2;">
+        <h3>Geld regiert die Algorithmen</h3>
+        <p>Die Geschichte lehrt uns: Wer die Kommunikationskanäle kontrolliert, kontrolliert die Meinung. Im Zweiten Weltkrieg war es der Staat, der Streichhölzer bedrucken ließ. Heute sind es milliardenschwere Akteure – ob Regierungen, Konzerne oder Einzelpersonen –, die mit nahezu unbegrenzten finanziellen Mitteln die digitale Informationslandschaft nach ihren Vorstellungen formen können.</p>
+        <div class="warn-box">
+          <h4 style="color: var(--accent);">Die Demokratie unter Druck</h4>
+          <p class="text-sm">Wenn eine einzelne Person oder Gruppe genug Geld hat, um KI-gestützte Desinformationskampagnen zu finanzieren, wird die demokratische Meinungsbildung zur Farce. Die Kosten für eine globale Kampagne sinken, während die Wirkung steigt. Was früher Millionen kostete, ist heute für einen Bruchteil möglich. Die Frage ist nicht ob, sondern wie stark unsere Wahrnehmung der Realität bereits verzerrt ist.</p>
+        </div>
+        <h3>Was können wir tun?</h3>
+        <ul>
+          <li><strong>Quellenkritik:</strong> Wer hat diesen Inhalt erstellt? Warum sehe ich ihn?</li>
+          <li><strong>Medienkompetenz:</strong> Emotionale Reaktionen als Warnsignal erkennen</li>
+          <li><strong>Vielfalt:</strong> Bewusst unterschiedliche Quellen konsumieren</li>
+          <li><strong>Transparenz fordern:</strong> Algorithmen müssen offengelegt werden</li>
+          <li><strong>Regulierung unterstützen:</strong> Gesetzliche Rahmenbedingungen für KI-Inhalte</li>
+        </ul>
+      </div>
+      <div class="divider-v"></div>
+      <div class="col-narrow">
+        <div style="background: var(--ink); color: var(--paper); padding: 4mm; margin-bottom: 4mm;">
+          <h4 style="color: var(--gold); margin-bottom: 2mm;">Wussten Sie?</h4>
+          <p class="text-sm" style="color: var(--paper); opacity: 0.9;">Im US-Wahlkampf 2024 wurden Millionen KI-generierter Inhalte auf Social Media verbreitet – von gefälschten Nachrichtenartikeln bis zu manipulierten Audioclips. Viele davon wurden nie als KI-generiert gekennzeichnet.</p>
+        </div>
+        <div style="background: var(--ink); color: var(--paper); padding: 4mm; margin-bottom: 4mm;">
+          <h4 style="color: var(--gold); margin-bottom: 2mm;">Das Geschäftsmodell</h4>
+          <p class="text-sm" style="color: var(--paper); opacity: 0.9;">Social-Media-Plattformen verdienen an Engagement – nicht an Wahrheit. Je emotionaler, desto profitabler. KI optimiert diesen Kreislauf perfekt.</p>
+        </div>
+        <div style="background: var(--ink); color: var(--paper); padding: 4mm;">
+          <h4 style="color: var(--gold); margin-bottom: 2mm;">Die Parallele</h4>
+          <p class="text-sm" style="color: var(--paper); opacity: 0.9;">1943 erreichte „Buy War Bonds" Millionen über Streichhölzer. 2025 erreicht ein KI-generierter Deepfake Milliarden über Social Media – in Sekunden.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar"></div>
+  <span class="page-num">04</span>
+  <span class="page-num-left">MUSEUM MEETS KI · VORCHDORF</span>
+</div>
+<!-- ==================== PAGE 5: PRESSETEXTE ==================== -->
+<div class="page">
+  <div class="accent-stripe"></div>
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Eine Nachricht, vier Wahrheiten – KI schreibt Zeitung</span>
+      <span class="section-tag">Experiment: Medienstile</span>
+    </div>
+    <div style="margin-bottom: 3mm;">
+      <p><strong>Aufgabe an die KI:</strong> <em>„Verfasse über den KI-Hype um den Oberösterreicher Peter Steinberger vier kurze Pressetexte – im Stil der Kronen Zeitung, der OÖN, des Standards und der Presse."</em> – Das Ergebnis zeigt, wie dieselbe Information je nach medialem Stil völlig unterschiedlich wirkt:</p>
+    </div>
+    <div class="content-area" style="gap: 5mm;">
+      <div class="col">
+        <div class="newspaper-card">
+          <span class="np-name krone">📰 Kronen Zeitung</span>
+          <div class="np-headline">Oberösterreicher erobert Silicon Valley mit KI-Superhirn!</div>
+          <p class="np-text">Ein junger Tüftler aus Oberösterreich sorgt weltweit für Aufsehen: Peter Steinberger hat mit „OpenClaw" eine künstliche Intelligenz entwickelt, die wie ein digitaler Sekretär arbeitet – Termine buchen, Reisen planen, E-Mails schreiben. In den USA wird das Projekt bereits als „magisch" gefeiert. Doch Experten warnen: So viel Autonomie für Maschinen könnte auch Risiken bergen. Klar ist: Der KI-Hype hat einen neuen Star – und er kommt aus Österreich.</p>
+        </div>
+        <div class="info-box" style="font-size: 7.5pt;">
+          <strong>Stil-Analyse:</strong> Emotional, zugespitzt, boulevardesk. Personalisierung durch „junger Tüftler", dramatische Zuspitzung, nationale Stolz-Erzählung.
+        </div>
+      </div>
+      <div class="col">
+        <div class="newspaper-card">
+          <span class="np-name ooen">🗞️ OÖ Nachrichten</span>
+          <div class="np-headline">KI-Agent aus Oberösterreich sorgt international für Aufsehen</div>
+          <p class="np-text">Der Oberösterreicher Peter Steinberger hat mit dem KI-Projekt „OpenClaw" einen autonomen digitalen Assistenten entwickelt, der selbstständig Aufgaben wie Terminbuchungen oder Recherchen übernimmt. In der internationalen Tech-Szene stößt das Projekt auf große Resonanz. Fachleute sehen darin einen wichtigen Schritt in Richtung produktiver KI-Systeme, weisen jedoch auch auf offene Fragen zu Sicherheit und Kontrolle hin.</p>
+        </div>
+        <div class="info-box" style="font-size: 7.5pt;">
+          <strong>Stil-Analyse:</strong> Regional, sachlich-bürgerlich. Nüchterne Faktenpräsentation, regionaler Bezug, ausgewogene Darstellung von Chancen und Risiken.
+        </div>
+      </div>
+      <div class="col">
+        <div class="newspaper-card">
+          <span class="np-name standard">📰 Der Standard</span>
+          <div class="np-headline">Autonome KI aus Österreich: Hype oder nächste Stufe der Automatisierung?</div>
+          <p class="np-text">Mit „OpenClaw" hat der Oberösterreicher Peter Steinberger einen KI-Agenten geschaffen, der eigenständig digitale Aufgaben erledigt. Befürworter sehen darin einen Durchbruch in der Mensch-Maschine-Interaktion, Kritiker warnen vor Kontrollverlust und neuen Abhängigkeiten. Der Fall zeigt exemplarisch, wie rasant sich KI-Systeme von Assistenzsoftware zu autonomen Akteuren entwickeln – und wie dringend ethische und regulatorische Debatten werden.</p>
+        </div>
+        <div class="info-box" style="font-size: 7.5pt;">
+          <strong>Stil-Analyse:</strong> Analytisch, gesellschaftlich-kritisch. Einordnung, Kontextualisierung, Betonung ethischer Dimensionen.
+        </div>
+      </div>
+      <div class="col">
+        <div class="newspaper-card">
+          <span class="np-name presse">📰 Die Presse</span>
+          <div class="np-headline">OpenClaw: Ein österreichischer Beitrag zur nächsten KI-Generation</div>
+          <p class="np-text">Der oberösterreichische Entwickler Peter Steinberger sorgt mit seinem KI-Agenten „OpenClaw" für Aufmerksamkeit in der internationalen Tech-Community. Das System ist darauf ausgelegt, digitale Aufgaben autonom auszuführen und könnte den Produktivitätsbegriff in Wissensarbeit neu definieren. Während Investoren und Entwickler großes Potenzial sehen, diskutieren Experten bereits über Governance-Fragen, Sicherheitsarchitekturen und gesellschaftliche Implikationen.</p>
+        </div>
+        <div class="info-box" style="font-size: 7.5pt;">
+          <strong>Stil-Analyse:</strong> Elitär, wirtschafts- und technologieorientiert. Fachsprache, internationale Einordnung, Governance-Perspektive.
+        </div>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 1mm;">
+      <p style="font-size: 9pt; font-style: italic; color: var(--muted);">
+        ↑ Alle vier Texte wurden von derselben KI verfasst. Selbe Fakten. Selbe Quelle. Vier verschiedene Realitäten. ↑
+      </p>
+    </div>
+  </div>
+  <div class="footer-bar"></div>
+  <span class="page-num">05</span>
+  <span class="page-num-left">MUSEUM MEETS KI · VORCHDORF</span>
+</div>
+<!-- ==================== PAGE 6: JOURNALISMUS DER ZUKUNFT ==================== -->
+<div class="page">
+  <div class="accent-stripe"></div>
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Wohin geht der Journalismus?</span>
+      <span class="section-tag">Zukunft der Medien</span>
+    </div>
+    <div class="content-area">
+      <div class="col" style="flex: 1.1;">
+        <h3>Drei parallele Entwicklungen</h3>
+        <p>Der Journalismus bewegt sich nicht in eine einzige Richtung – er spaltet sich in drei gleichzeitige Strömungen:</p>
+        <div class="info-box" style="margin-top: 2mm;">
+          <h4 style="color: var(--accent2);">1 · Automatisierung der Routine</h4>
+          <p class="text-sm">KI übernimmt Erstmeldungen, Zusammenfassungen, Standardformate wie Börsenberichte oder Sportresultate, SEO-optimierte Texte und regionale Varianten desselben Inhalts. Das ist irreversibel.</p>
+        </div>
+        <div class="info-box">
+          <h4 style="color: var(--accent2);">2 · Polarisierung der Stile</h4>
+          <p class="text-sm">KI verstärkt bestehende Medientypen, statt sie zu nivellieren. Die vier Pressetexte auf der vorigen Seite sind kein Zufall, sondern ein Blick in die Zukunft: Jede Zeitung bekommt ihren eigenen KI-Tonfall.</p>
+        </div>
+        <div class="info-box">
+          <h4 style="color: var(--accent2);">3 · Aufwertung von Haltung & Kontext</h4>
+          <p class="text-sm">Was KI nicht kann: investigative Recherche, moralische Bewertung, Machtkritik, Quellenkonflikte aufdecken, persönliche Verantwortung tragen. Genau dort wird Journalismus wieder wertvoll.</p>
+        </div>
+        <div class="divider"></div>
+        <h3>Die neue Rolle der Journalist:innen</h3>
+        <p>Journalist:innen werden weniger Schreiber, dafür mehr: <strong>Kuratoren, Analysten, Prüfer, Einordner, Erzähler mit Haltung.</strong></p>
+        <div class="pull-quote" style="font-size: 11pt;">KI schreibt Texte – Journalist:innen geben ihnen Bedeutung.</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="col" style="flex: 1.2;">
+        <div class="pro-con">
+          <div class="pro-col">
+            <h4>✦ Vorteile</h4>
+            <ul style="padding-left: 3mm;">
+              <li><strong>Geschwindigkeit:</strong> Nachrichten erscheinen sofort, regionale Themen bekommen internationale Sichtbarkeit, Mehrsprachigkeit wird trivial</li>
+              <li><strong>Demokratisierung:</strong> Kleine Redaktionen können Inhalte liefern wie große. Lokaljournalismus überlebt länger. Einzeljournalisten bekommen „Redaktionspower"</li>
+              <li><strong>Entlastung:</strong> Wenn KI Routine übernimmt, können Journalist:innen länger recherchieren, besser prüfen, tiefer einordnen</li>
+            </ul>
+          </div>
+          <div class="con-col">
+            <h4>⚠ Gefahren</h4>
+            <ul style="padding-left: 3mm;">
+              <li><strong>Austauschbarkeit:</strong> Wenn Stil und Dramaturgie reproduzierbar sind, wird Journalismus formal korrekt, aber seelenlos</li>
+              <li><strong>Echo-Journalismus:</strong> KI belohnt Zuspitzung, Vereinfachung, Wiederholung – weniger Widerspruch, weniger Originalität</li>
+              <li><strong>Verantwortungsverlust:</strong> KI haftet nicht, entschuldigt sich nicht, trägt keine moralische Last</li>
+              <li><strong>Agenda-Setting:</strong> KI gewichtet nach Trainingsdaten und normalisiert das Sagbare statistisch</li>
+            </ul>
+          </div>
+        </div>
+        <div class="divider" style="margin-top: 4mm;"></div>
+        <h3>Die große Trennlinie der Zukunft</h3>
+        <div class="zwei-col" style="gap: 4mm; margin-top: 2mm;">
+          <div style="background: rgba(196,46,46,0.06); padding: 3mm 4mm; border-top: 3px solid var(--accent);">
+            <h4 style="color: var(--accent);">Verlierer</h4>
+            <p class="text-sm">Reine Nachrichtenabschreiber · Klickgetriebene Mittelmaß-Portale · Austauschbare Online-Magazine</p>
+          </div>
+          <div style="background: rgba(45,106,46,0.06); padding: 3mm 4mm; border-top: 3px solid #2d6a2e;">
+            <h4 style="color: #2d6a2e;">Gewinner</h4>
+            <p class="text-sm">Starke Marken · Klare Haltung · Investigative Kompetenz · Erkennbare Autor:innen</p>
+          </div>
+        </div>
+        <div style="margin-top: 4mm; background: var(--ink); color: var(--paper); padding: 4mm 5mm;">
+          <p class="text-sm" style="color: var(--paper); text-align: center; font-family: 'Playfair Display', serif; font-size: 11pt; font-style: italic;">
+            „KI bedeutet nicht das Ende des Journalismus, sondern das Ende des beliebigen Journalismus, das Ende der reinen Textproduktion und das Ende der Unsichtbarkeit von Haltung. Was bleibt, ist: Journalismus als Verantwortung, nicht als Output."
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar"></div>
+  <span class="page-num">06</span>
+  <span class="page-num-left">MUSEUM MEETS KI · VORCHDORF</span>
+</div>
+<!-- ==================== PAGE 7: SCHLUSS ==================== -->
+<div class="page">
+  <div class="accent-stripe"></div>
+  <div class="page-inner" style="justify-content: center; text-align: center; padding: 25mm 35mm;">
+    <div style="margin-bottom: 10mm;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 4px; text-transform: uppercase; color: var(--muted); margin-bottom: 5mm;">Nachwort</div>
+      <div style="font-family: 'Playfair Display', serif; font-size: 28pt; font-weight: 900; line-height: 1.15; margin-bottom: 6mm;">
+        Die Flamme brennt weiter –<br>aber wer hält das Streichholz?
+      </div>
+    </div>
+    <div style="max-width: 200mm; margin: 0 auto; text-align: justify;">
+      <p style="font-size: 11pt; line-height: 1.7; margin-bottom: 5mm;">
+        Ein kleines Streichholzheftchen aus den 1940er-Jahren hat uns eine große Geschichte erzählt. Es hat gezeigt, wie Propaganda funktioniert: nicht durch laute Parolen, sondern durch stille Allgegenwart. Durch die Wiederholung einer Botschaft, bis sie Teil des eigenen Denkens wird.
+      </p>
+      <p style="font-size: 11pt; line-height: 1.7; margin-bottom: 5mm;">
+        Künstliche Intelligenz hat dieses Prinzip perfektioniert. Sie schreibt in jedem Stil, spricht jede Zielgruppe an, erzeugt jede gewünschte Emotion – und das in Sekundenbruchteilen, millionenfach, personalisiert. Die Frage ist nicht mehr, ob KI unsere Meinung beeinflusst. Die Frage ist, ob wir es bemerken.
+      </p>
+      <p style="font-size: 11pt; line-height: 1.7; margin-bottom: 8mm;">
+        Diese Ausstellung lädt Sie ein, genauer hinzusehen. Nicht mit Angst, sondern mit Bewusstsein. Denn das wirksamste Gegenmittel gegen jede Form der Manipulation war schon immer dasselbe: eine Gesellschaft, die nachfragt, hinterfragt und selbst denkt.
+      </p>
+    </div>
+    <div style="display: flex; justify-content: center; gap: 15mm; margin-bottom: 10mm;">
+      <div class="stamp" style="width: 30mm; height: 30mm; border-color: var(--ink); color: var(--ink);">
+        Museum<br>meets<br>KI<br>·<br>2026
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--light-line); padding-top: 5mm;">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 2px; color: var(--muted); text-transform: uppercase;">
+        Heimat- und Kulturverein Vorchdorf · Museum im Steinmayr-Haus
+      </p>
+      <p style="font-family: 'Source Sans 3', sans-serif; font-size: 8pt; color: var(--muted); margin-top: 2mm;">
+        Dieses Dokument wurde im Rahmen der Sonderausstellung „Museum meets KI" (März 2026) erstellt.
+        <br>Kuratiert von Martin Fischer · Verein Zukunft Vorchdorf
+      </p>
+    </div>
+  </div>
+  <div class="footer-bar"></div>
+  <span class="page-num">07</span>
+</div>
+</body>
+</html>
