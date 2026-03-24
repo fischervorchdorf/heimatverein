@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI erweckt Geschichte – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #00e5ff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #00e5ff;
+            letter-spacing: 2px;
+        }
+
+        /* Intro */
+        .intro {
+            text-align: center;
+            padding: 3rem 1.5rem 1.5rem;
+        }
+
+        .intro h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-weight: 900;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ffffff, #00e5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .intro p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Stage Area */
+        .stage {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            position: relative;
+        }
+
+        .stage-frame {
+            position: relative;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            background: #0a0a0a;
+            aspect-ratio: 16/10;
+        }
+
+        .stage-frame img,
+        .stage-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Photo phase */
+        #photo-phase {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.5s ease;
+        }
+
+        #photo-phase img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        #photo-phase.fade-out {
+            opacity: 0;
+        }
+
+        /* Video phase */
+        #video-phase {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #video-phase.visible {
+            opacity: 1;
+        }
+
+        #video-phase video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Caption */
+        .caption {
+            text-align: center;
+            margin-top: 1.5rem;
+            min-height: 80px;
+        }
+
+        .caption-text {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+            transition: opacity 0.8s ease;
+        }
+
+        .caption-label {
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .label-original {
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #d4af37;
+        }
+
+        .label-ki {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: #00e5ff;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            max-width: 900px;
+            margin: 1.5rem auto 0;
+            padding: 0 1.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #d4af37, #00e5ff);
+            border-radius: 3px;
+            transition: width 0.3s linear;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1px;
+        }
+
+        .progress-labels span.active {
+            color: #00e5ff;
+        }
+
+        /* Replay button */
+        .replay-btn {
+            display: none;
+            margin: 2rem auto;
+            padding: 0.7rem 2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #00e5ff;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .replay-btn:hover {
+            background: rgba(0, 229, 255, 0.18);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+        }
+
+        .replay-btn.visible { display: block; }
+
+        /* Explanation section */
+        .explanation {
+            max-width: 750px;
+            margin: 3rem auto;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .explanation h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: rgba(0, 229, 255, 0.5);
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+
+        .explanation p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            margin: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(0, 229, 255, 0.06);
+            border: 1px solid rgba(0, 229, 255, 0.12);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(0, 229, 255, 0.05);
+        }
+        .footer a { color: rgba(255, 255, 255, 0.3); text-decoration: none; }
+        .footer a:hover { color: #00e5ff; }
+
+        @media (max-width: 600px) {
+            .intro { padding: 2rem 1rem 1rem; }
+            .stage-frame { aspect-ratio: 4/3; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zur Ausstellung
+        </a>
+        <div class="page-title">KI ERWECKT GESCHICHTE</div>
+    </div>
+
+    <!-- Intro -->
+    <div class="intro">
+        <h1>Wenn Fotos lebendig werden</h1>
+        <p>Ein historisches Foto aus Vorchdorf. Stille Gesichter, eingefrorene Momente.
+        Doch was passiert, wenn wir einer KI sagen: <em>&bdquo;Lass dieses Bild erwachen&ldquo;</em>?</p>
+    </div>
+
+    <!-- Stage -->
+    <div class="stage">
+        <div class="stage-frame">
+            <div id="photo-phase">
+                <img src="../Bilder/20260321_183846.jpg" alt="Historisches Foto aus Vorchdorf – Wirtshausszene">
+            </div>
+            <div id="video-phase">
+                <video id="ki-video" muted playsinline>
+                    <source src="../Bilder/grok_video_2026-03-21-18-45-04.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caption -->
+    <div class="caption" id="caption">
+        <div class="caption-label label-original" id="caption-label">Original</div>
+        <div class="caption-text" id="caption-text">
+            Ein Foto aus vergangenen Tagen. Menschen versammelt an einem Wirtshaustisch &ndash;
+            ein stiller Moment, festgehalten für die Ewigkeit.
+        </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-labels">
+            <span id="label-photo" class="active">Originalfoto</span>
+            <span id="label-transition">Übergang</span>
+            <span id="label-video">KI-Video</span>
+        </div>
+    </div>
+
+    <!-- Replay -->
+    <button class="replay-btn" id="replay-btn" onclick="startSequence()">Nochmal ansehen</button>
+
+    <!-- Explanation -->
+    <div class="explanation">
+        <h2>Wie funktioniert das?</h2>
+        <p>
+            Dieses Video wurde mit einer einzigen Anweisung an die KI <strong>Grok</strong> erzeugt:
+            <em>&bdquo;Lass dieses Bild erwachen und die Personen angeregte Gespräche führen.&ldquo;</em>
+        </p>
+        <p>
+            Die KI analysiert das Foto, erkennt Gesichter, Körperhaltungen und den Raum &ndash;
+            und erzeugt daraus ein Video mit natürlich wirkenden Bewegungen und Mimik.
+            Das Original wird dabei nicht verändert.
+        </p>
+        <p style="margin-top: 1.5rem;">
+            <span class="tech-badge">Grok (xAI)</span>
+            <span class="tech-badge">Video-Generierung</span>
+            <span class="tech-badge">Bildanalyse</span>
+            <span class="tech-badge">Motion Synthesis</span>
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <span>Heimat- und Kulturverein Vorchdorf</span> &middot;
+        <a href="../index.html">heimatvereinvorchdorf.at</a>
+    </div>
+
+    <script>
+    (function() {
+        const PHOTO_DURATION = 20000; // 20 Sekunden Foto zeigen
+        const photoPhase = document.getElementById('photo-phase');
+        const videoPhase = document.getElementById('video-phase');
+        const video = document.getElementById('ki-video');
+        const captionLabel = document.getElementById('caption-label');
+        const captionText = document.getElementById('caption-text');
+        const progressFill = document.getElementById('progress-fill');
+        const labelPhoto = document.getElementById('label-photo');
+        const labelTransition = document.getElementById('label-transition');
+        const labelVideo = document.getElementById('label-video');
+        const replayBtn = document.getElementById('replay-btn');
+
+        let progressTimer = null;
+        let startTime = 0;
+
+        const captions = [
+            { time: 0, text: 'Ein Foto aus vergangenen Tagen. Menschen versammelt an einem Wirtshaustisch \u2013 ein stiller Moment, festgehalten für die Ewigkeit.' },
+            { time: 5000, text: 'Sieben Personen sitzen beisammen. Bierkrüge auf dem Tisch, Postkarten und Bilder an den Wänden \u2013 ein typisches Wirtshaus der Zwischenkriegszeit.' },
+            { time: 10000, text: 'Was haben sie sich wohl erzählt? Worüber gelacht? Wovon geträumt?' },
+            { time: 15000, text: 'Gleich werden wir es sehen. Eine KI wird dieses stille Bild zum Leben erwecken\u2026' },
+        ];
+
+        window.startSequence = function() {
+            // Reset
+            photoPhase.classList.remove('fade-out');
+            videoPhase.classList.remove('visible');
+            video.pause();
+            video.currentTime = 0;
+            replayBtn.classList.remove('visible');
+            progressFill.style.width = '0%';
+            captionLabel.className = 'caption-label label-original';
+            captionLabel.textContent = 'Original';
+            captionText.textContent = captions[0].text;
+            labelPhoto.classList.add('active');
+            labelTransition.classList.remove('active');
+            labelVideo.classList.remove('active');
+
+            startTime = Date.now();
+            if (progressTimer) clearInterval(progressTimer);
+
+            // Caption cycling during photo phase
+            let captionIdx = 0;
+            const captionTimer = setInterval(function() {
+                const elapsed = Date.now() - startTime;
+                if (elapsed >= PHOTO_DURATION) {
+                    clearInterval(captionTimer);
+                    return;
+                }
+                for (let i = captions.length - 1; i >= 0; i--) {
+                    if (elapsed >= captions[i].time && i > captionIdx) {
+                        captionIdx = i;
+                        captionText.style.opacity = 0;
+                        setTimeout(function() {
+                            captionText.textContent = captions[captionIdx].text;
+                            captionText.style.opacity = 1;
+                        }, 400);
+                        break;
+                    }
+                }
+            }, 500);
+
+            // Progress during photo phase (0-45%)
+            progressTimer = setInterval(function() {
+                const elapsed = Date.now() - startTime;
+                if (elapsed < PHOTO_DURATION) {
+                    progressFill.style.width = (elapsed / PHOTO_DURATION * 45) + '%';
+                }
+            }, 100);
+
+            // After photo duration: transition to video
+            setTimeout(function() {
+                clearInterval(captionTimer);
+                labelPhoto.classList.remove('active');
+                labelTransition.classList.add('active');
+                progressFill.style.width = '50%';
+
+                captionText.style.opacity = 0;
+                setTimeout(function() {
+                    captionLabel.className = 'caption-label label-ki';
+                    captionLabel.textContent = 'KI-generiert';
+                    captionText.textContent = 'Die KI erweckt das historische Foto. Aus Stille wird Bewegung, aus einem Moment wird eine Szene\u2026';
+                    captionText.style.opacity = 1;
+                }, 400);
+
+                // Fade out photo, fade in video
+                photoPhase.classList.add('fade-out');
+                setTimeout(function() {
+                    videoPhase.classList.add('visible');
+                    labelTransition.classList.remove('active');
+                    labelVideo.classList.add('active');
+                    video.play();
+
+                    // Progress during video (50-100%)
+                    const videoProgressTimer = setInterval(function() {
+                        if (video.duration && video.duration > 0) {
+                            const pct = 50 + (video.currentTime / video.duration * 50);
+                            progressFill.style.width = pct + '%';
+                        }
+                    }, 200);
+
+                    video.onended = function() {
+                        clearInterval(videoProgressTimer);
+                        progressFill.style.width = '100%';
+                        captionText.style.opacity = 0;
+                        setTimeout(function() {
+                            captionText.textContent = 'Was Sie gerade gesehen haben, wurde vollständig von einer KI erzeugt \u2013 aus einem einzigen historischen Foto und einer simplen Textanweisung.';
+                            captionText.style.opacity = 1;
+                        }, 400);
+                        replayBtn.classList.add('visible');
+                    };
+                }, 1500);
+            }, PHOTO_DURATION);
+        };
+
+        // Auto-start
+        startSequence();
+    })();
+    </script>
+</body>
+</html>
