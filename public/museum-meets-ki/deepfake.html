@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deepfake Test – Museum meets KI</title>
+    <title>Mensch oder Maschine? – Museum meets KI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -66,45 +66,41 @@
         #round-counter { color: rgba(255,255,255,0.4); }
         #score-display { color: #d4af37; font-weight: 600; }
 
-        .prompt {
-            text-align: center; font-size: 1.1rem; font-weight: 600;
-            margin-bottom: 1rem; color: rgba(255,255,255,0.8);
+        .text-card {
+            background: rgba(14, 34, 51, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 14px;
+            padding: 1.8rem 1.5rem;
+            margin-bottom: 1.2rem;
+            position: relative;
+            min-height: 160px;
         }
 
-        .compare-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
+        .text-card .genre-tag {
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: rgba(0, 229, 255, 0.5);
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
         }
 
-        .compare-box {
-            border: 2px solid rgba(0, 229, 255, 0.2);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            cursor: pointer;
+        .text-card .text-content {
+            font-size: 1rem;
+            line-height: 1.85;
+            color: rgba(255, 255, 255, 0.85);
+            font-style: italic;
         }
 
-        .compare-box svg {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-        .compare-box:hover {
-            border-color: rgba(0, 229, 255, 0.5);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
-        }
-
-        .compare-box.real {
-            border-color: #00ff88;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-        }
-
-        .compare-box.fake {
-            border-color: #ff6b6b;
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        .text-card .text-attribution {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.35);
+            text-align: right;
         }
 
         .button-row {
@@ -115,9 +111,9 @@
         }
 
         .choose-btn {
-            padding: 0.7rem;
+            padding: 0.8rem;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem; font-weight: 700;
+            font-size: 0.75rem; font-weight: 700;
             letter-spacing: 1px;
             border: 2px solid rgba(0, 229, 255, 0.3);
             border-radius: 10px;
@@ -125,7 +121,13 @@
             color: #ffffff;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
+
+        .choose-btn .btn-icon { font-size: 1.2rem; }
 
         .choose-btn:hover:not(:disabled) {
             background: rgba(0, 229, 255, 0.15);
@@ -137,6 +139,22 @@
             cursor: not-allowed;
         }
 
+        .choose-btn.answer-human {
+            border-color: rgba(0, 255, 136, 0.4);
+        }
+        .choose-btn.answer-human:hover:not(:disabled) {
+            background: rgba(0, 255, 136, 0.12);
+            border-color: #00ff88;
+        }
+
+        .choose-btn.answer-machine {
+            border-color: rgba(0, 229, 255, 0.4);
+        }
+        .choose-btn.answer-machine:hover:not(:disabled) {
+            background: rgba(0, 229, 255, 0.12);
+            border-color: #00e5ff;
+        }
+
         #explanation {
             display: none;
             background: rgba(14, 34, 51, 0.8);
@@ -146,21 +164,61 @@
             animation: fadeIn 0.4s ease;
         }
 
-        #explanation .correct {
-            color: #00ff88; font-weight: 700;
+        #explanation .result-label {
+            font-weight: 700;
             font-family: 'Orbitron', sans-serif;
             font-size: 0.9rem; margin-bottom: 0.5rem;
         }
 
-        #explanation .wrong {
-            color: #ff6b6b; font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem; margin-bottom: 0.5rem;
+        #explanation .correct { color: #00ff88; }
+        #explanation .wrong { color: #ff6b6b; }
+
+        #explanation .answer-reveal {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        #explanation .answer-reveal strong {
+            color: #00e5ff;
         }
 
         #explanation p {
             color: rgba(255,255,255,0.6);
             font-size: 0.85rem; line-height: 1.7;
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: rgba(0, 229, 255, 0.15);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: rgba(0, 229, 255, 0.4);
+            border-color: #00e5ff;
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+        }
+
+        .progress-dot.correct-dot {
+            background: #00ff88;
+            border-color: #00ff88;
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+        }
+
+        .progress-dot.wrong-dot {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
         }
 
         /* Results */
@@ -207,6 +265,13 @@
 
         .info-box p:last-child { margin-bottom: 0; }
 
+        .tip-item {
+            display: flex; gap: 0.5rem; align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
         #btn-retry {
             display: inline-block;
             padding: 0.8rem 2rem;
@@ -223,7 +288,7 @@
             box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .page-transition {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -244,15 +309,26 @@
         }
         @keyframes ripple { to { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
 
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: #00e5ff;
+            margin-left: 2px;
+            animation: blink 0.8s step-end infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
         @media (max-width: 768px) {
             .header { padding: 0.8rem 1rem; }
             .page-title { font-size: 0.7rem; }
             .section-title { font-size: 1.1rem; }
+            .text-card { padding: 1.2rem 1rem; }
         }
 
         @media (max-width: 400px) {
-            .compare-row { gap: 0.5rem; }
-            .choose-btn { font-size: 0.7rem; padding: 0.6rem; }
+            .choose-btn { font-size: 0.65rem; padding: 0.6rem; }
         }
     </style>
 </head>
@@ -262,45 +338,65 @@
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             Zurück
         </a>
-        <span class="page-title">DEEPFAKE TEST</span>
+        <span class="page-title">TURING TEST</span>
     </div>
 
     <div class="main">
-        <h1 class="section-title">Deepfake erkennen</h1>
-        <p class="section-desc">Welches Bild ist echt, welches von KI generiert?</p>
+        <h1 class="section-title">Mensch oder Maschine?</h1>
+        <p class="section-desc">Lies den Text und entscheide: Wurde er von einem Menschen oder von einer KI verfasst?</p>
+
+        <div class="progress-dots" id="progress-dots"></div>
 
         <div id="game-container">
             <div class="game-header">
-                <span id="round-title">Portrait-Foto</span>
+                <span id="round-title">Gedicht</span>
                 <span id="score-display">Score: 0</span>
                 <span id="round-counter">Runde 1 / 5</span>
             </div>
 
-            <p class="prompt">Welches ist echt?</p>
-
-            <div class="compare-row">
-                <div class="compare-box" id="img-left"></div>
-                <div class="compare-box" id="img-right"></div>
+            <div class="text-card" id="text-card">
+                <div class="genre-tag" id="genre-tag">Gedicht</div>
+                <div class="text-content" id="text-content"></div>
+                <div class="text-attribution" id="text-attribution"></div>
             </div>
 
             <div class="button-row">
-                <button class="choose-btn" id="btn-left">Links ist echt</button>
-                <button class="choose-btn" id="btn-right">Rechts ist echt</button>
+                <button class="choose-btn answer-human" id="btn-human">
+                    <span class="btn-icon">&#9998;</span> Mensch
+                </button>
+                <button class="choose-btn answer-machine" id="btn-machine">
+                    <span class="btn-icon">&#9881;</span> Maschine
+                </button>
             </div>
 
             <div id="explanation"></div>
         </div>
 
         <div id="result-container">
-            <div class="result-icon">🔍</div>
+            <div class="result-icon" id="result-icon">&#129302;</div>
             <div id="final-score">0 / 5</div>
             <p id="result-msg"></p>
 
             <div class="info-box">
-                <h3>Was sind Deepfakes?</h3>
-                <p>Deepfakes sind KI-generierte Medien, die echte Personen oder Inhalte imitieren. Die Technologie nutzt neuronale Netzwerke, um Bilder, Videos und Stimmen zu erzeugen.</p>
-                <p>Die Qualität steigt rasant: Was vor wenigen Jahren noch leicht erkennbar war, ist heute oft vom Original nicht mehr zu unterscheiden.</p>
-                <p>Tipps zum Erkennen: Achte auf zu perfekte Symmetrie, unnatürliche Hauttexturen, seltsame Hintergründe und inkonsistente Beleuchtung.</p>
+                <h3>Was ist der Turing Test?</h3>
+                <p>1950 schlug der Mathematiker Alan Turing einen Test vor: Kann eine Maschine so kommunizieren, dass ein Mensch sie nicht von einem echten Menschen unterscheiden kann?</p>
+                <p>Heute, 75 Jahre später, wird diese Frage aktueller denn je. Moderne KI-Sprachmodelle erzeugen Texte, die oft nicht mehr von menschlichen zu unterscheiden sind.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Tipps zum Erkennen</h3>
+                <div class="tip-item">
+                    <span class="tip-icon">&#128270;</span>
+                    <p><strong>Zu perfekt:</strong> KI-Texte sind oft grammatikalisch makellos und stilistisch gleichförmig. Menschen machen kleine Fehler oder haben Eigenheiten.</p>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">&#127773;</span>
+                    <p><strong>Emotionale Tiefe:</strong> Menschliche Texte haben oft eine persönliche Note, unerwartete Wendungen oder echte Erlebnisse.</p>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">&#9889;</span>
+                    <p><strong>Konkrete Details:</strong> Menschen erinnern sich an spezifische, manchmal unwichtige Details. KI bleibt oft allgemein.</p>
+                </div>
             </div>
 
             <button id="btn-retry">Nochmal spielen</button>

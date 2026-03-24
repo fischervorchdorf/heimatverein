@@ -1712,13 +1712,11 @@
         // Aräometer-Position: je höher Baumé, desto weniger sinkt es ein (höher steht es)
         const eintauchPct = 90 - (fl.baume / 70 * 60); // 90% bei Wasser, ~30% bei 66 Baumé
 
-        // Zufällige Optionen
-        const optionen = [fl.name];
-        const andere = LABOR_FLUESSIGKEITEN.filter(x => x.name !== fl.name);
-        optionen.push(andere[Math.floor(Math.random() * andere.length)].name);
-        optionen.push(andere[Math.floor(Math.random() * andere.length / 2 + andere.length / 2)].name);
-        const shuffled = [...new Set(optionen)].sort(() => Math.random() - 0.5);
-        while (shuffled.length < 3) shuffled.push(andere[shuffled.length].name);
+        // Zufällige Optionen: 1 richtige + 2 verschiedene falsche
+        const andere = LABOR_FLUESSIGKEITEN.filter(x => x.name !== fl.name)
+            .sort(() => Math.random() - 0.5);
+        const shuffled = [fl.name, andere[0].name, andere[1].name]
+            .sort(() => Math.random() - 0.5);
 
         document.getElementById('laborContent').innerHTML = `
             <div class="fade-in" style="text-align:center;">
