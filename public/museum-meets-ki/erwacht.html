@@ -324,12 +324,12 @@
                 <img src="../Bilder/20260321_183846.jpg" alt="Historisches Foto aus Vorchdorf – Wirtshausszene">
             </div>
             <div id="video-phase">
-                <video id="ki-video" playsinline>
+                <video id="ki-video" muted playsinline>
                     <source src="../Bilder/grok_video_2026-03-21-18-45-04.mp4" type="video/mp4">
                 </video>
-                <button id="unmute-btn" style="display:none; position:absolute; bottom:1rem; right:1rem; padding:0.5rem 1rem; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); border-radius:25px; color:#00e5ff; font-size:0.8rem; cursor:pointer; z-index:5; font-family:Inter,sans-serif;" onclick="document.getElementById('ki-video').muted=false; this.style.display='none';">🔊 Ton einschalten</button>
             </div>
         </div>
+        <button id="unmute-btn" style="display:none; margin:1rem auto 0; padding:0.6rem 1.5rem; background:rgba(0,229,255,0.12); border:1px solid rgba(0,229,255,0.4); border-radius:25px; color:#00e5ff; font-size:0.85rem; cursor:pointer; font-family:Inter,sans-serif; transition: all 0.3s;" onmouseover="this.style.background='rgba(0,229,255,0.25)'" onmouseout="this.style.background='rgba(0,229,255,0.12)'" onclick="var v=document.getElementById('ki-video'); v.muted=false; this.style.display='none';">🔊 Ton einschalten</button>
     </div>
 
     <!-- Caption -->
@@ -474,15 +474,10 @@
                     videoPhase.classList.add('visible');
                     labelTransition.classList.remove('active');
                     labelVideo.classList.add('active');
-                    var playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(function() {
-                            // Browser blocked autoplay with sound – retry muted + show unmute button
-                            video.muted = true;
-                            video.play();
-                            document.getElementById('unmute-btn').style.display = 'block';
-                        });
-                    }
+                    video.muted = true;
+                    video.play();
+                    // Show unmute button immediately so user can enable sound
+                    document.getElementById('unmute-btn').style.display = 'block';
 
                     // Progress during video (50-100%)
                     const videoProgressTimer = setInterval(function() {
