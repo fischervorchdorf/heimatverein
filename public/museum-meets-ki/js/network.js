@@ -7,20 +7,25 @@
     'use strict';
 
     const modules = [
-        { id: 'was-ist-ki', label: 'Was ist KI?', icon: '🧠', desc: 'Grundlagen der künstlichen Intelligenz', href: 'was-ist-ki.html', x: 0.5, y: 0.18 },
-        { id: 'ki-in-filmen', label: 'KI in Filmen', icon: '🎬', desc: 'Von HAL 9000 bis Ex Machina', href: 'ki-in-filmen.html', x: 0.22, y: 0.35 },
-        { id: 'train-ai', label: 'KI trainieren', icon: '🎯', desc: 'Trainiere deine eigene KI', href: 'train-ai.html', x: 0.78, y: 0.35 },
-        { id: 'turing', label: 'Turing Test', icon: '✍️', desc: 'Mensch oder Maschine?', href: 'deepfake.html', x: 0.22, y: 0.58 },
-        { id: 'energy', label: 'Energieverbrauch', icon: '⚡', desc: 'Was KI an Strom verbraucht', href: 'energy.html', x: 0.78, y: 0.58 },
-        { id: 'world', label: 'KI weltweit', icon: '🌍', desc: 'Regulierung rund um den Globus', href: 'world.html', x: 0.35, y: 0.78 },
-        { id: 'zukunft', label: 'Zukunft der KI', icon: '🚀', desc: 'Was kommt als Nächstes?', href: 'zukunft.html', x: 0.65, y: 0.78 }
+        { id: 'was-ist-ki', label: 'Was ist KI?', icon: '🧠', desc: 'Grundlagen der künstlichen Intelligenz', href: 'was-ist-ki.html', x: 0.5, y: 0.12 },
+        { id: 'ki-in-filmen', label: 'KI in Filmen', icon: '🎬', desc: 'Von HAL 9000 bis Ex Machina', href: 'ki-in-filmen.html', x: 0.2, y: 0.28 },
+        { id: 'train-ai', label: 'KI trainieren', icon: '🎯', desc: 'Trainiere deine eigene KI', href: 'train-ai.html', x: 0.8, y: 0.28 },
+        { id: 'turing', label: 'Turing Test', icon: '✍️', desc: 'Mensch oder Maschine?', href: 'deepfake.html', x: 0.15, y: 0.50 },
+        { id: 'energy', label: 'Energieverbrauch', icon: '⚡', desc: 'Was KI an Strom verbraucht', href: 'energy.html', x: 0.85, y: 0.50 },
+        { id: 'world', label: 'KI weltweit', icon: '🌍', desc: 'Regulierung rund um den Globus', href: 'world.html', x: 0.28, y: 0.70 },
+        { id: 'zukunft', label: 'Zukunft der KI', icon: '🚀', desc: 'Was kommt als Nächstes?', href: 'zukunft.html', x: 0.72, y: 0.70 },
+        { id: 'archiv', label: 'MuseumLens', icon: '📄', desc: 'KI-Analysen unserer Exponate', href: 'archiv.html', x: 0.5, y: 0.42 },
+        { id: 'propaganda', label: 'Propaganda', icon: '📰', desc: 'KI & Journalismus-Stile', href: '../propaganda.html', x: 0.5, y: 0.62 },
+        { id: 'wasbinych', label: 'Was bin ich?', icon: '🔍', desc: 'QR-Code Ratespiele', href: '../museummeetski/index.html', x: 0.5, y: 0.88 }
     ];
 
     // Connections between modules (indices)
     const edges = [
-        [0, 1], [0, 2], [0, 3], [0, 4],
-        [1, 3], [2, 4], [3, 5], [4, 5],
-        [5, 6], [4, 6], [2, 6], [1, 5]
+        [0, 1], [0, 2], [0, 7],
+        [1, 3], [2, 4], [1, 7], [2, 7],
+        [3, 5], [4, 6], [3, 8], [4, 8],
+        [7, 8], [5, 9], [6, 9], [8, 9],
+        [5, 8], [6, 8], [7, 0]
     ];
 
     const canvas = document.getElementById('network-canvas');

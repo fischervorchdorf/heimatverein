@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuseumLens Archiv – Museum meets KI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020b14;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(2, 11, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: #00e5ff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #00e5ff;
+            letter-spacing: 2px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 3rem 1.5rem 2rem;
+            background: linear-gradient(to bottom, rgba(0, 229, 255, 0.03), transparent);
+        }
+
+        .hero-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 900;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ffffff, #00e5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.8rem;
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .hero .count {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.4rem 1rem;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #00e5ff;
+            letter-spacing: 1px;
+        }
+
+        /* Grid */
+        .grid-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem 3rem;
+        }
+
+        .category-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(0, 229, 255, 0.5);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .pdf-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+            background: rgba(14, 34, 51, 0.5);
+            border: 1px solid rgba(0, 229, 255, 0.08);
+            border-radius: 12px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pdf-card:hover {
+            background: rgba(0, 229, 255, 0.08);
+            border-color: rgba(0, 229, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.1);
+        }
+
+        .pdf-icon {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 229, 255, 0.1);
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+
+        .pdf-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pdf-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 0.2rem;
+        }
+
+        .pdf-meta {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.5px;
+        }
+
+        .pdf-arrow {
+            flex-shrink: 0;
+            color: rgba(0, 229, 255, 0.3);
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .pdf-card:hover .pdf-arrow {
+            color: #00e5ff;
+            transform: translateX(3px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(0, 229, 255, 0.05);
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+        }
+        .footer a:hover { color: #00e5ff; }
+
+        @media (max-width: 600px) {
+            .pdf-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero { padding: 2rem 1rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="experience.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Zur Ausstellung
+        </a>
+        <div class="page-title">ARCHIV</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <span class="hero-icon">📄</span>
+        <h1>MuseumLens Archiv</h1>
+        <p>KI-gestützte Analysen unserer Museumsexponate. Jedes Objekt wurde von einer künstlichen Intelligenz untersucht, beschrieben und in seinen historischen Kontext eingeordnet.</p>
+        <span class="count" id="doc-count"></span>
+    </div>
+
+    <!-- PDF Grid -->
+    <div class="grid-container" id="grid-container">
+        <!-- Filled by JS -->
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <span>Heimat- und Kulturverein Vorchdorf</span> &middot;
+        <a href="../index.html">heimatvereinvorchdorf.at</a>
+    </div>
+
+    <script>
+    (function() {
+        const pdfs = [
+            // Einzelanalysen
+            { file: 'Bostitch_No__2_Drahtheftmaschine__Schuhindustrie__Analyse.pdf', name: 'Bostitch No. 2 Drahtheftmaschine', cat: 'Handwerk & Industrie', icon: '🔨' },
+            { file: 'Fronleichnamsprozession_in_Vorchdorf_Analyse.pdf', name: 'Fronleichnamsprozession in Vorchdorf', cat: 'Brauchtum & Kultur', icon: '⛪' },
+            { file: 'Gabel__und_Trenn_bertrager_f_r_Feldfernsprechger_te_Analyse.pdf', name: 'Gabel- und Trennübertrager für Feldfernsprechgeräte', cat: 'Technik & Kommunikation', icon: '📞' },
+            { file: 'Gesch_ftstafel_der_Gemischtwarenhandlung_Josefa_Stahrl_Analyse.pdf', name: 'Geschäftstafel Gemischtwarenhandlung Josefa Stahrl', cat: 'Handel & Gewerbe', icon: '🏪' },
+            { file: 'Hand__senzange_Analyse.pdf', name: 'Handösenzange', cat: 'Handwerk & Industrie', icon: '🔧' },
+            { file: 'Historische_Schuhmacherzange___Kneifzange_mit_Hammerfunktion_Analyse.pdf', name: 'Historische Schuhmacherzange mit Hammerfunktion', cat: 'Handwerk & Industrie', icon: '👢' },
+            { file: 'Historische_Schuhsohlen_N_hmaschine__Typ_Vormann__Analyse.pdf', name: 'Historische Schuhsohlen-Nähmaschine (Typ Vormann)', cat: 'Handwerk & Industrie', icon: '🧵' },
+            { file: 'Historisches_Fotoalbum_Analyse.pdf', name: 'Historisches Fotoalbum', cat: 'Brauchtum & Kultur', icon: '📷' },
+            { file: 'Historisches_Studio_Portr_t_eines_Siebenb_rger_Paares_in_Tracht_Analyse.pdf', name: 'Studioporträt eines Siebenbürger Paares in Tracht', cat: 'Brauchtum & Kultur', icon: '👤' },
+            { file: 'Korkschwimmer_f_r_Fischernetze_Analyse.pdf', name: 'Korkschwimmer für Fischernetze', cat: 'Handwerk & Industrie', icon: '🐟' },
+            { file: 'Kristallradio_Abstimmeinheit_mit_Katzenbart_Detektor_Analyse.pdf', name: 'Kristallradio mit Katzenbart-Detektor', cat: 'Technik & Kommunikation', icon: '📻' },
+            { file: 'Leistungs_Gleichrichterr_hre_GRS_111_12__Siemens_Austria__Analyse.pdf', name: 'Gleichrichterröhre GRS 111/12 (Siemens Austria)', cat: 'Technik & Kommunikation', icon: '💡' },
+            { file: 'Meerschaumpfeife_mit_Tierkopf_Schnitzerei_Analyse.pdf', name: 'Meerschaumpfeife mit Tierkopf-Schnitzerei', cat: 'Alltag & Kuriositäten', icon: '🪈' },
+            { file: 'Neva_Lehrger_t_Nr__4_f_r_W_rmelehre_Analyse.pdf', name: 'Neva Lehrgerät Nr. 4 für Wärmelehre', cat: 'Technik & Kommunikation', icon: '🌡️' },
+            { file: 'Original_Odhner_Pinwheel_Calculator__Model_239_or_similar__Analyse.pdf', name: 'Original Odhner Rechenmaschine', cat: 'Technik & Kommunikation', icon: '🔢' },
+            { file: 'Pr_fadapter___Klemmenblock_f_r_elektrotechnische_Versuche_Analyse.pdf', name: 'Prüfadapter / Klemmenblock für Elektrotechnik', cat: 'Technik & Kommunikation', icon: '🔌' },
+            { file: 'Prof__Dr__Seider_s_Zahn_St_bchen__verkauft_als__Zahn_Pulver___Analyse.pdf', name: 'Prof. Dr. Seiders Zahn-Stäbchen (Zahnpulver)', cat: 'Alltag & Kuriositäten', icon: '🦷' },
+            { file: 'S_ddeutsche_oder__sterreichische_Standuhr__Longcase_Clock__Analyse.pdf', name: 'Süddeutsche/Österreichische Standuhr', cat: 'Alltag & Kuriositäten', icon: '🕰️' },
+            { file: 'Schnittmuster_R_dchen__Tracing_Wheel__Analyse.pdf', name: 'Schnittmuster-Rädchen (Tracing Wheel)', cat: 'Handwerk & Industrie', icon: '✂️' },
+            { file: 'Spann_Streichriemen__Rasiermesser_Abziehriemen__Analyse.pdf', name: 'Spann-Streichriemen (Rasiermesser-Abziehriemen)', cat: 'Alltag & Kuriositäten', icon: '🪒' },
+            { file: 'Vorschaltger%C3%A4t__Regelwiderstand__Analyse.pdf', name: 'Vorschaltgerät / Regelwiderstand', cat: 'Technik & Kommunikation', icon: '⚡' },
+            { file: 'Zigarettenpackung__Sondermischung__Typ_4_Pfg_Analyse.pdf', name: 'Zigarettenpackung "Sondermischung" (4 Pfg)', cat: 'Alltag & Kuriositäten', icon: '🚬' },
+            { file: '_berf_lle_an_der_K_rntner_Grenze___Megrohan_s_a_Karintiai_Hat_ron_Analyse.pdf', name: 'Überfälle an der Kärntner Grenze', cat: 'Brauchtum & Kultur', icon: '📜' },
+            { file: 'Museum%20Lens%20Z%C3%BCndholz.pdf', name: 'Zündholzschachtel-Analyse', cat: 'Alltag & Kuriositäten', icon: '🔥' },
+            { file: 'Was%20bin%20ich%20-%20Z%C3%BCndholzschachterl%20-%20WWII.pdf', name: 'Was bin ich? Zündholzschachterl (WWII)', cat: 'Alltag & Kuriositäten', icon: '🔥' },
+        ];
+
+        // Sammelarchive
+        const archives = [
+            { file: 'MuseumLens_Archiv_1773069239026.pdf', name: 'MuseumLens Sammelarchiv I', icon: '📚' },
+            { file: 'MuseumLens_Archiv_1773069432872.pdf', name: 'MuseumLens Sammelarchiv II', icon: '📚' },
+            { file: 'MuseumLens_Archiv_1773069511247.pdf', name: 'MuseumLens Sammelarchiv III', icon: '📚' },
+            { file: 'MuseumLens_Archiv_1773071315966.pdf', name: 'MuseumLens Sammelarchiv IV', icon: '📚' },
+        ];
+
+        document.getElementById('doc-count').textContent = (pdfs.length + archives.length) + ' Dokumente';
+
+        // Group by category
+        const categories = {};
+        for (const pdf of pdfs) {
+            if (!categories[pdf.cat]) categories[pdf.cat] = [];
+            categories[pdf.cat].push(pdf);
+        }
+
+        const container = document.getElementById('grid-container');
+
+        // Render categories
+        const catOrder = ['Handwerk & Industrie', 'Technik & Kommunikation', 'Brauchtum & Kultur', 'Handel & Gewerbe', 'Alltag & Kuriositäten'];
+        for (const cat of catOrder) {
+            if (!categories[cat]) continue;
+
+            const heading = document.createElement('h2');
+            heading.className = 'category-title';
+            heading.textContent = cat;
+            container.appendChild(heading);
+
+            const grid = document.createElement('div');
+            grid.className = 'pdf-grid';
+
+            for (const pdf of categories[cat]) {
+                grid.appendChild(createCard(pdf));
+            }
+            container.appendChild(grid);
+        }
+
+        // Archives section
+        const archiveHeading = document.createElement('h2');
+        archiveHeading.className = 'category-title';
+        archiveHeading.textContent = 'Sammelarchive';
+        container.appendChild(archiveHeading);
+
+        const archiveGrid = document.createElement('div');
+        archiveGrid.className = 'pdf-grid';
+        for (const a of archives) {
+            archiveGrid.appendChild(createCard(a));
+        }
+        container.appendChild(archiveGrid);
+
+        function createCard(pdf) {
+            const card = document.createElement('a');
+            card.className = 'pdf-card';
+            card.href = 'archiv/' + pdf.file;
+            card.target = '_blank';
+            card.innerHTML = `
+                <div class="pdf-icon">${pdf.icon}</div>
+                <div class="pdf-info">
+                    <div class="pdf-name">${pdf.name}</div>
+                    <div class="pdf-meta">PDF-Analyse ansehen</div>
+                </div>
+                <svg class="pdf-arrow" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+                </svg>
+            `;
+            return card;
+        }
+    })();
+    </script>
+</body>
+</html>
