@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahnen-Rätselrallye · Lange Nacht der Forschung 2026 · Vorchdorf</title>
+<style>
+  :root{
+    --bg1:#1a0f2e; --bg2:#2d1b4e; --bg3:#0f1419;
+    --gold:#e8c468; --gold2:#f5d97b;
+    --paper:#f4e8d0; --ink:#2a1810;
+    --accent:#ff6b9d; --accent2:#a855f7; --ok:#34d399; --bad:#f87171;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;color:#fff;overflow-x:hidden}
+  body{
+    background:
+      radial-gradient(ellipse at 20% 10%,#3d1f6e 0%,transparent 50%),
+      radial-gradient(ellipse at 80% 80%,#5a1840 0%,transparent 50%),
+      linear-gradient(180deg,var(--bg1),var(--bg3));
+    min-height:100vh;
+    background-attachment:fixed;
+  }
+  /* Floating particles */
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .stars span{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.6;animation:twinkle 3s infinite}
+  @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+  @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(232,196,104,.3)}50%{box-shadow:0 0 40px rgba(232,196,104,.7)}}
+
+  .app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:24px 18px 60px;min-height:100vh}
+  header{text-align:center;margin-bottom:18px;animation:slideUp .7s ease}
+  .logo{font-family:Georgia,serif;font-size:13px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;opacity:.85}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(28px,6vw,42px);line-height:1.15;margin:8px 0 4px;background:linear-gradient(135deg,#fff,var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:13px;opacity:.7}
+
+  .card{
+    background:rgba(255,255,255,.06);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:24px;
+    padding:28px 22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+    animation:slideUp .6s ease;
+  }
+
+  .progress{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:12px;opacity:.85}
+  .bar{flex:1;height:6px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--gold));border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .timer{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-size:12px}
+  .tbar{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+  .tbar i{display:block;height:100%;background:linear-gradient(90deg,#34d399,var(--gold),#f87171);border-radius:99px;transition:width .2s linear}
+  .tval{font-family:Georgia,serif;color:var(--gold);min-width:50px;text-align:right}
+  .tval.urgent{color:#f87171;animation:pulse .6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+  h2{font-family:Georgia,serif;font-size:22px;margin-bottom:6px;line-height:1.3}
+  .qmeta{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);margin-bottom:14px;opacity:.9}
+
+  .opts{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .opt{
+    background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.15);
+    color:#fff;padding:14px 18px;border-radius:14px;font-size:15px;text-align:left;
+    cursor:pointer;transition:all .25s;font-family:inherit;
+  }
+  .opt:hover{background:rgba(255,255,255,.1);border-color:var(--gold);transform:translateY(-2px)}
+  .opt.correct{background:rgba(52,211,153,.2);border-color:var(--ok);animation:pop .4s}
+  .opt.wrong{background:rgba(248,113,113,.2);border-color:var(--bad);animation:shake .4s}
+  .opt:disabled{cursor:default}
+
+  .btn{
+    display:inline-block;background:linear-gradient(135deg,var(--accent2),var(--accent));
+    color:#fff;border:none;padding:14px 28px;border-radius:99px;font-size:15px;font-weight:600;
+    cursor:pointer;font-family:inherit;letter-spacing:.5px;
+    box-shadow:0 8px 24px rgba(168,85,247,.4);transition:all .25s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(168,85,247,.6)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .btn.gold{background:linear-gradient(135deg,var(--gold),#d4a73e);color:#1a0f2e;box-shadow:0 8px 24px rgba(232,196,104,.4)}
+
+  .age-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:20px}
+  @media(min-width:560px){.age-grid{grid-template-columns:1fr 1fr 1fr}}
+  .age{
+    background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);
+    border-radius:18px;padding:22px 16px;text-align:center;cursor:pointer;transition:all .3s;
+  }
+  .age:hover{transform:translateY(-4px);border-color:var(--gold);background:rgba(232,196,104,.1)}
+  .age .emoji{font-size:42px;margin-bottom:8px;display:block;animation:float 3s ease-in-out infinite}
+  .age strong{display:block;font-size:17px;margin-bottom:4px}
+  .age span{font-size:12px;opacity:.7}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.5;display:none}
+  .feedback.show{display:block;animation:slideUp .4s}
+  .feedback.ok{background:rgba(52,211,153,.15);border-left:3px solid var(--ok)}
+  .feedback.no{background:rgba(248,113,113,.15);border-left:3px solid var(--bad)}
+
+  /* Kurrent display */
+  .kurrent-box{
+    background:#f4e8d0;padding:14px;border-radius:16px;text-align:center;margin:18px 0;
+    box-shadow:inset 0 0 40px rgba(80,40,10,.15),0 10px 30px rgba(0,0,0,.3);
+    border:1px solid #b89968;
+  }
+  .kurrent-box img{max-width:100%;height:auto;border-radius:8px;display:block;margin:0 auto;filter:sepia(.15) contrast(1.05)}
+
+  /* Slider Schätzfrage */
+  .slider-wrap{margin:24px 0 12px}
+  .slider-val{
+    font-family:Georgia,serif;font-size:48px;text-align:center;color:var(--gold);
+    margin-bottom:14px;text-shadow:0 0 20px rgba(232,196,104,.5);
+  }
+  .slider-val small{font-size:18px;opacity:.7;margin-left:6px}
+  input[type=range]{
+    width:100%;-webkit-appearance:none;appearance:none;background:transparent;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height:8px;background:linear-gradient(90deg,var(--accent2),var(--gold));border-radius:99px;
+  }
+  input[type=range]::-moz-range-track{height:8px;background:linear-gradient(90deg,var(--accent2),var(--gold));border-radius:99px}
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;
+    background:#fff;border:3px solid var(--gold);margin-top:-9px;cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,.4);
+  }
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--gold);cursor:pointer}
+  .slider-range{display:flex;justify-content:space-between;font-size:11px;opacity:.6;margin-top:6px}
+
+  /* Puzzle */
+  .puzzle{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+    max-width:340px;margin:18px auto;aspect-ratio:1;
+  }
+  .piece{
+    background-size:300% 300%;background-repeat:no-repeat;border-radius:8px;cursor:pointer;
+    transition:transform .2s,box-shadow .2s;border:2px solid transparent;
+    box-shadow:0 4px 12px rgba(0,0,0,.3);aspect-ratio:1;
+  }
+  .piece:hover{transform:scale(1.04)}
+  .piece.selected{border-color:var(--gold);box-shadow:0 0 20px var(--gold);transform:scale(1.04)}
+  .puzzle-hint{text-align:center;font-size:12px;opacity:.7;margin-top:8px}
+
+  /* Timeline drag */
+  .timeline-list{display:flex;flex-direction:column;gap:10px;margin:18px 0}
+  .tl-item{
+    background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);
+    padding:14px 16px;border-radius:12px;cursor:grab;display:flex;align-items:center;gap:12px;
+    transition:all .2s;user-select:none;
+  }
+  .tl-item:hover{background:rgba(255,255,255,.12)}
+  .tl-item.dragging{opacity:.4}
+  .tl-item.over{border-color:var(--gold);transform:scale(1.02)}
+  .tl-handle{font-size:18px;opacity:.5;cursor:grab}
+  .tl-text{flex:1;font-size:14px}
+  .tl-year{font-size:11px;opacity:0;color:var(--gold);font-weight:600}
+  .tl-item.revealed .tl-year{opacity:1}
+  .tl-item.right{background:rgba(52,211,153,.15);border-color:var(--ok)}
+  .tl-item.wrong{background:rgba(248,113,113,.15);border-color:var(--bad)}
+
+  /* Final */
+  .final{text-align:center;padding:20px 10px}
+  .score-circle{
+    width:180px;height:180px;border-radius:50%;margin:20px auto;
+    background:conic-gradient(var(--gold) var(--p),rgba(255,255,255,.1) 0);
+    display:flex;align-items:center;justify-content:center;animation:glow 2s infinite;
+  }
+  .score-inner{
+    width:150px;height:150px;border-radius:50%;background:var(--bg1);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .score-num{font-family:Georgia,serif;font-size:48px;color:var(--gold);line-height:1}
+  .score-of{font-size:14px;opacity:.7;margin-top:4px}
+  .badge{display:inline-block;background:linear-gradient(135deg,var(--gold),#d4a73e);color:#1a0f2e;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:12px}
+  .confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 3s linear forwards;z-index:100;pointer-events:none}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+  .hs-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hs-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:10px 14px;border-radius:10px;font-size:14px;border:1px solid transparent}
+  .hs-row.me{background:rgba(232,196,104,.18);border-color:var(--gold);animation:glow 2s infinite}
+  .hs-pos{font-size:20px;min-width:30px;text-align:center}
+  .hs-rank{display:inline-block;width:24px;height:24px;line-height:24px;border-radius:50%;background:rgba(255,255,255,.1);font-size:12px;font-weight:700}
+  .hs-name{flex:1;text-align:left;font-weight:600}
+  .hs-age{font-size:11px;opacity:.6}
+  .hs-pts{font-family:Georgia,serif;color:var(--gold);font-weight:700;min-width:50px;text-align:right}
+  .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  .museum-link{margin-top:24px;text-align:center;font-size:12px;opacity:.6}
+  .museum-link a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="app">
+
+<header>
+  <div class="logo">Lange Nacht der Forschung · 24. April 2026</div>
+  <h1>Auf den Spuren deiner Ahnen</h1>
+  <div class="sub">Museum der Region Vorchdorf · Heimatverein Vorchdorf</div>
+</header>
+
+<!-- SCREEN: AGE -->
+<div id="screen" class="card">
+  <div id="age-screen">
+    <h2>Willkommen, Forscher:in!</h2>
+    <div class="qmeta">Wähle dein Alter — wir passen die Rätsel an dich an</div>
+    <div class="age-grid">
+      <div class="age" data-age="kid">
+        <span class="emoji">🔍</span>
+        <strong>Junge Spürnase</strong>
+        <span>8 – 12 Jahre</span>
+      </div>
+      <div class="age" data-age="teen">
+        <span class="emoji">📜</span>
+        <strong>Junge:r Forscher:in</strong>
+        <span>13 – 17 Jahre</span>
+      </div>
+      <div class="age" data-age="adult">
+        <span class="emoji">🏛️</span>
+        <strong>Profi-Ahnenforscher:in</strong>
+        <span>18+ Jahre</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="museum-link">
+  <a href="https://www.heimatvereinvorchdorf.at" target="_blank">heimatvereinvorchdorf.at</a> · KI-Kurrent-Entzifferung erleben
+</div>
+
+</div>
+
+<script>
+/* ============ STARFIELD ============ */
+(function(){
+  const s=document.getElementById('stars');let h='';
+  for(let i=0;i<60;i++)h+=`<span style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*3}s"></span>`;
+  s.innerHTML=h;
+})();
+
+/* ============ QUESTION POOL ============ */
+const Q = {
+  kid: [
+    {type:'mc',q:'Wo findet man am sichersten heraus, wann ein Urgroßvater geboren wurde?',
+     opts:['In einer Familienlegende','In einem alten Kirchenbuch 📖','Auf einem alten Foto'],
+     correct:1,info:'Genau! Pfarrer haben über Jahrhunderte alle Taufen aufgeschrieben — das nennt man Matriken.'},
+    {type:'estimate',q:'Schätzfrage: Wie viele Urgroßeltern hat jeder Mensch?',
+     answer:8,unit:'Personen',min:2,max:20,tol:0,
+     info:'Du hast 2 Eltern, 4 Großeltern und 8 Urgroßeltern. Die Familie wird rückwärts immer größer!'},
+    {type:'kurrent',q:'Welche Schrift siehst du hier?',
+     opts:['Chinesisch','Kurrentschrift','Geheimcode der Ritter'],correct:1,
+     info:'Genau! Das ist Kurrentschrift — die wurde bis ca. 1940 in Österreich in der Schule gelehrt. Deine Ur-Uroma konnte das noch lesen!'},
+    {type:'puzzle',q:'Bilderpuzzle! Tausche zwei Teile, indem du sie nacheinander antippst.',
+     info:'Toll gemacht! So sah ein Familienporträt im 19. Jahrhundert aus.'},
+    {type:'mc',q:'Welches dieser Dinge hilft NICHT bei der Ahnenforschung?',
+     opts:['Ein altes Tagebuch','Ein neues Smartphone-Spiel 🎮','Ein vergilbter Brief'],
+     correct:1,info:'Smartphones helfen — aber Spiele nicht. Tagebücher und Briefe sind Goldgruben!'},
+    {type:'mc',q:'Was ist ein Stammbaum?',
+     opts:['Ein Baum vor dem Haus','Eine Zeichnung der ganzen Familie 🌳','Ein Kuchenrezept'],
+     correct:1,info:'Genau! Ein Stammbaum zeigt, wer mit wem verwandt ist.'},
+  ],
+  teen: [
+    {type:'mc',q:'Was ist meist die verlässlichste Quelle für Geburts- und Sterbedaten?',
+     opts:['Familienerzählungen','Kirchenbücher','Alte Fotos'],correct:1,
+     info:'Kirchenbücher (Matriken) sind seit dem Konzil von Trient 1563 vorgeschrieben — eine fantastische Datenquelle.'},
+    {type:'kurrent',q:'Aus welchem Jahr stammt dieses Kurrent-Dokument ungefähr?',
+     opts:['1650','1802','1950'],correct:1,
+     info:'1802! Diese Handschrift stammt aus der Zeit Napoleons — und wurde von einem sehr berühmten deutschen Dichter verfasst.'},
+    {type:'estimate',q:'Schätzfrage: Wie viele Ahnen hat ein Mensch in der 10. Generation rückwärts?',
+     answer:1024,unit:'Personen',min:50,max:3000,tol:200,
+     info:'1024 Personen! Pro Generation verdoppelt sich die Zahl: 2, 4, 8, 16 … 1024.'},
+    {type:'puzzle',img:'auto.png',q:'Setze dieses historische Foto wieder zusammen — tippe zwei Teile zum Tauschen.',
+     info:'Eines der ersten Autos in unserer Gegend! Solche Fotos dokumentieren technische Umbrüche einer ganzen Epoche.'},
+    {type:'mc',q:'Warum sind Namen in alten Dokumenten oft unterschiedlich geschrieben?',
+     opts:['Fehler der Pfarrer','Es gab keine einheitliche Rechtschreibung','Die Personen wechselten ihren Namen'],
+     correct:1,info:'Genau — Mayer, Maier, Mayr, Meier können dieselbe Person sein.'},
+    {type:'timeline',q:'Bringe diese Ereignisse in die richtige zeitliche Reihenfolge (älteste zuerst)',
+     items:[
+       {t:'Konzil von Trient — Pflicht zu Kirchenbüchern',y:1563},
+       {t:'Erfindung der Fotografie',y:1839},
+       {t:'Erste Schreibmaschinen im Pfarramt',y:1880},
+       {t:'Matricula Online geht online',y:2008},
+     ],
+     info:'Hervorragend! Das Wissen um die Zeitlinie hilft enorm bei der Quellenkritik.'},
+    {type:'mc',q:'Eine KI erkennt ein Objekt als „ca. 1880". Was tust du?',
+     opts:['Sofort übernehmen','Mit anderen Quellen vergleichen','Ignorieren'],correct:1,
+     info:'KI ist ein super Helfer, aber kein Beweis. Mehrere Quellen schlagen eine.'},
+  ],
+  adult: [
+    {type:'mc',q:'Wofür eignet sich Matricula Online besonders gut?',
+     opts:['Alte Fotos ansehen','Kirchenbücher recherchieren','Stammbäume automatisch erstellen'],
+     correct:1,info:'Matricula ist DAS Portal für digitalisierte Pfarrmatriken in Mitteleuropa.'},
+    {type:'kurrentinput',img:'kurent.png',
+     q:'Königsdisziplin: Entziffere die Überschrift dieses historischen Kurrent-Dokuments!',
+     hint:'Tipp: Es ist an ein hohes kirchliches Gremium gerichtet. Es reichen die wichtigsten Wörter der ersten Zeile.',
+     keywords:['Hochwürdigen','Consistorio'],
+     solution:'Zum Hochwürdigen Consistorio der Stadt Stralsund',
+     info:'Das Dokument ist an das "Hochwürdige Consistorio" (kirchliche Verwaltung) der Stadt Stralsund gerichtet — geschrieben an Direktor, Superintendenten und Assessoren. Unsere KI am Stand kann solche Texte in Sekunden entziffern!'},
+    {type:'estimate',q:'Schätzfrage: Aus welchem Jahr stammt das älteste erhaltene Pfarrmatrikel in Oberösterreich (ungefähr)?',
+     answer:1580,unit:'',min:1400,max:1800,tol:30,
+     info:'Etwa 1580 — kurz nach dem Konzil von Trient. Vorchdorfs Matriken beginnen ebenfalls im 16. Jahrhundert.'},
+    {type:'puzzle',img:'brief.png',q:'Bilderrätsel: Stelle diesen historischen Liebesbrief wieder her. Tippe zwei Kacheln zum Tauschen.',
+     info:'Ein echter Liebesbrief aus dem Archiv! Solche privaten Dokumente sind oft die berührendsten Quellen der Familienforschung.'},
+    {type:'mc',q:'Welche Schrift wurde in vielen historischen Quellen verwendet?',
+     opts:['Sütterlin','Kurrentschrift','Lateinische Druckschrift'],correct:1,
+     info:'Kurrent! Sütterlin (1911) ist ein vereinfachter Nachfolger.'},
+    {type:'timeline',q:'Sortiere die Meilensteine der Genealogie chronologisch (älteste zuerst)',
+     items:[
+       {t:'Konzil von Trient',y:1563},
+       {t:'Patent Joseph II. zu Matriken als Personenstand',y:1784},
+       {t:'Standesamt-Pflicht in Österreich',y:1939},
+       {t:'KI-Kurrent-Entzifferung im Heimatverein Vorchdorf',y:2024},
+     ],
+     info:'Perfekt! Vom kirchlichen zum digitalen Personenstand in 460 Jahren.'},
+    {type:'mc',q:'Welche Aussage zur Familienforschung stimmt?',
+     opts:['Eine Quelle reicht völlig aus','Mündliche Überlieferungen sind wertlos','Mehrere Quellen erhöhen die Glaubwürdigkeit'],
+     correct:2,info:'Quellenpluralismus ist das Herzstück seriöser Genealogie.'},
+    {type:'mc',q:'Was ist ein typischer Anfängerfehler in der Ahnenforschung?',
+     opts:['Zu viele Fragen stellen','Ungeprüfte Informationen übernehmen','In Archiven nachsehen'],
+     correct:1,info:'Nichts ist gefährlicher als ein abgeschriebener Fehler, der sich vererbt.'},
+  ]
+};
+
+/* ============ STATE ============ */
+let state={age:null,idx:0,score:0,questions:[],selPiece:null,puzzleOrder:[],qStart:0,timerId:null,timeLeft:0,answered:false,totalTime:0};
+const Q_TIMES={mc:25,kurrent:30,estimate:35,puzzle:75,timeline:60,kurrentinput:120};
+const MAX_PTS=100, MIN_PTS=10;
+function qTime(){return Q_TIMES[state.questions[state.idx].type]||30}
+
+/* ============ AGE PICK ============ */
+document.querySelectorAll('.age').forEach(el=>{
+  el.addEventListener('click',()=>{
+    state.age=el.dataset.age;
+    state.questions=Q[state.age];
+    state.idx=0;state.score=0;
+    render();
+  });
+});
+
+/* ============ RENDER ============ */
+function render(){
+  stopTimer();
+  const screen=document.getElementById('screen');
+  if(state.idx>=state.questions.length){renderFinal();return}
+  const q=state.questions[state.idx];
+  const total=state.questions.length;
+  const pct=Math.round((state.idx/total)*100);
+  let body='';
+  body+=`<div class="progress"><span>Frage ${state.idx+1} / ${total}</span><div class="bar"><i style="width:${pct}%"></i></div><span>⭐ ${state.score} Pkt</span></div>`;
+  body+=`<div class="timer"><span>⏱</span><div class="tbar"><i id="tbar" style="width:100%"></i></div><span class="tval" id="tval">${qTime()}s</span></div>`;
+  body+=`<div class="qmeta">${qmetaLabel(q.type)}</div>`;
+  body+=`<h2>${q.q}</h2>`;
+  body+=`<div id="qbody"></div>`;
+  body+=`<div class="feedback" id="fb"></div>`;
+  body+=`<div class="row" id="qfoot"></div>`;
+  screen.innerHTML=body;
+  screen.style.animation='none';screen.offsetHeight;screen.style.animation='slideUp .5s ease';
+  state.answered=false;
+  state.qStart=Date.now();
+  startTimer();
+  buildBody(q);
+}
+function startTimer(){
+  state.timeLeft=qTime()*1000;
+  const tick=()=>{
+    if(state.answered)return;
+    const elapsed=Date.now()-state.qStart;
+    const left=Math.max(0,qTime()*1000-elapsed);
+    const tbar=document.getElementById('tbar');const tval=document.getElementById('tval');
+    if(!tbar)return;
+    tbar.style.width=(left/(qTime()*1000)*100)+'%';
+    const sec=Math.ceil(left/1000);
+    tval.textContent=sec+'s';
+    tval.classList.toggle('urgent',sec<=5);
+    if(left<=0){timeUp();return}
+  };
+  tick();
+  state.timerId=setInterval(tick,100);
+}
+function stopTimer(){if(state.timerId){clearInterval(state.timerId);state.timerId=null}}
+function pointsForTime(){
+  const elapsed=(Date.now()-state.qStart)/1000;
+  const ratio=Math.max(0,1-elapsed/qTime());
+  return Math.round(MIN_PTS+(MAX_PTS-MIN_PTS)*ratio);
+}
+function timeUp(){
+  if(state.answered)return;
+  state.answered=true;stopTimer();
+  const q=state.questions[state.idx];
+  // Reveal correct answer
+  if(q.type==='mc'||q.type==='kurrent'){
+    document.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct')});
+  }
+  showFeedback(false,'⏰ Zeit abgelaufen! '+(q.info||''));
+  nextBtn();
+}
+function qmetaLabel(t){return {mc:'🎯 Multiple Choice',kurrent:'✒️ Kurrent-Entzifferung',kurrentinput:'🖋️ Kurrent-Königsdisziplin',estimate:'🔮 Schätzfrage',puzzle:'🧩 Bilderrätsel',timeline:'⏳ Zeitreise'}[t]||''}
+
+function buildBody(q){
+  const b=document.getElementById('qbody');
+  if(q.type==='mc'||q.type==='kurrent'){
+    let html='';
+    if(q.type==='kurrent'){
+      html+=`<div class="kurrent-box"><img src="lnf-bilder/${q.img||'1802-Goethe.jpg'}" alt="Kurrent-Dokument"></div>`;
+    }
+    html+='<div class="opts">';
+    q.opts.forEach((o,i)=>html+=`<button class="opt" data-i="${i}">${String.fromCharCode(65+i)} · ${o}</button>`);
+    html+='</div>';
+    b.innerHTML=html;
+    b.querySelectorAll('.opt').forEach(btn=>btn.addEventListener('click',()=>answerMC(parseInt(btn.dataset.i),q)));
+  }
+  else if(q.type==='estimate'){
+    const start=Math.round((q.min+q.max)/2);
+    b.innerHTML=`
+      <div class="slider-wrap">
+        <div class="slider-val"><span id="sv">${start}</span><small>${q.unit}</small></div>
+        <input type="range" id="srng" min="${q.min}" max="${q.max}" value="${start}">
+        <div class="slider-range"><span>${q.min}</span><span>${q.max}</span></div>
+      </div>`;
+    const rng=document.getElementById('srng');const sv=document.getElementById('sv');
+    rng.addEventListener('input',()=>sv.textContent=rng.value);
+    document.getElementById('qfoot').innerHTML=`<button class="btn gold" id="estbtn">Antwort abgeben</button>`;
+    document.getElementById('estbtn').addEventListener('click',()=>answerEstimate(parseInt(rng.value),q));
+  }
+  else if(q.type==='puzzle'){
+    buildPuzzle(b,q);
+  }
+  else if(q.type==='kurrentinput'){
+    b.innerHTML=`
+      <div class="kurrent-box"><img src="lnf-bilder/${q.img}" alt="Kurrent-Dokument"></div>
+      <p style="font-size:13px;opacity:.8;margin:8px 0 10px">${q.hint||'Tippe deine Lösung ein:'}</p>
+      <input id="kiInput" placeholder="Deine Lösung…" style="width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);color:#fff;padding:14px 16px;border-radius:12px;font-size:15px;font-family:inherit;outline:none">
+    `;
+    document.getElementById('qfoot').innerHTML=`<button class="btn gold" id="kibtn">Antwort abgeben</button>`;
+    document.getElementById('kibtn').addEventListener('click',()=>answerKurrentInput(q));
+    document.getElementById('kiInput').addEventListener('keydown',e=>{if(e.key==='Enter')answerKurrentInput(q)});
+    document.getElementById('kiInput').focus();
+  }
+  else if(q.type==='timeline'){
+    buildTimeline(b,q);
+  }
+}
+
+/* ============ MC ============ */
+function answerMC(i,q){
+  if(state.answered)return;
+  state.answered=true;
+  const pts=pointsForTime();stopTimer();
+  const buttons=document.querySelectorAll('.opt');
+  buttons.forEach(b=>b.disabled=true);
+  const ok=i===q.correct;
+  buttons[i].classList.add(ok?'correct':'wrong');
+  if(!ok)buttons[q.correct].classList.add('correct');
+  if(ok){state.score+=pts;showFeedback(true,`+${pts} Punkte! `+q.info)}
+  else showFeedback(false,q.info);
+  nextBtn();
+}
+
+/* ============ ESTIMATE ============ */
+function answerEstimate(val,q){
+  if(state.answered)return;
+  state.answered=true;
+  const pts=pointsForTime();stopTimer();
+  const diff=Math.abs(val-q.answer);
+  const ok=diff<=q.tol;
+  const close=diff<=q.tol+(q.max-q.min)*0.1;
+  document.getElementById('estbtn').disabled=true;
+  document.getElementById('srng').disabled=true;
+  let msg=`Du: <b>${val}</b> · Richtig: <b>${q.answer}</b><br>${q.info}`;
+  if(ok){state.score+=pts;showFeedback(true,`Volltreffer! +${pts} Punkte. `+msg)}
+  else if(close){const half=Math.round(pts/2);state.score+=half;showFeedback(true,`Ganz nah dran! +${half} Punkte. `+msg)}
+  else showFeedback(false,msg);
+  nextBtn();
+}
+
+/* ============ KURRENT INPUT ============ */
+function normalize(s){return (s||'').toLowerCase().replace(/ß/g,'ss').replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/[^a-z0-9]+/g,' ').trim()}
+function answerKurrentInput(q){
+  if(state.answered)return;
+  state.answered=true;
+  const pts=pointsForTime();stopTimer();
+  const val=document.getElementById('kiInput').value;
+  document.getElementById('kiInput').disabled=true;
+  document.getElementById('kibtn').disabled=true;
+  const n=normalize(val);
+  const hits=q.keywords.filter(k=>n.includes(normalize(k))).length;
+  const needed=q.keywords.length;
+  let award=0,ok=false;
+  if(hits===needed){award=pts;ok=true}
+  else if(hits>=Math.ceil(needed/2)){award=Math.round(pts/2);ok=true}
+  state.score+=award;
+  const solMsg=`<br><b>Original:</b> „${q.solution}"`;
+  if(ok)showFeedback(true,`${hits===needed?'Perfekt':'Teilweise'} erkannt! +${award} Punkte. ${q.info}${solMsg}`);
+  else showFeedback(false,`Knapp daneben. ${q.info}${solMsg}`);
+  nextBtn();
+}
+
+/* ============ PUZZLE ============ */
+function buildPuzzle(b,q){
+  const url=`url("lnf-bilder/${q.img||'bauernhof.png'}")`;
+  state.puzzleOrder=[0,1,2,3,4,5,6,7,8];
+  // shuffle
+  for(let i=state.puzzleOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[state.puzzleOrder[i],state.puzzleOrder[j]]=[state.puzzleOrder[j],state.puzzleOrder[i]]}
+  state.selPiece=null;
+  let html='<div class="puzzle" id="puzzle">';
+  for(let i=0;i<9;i++)html+=`<div class="piece" data-pos="${i}"></div>`;
+  html+='</div><div class="puzzle-hint">Tippe nacheinander zwei Teile, um sie zu tauschen</div>';
+  b.innerHTML=html;
+  // store url
+  state.puzzleUrl=url;
+  paintPuzzle();
+  document.querySelectorAll('#puzzle .piece').forEach(p=>p.addEventListener('click',()=>clickPiece(parseInt(p.dataset.pos),q)));
+}
+function paintPuzzle(){
+  document.querySelectorAll('#puzzle .piece').forEach((p,i)=>{
+    const orig=state.puzzleOrder[i];
+    const r=Math.floor(orig/3),c=orig%3;
+    p.style.backgroundImage=state.puzzleUrl;
+    p.style.backgroundPosition=`${c*50}% ${r*50}%`;
+    p.classList.toggle('selected',state.selPiece===i);
+  });
+}
+function clickPiece(pos,q){
+  if(state.selPiece===null){state.selPiece=pos;paintPuzzle();return}
+  if(state.selPiece===pos){state.selPiece=null;paintPuzzle();return}
+  [state.puzzleOrder[state.selPiece],state.puzzleOrder[pos]]=[state.puzzleOrder[pos],state.puzzleOrder[state.selPiece]];
+  state.selPiece=null;paintPuzzle();
+  // check
+  if(state.puzzleOrder.every((v,i)=>v===i)){
+    if(state.answered)return;
+    state.answered=true;
+    const pts=pointsForTime();stopTimer();
+    state.score+=pts;
+    showFeedback(true,`Puzzle gelöst! +${pts} Punkte. `+q.info);
+    document.querySelectorAll('#puzzle .piece').forEach(p=>p.style.pointerEvents='none');
+    nextBtn();
+  }
+}
+
+/* ============ TIMELINE ============ */
+function buildTimeline(b,q){
+  const items=[...q.items].sort(()=>Math.random()-0.5);
+  let html='<div class="timeline-list" id="tl">';
+  items.forEach((it,i)=>html+=`<div class="tl-item" draggable="true" data-y="${it.y}"><span class="tl-handle">⋮⋮</span><span class="tl-text">${it.t}</span><span class="tl-year">${it.y}</span></div>`);
+  html+='</div>';
+  b.innerHTML=html;
+  document.getElementById('qfoot').innerHTML=`<button class="btn gold" id="tlbtn">Reihenfolge prüfen</button>`;
+  document.getElementById('tlbtn').addEventListener('click',()=>checkTimeline(q));
+  // drag
+  const list=document.getElementById('tl');
+  let dragging=null;
+  list.querySelectorAll('.tl-item').forEach(el=>{
+    el.addEventListener('dragstart',e=>{dragging=el;el.classList.add('dragging')});
+    el.addEventListener('dragend',()=>{dragging?.classList.remove('dragging');dragging=null;list.querySelectorAll('.tl-item').forEach(x=>x.classList.remove('over'))});
+    el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('over')});
+    el.addEventListener('dragleave',()=>el.classList.remove('over'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();el.classList.remove('over');
+      if(dragging&&dragging!==el){
+        const all=[...list.children];
+        const di=all.indexOf(dragging),ti=all.indexOf(el);
+        if(di<ti)el.after(dragging);else el.before(dragging);
+      }
+    });
+    // Touch fallback: tap to swap with previous
+    el.addEventListener('click',e=>{
+      if(window.matchMedia('(hover:hover)').matches)return;
+      if(!list.dataset.tap){list.dataset.tap=el.dataset.y;el.classList.add('over');return}
+      const prev=list.querySelector(`[data-y="${list.dataset.tap}"]`);
+      if(prev&&prev!==el){
+        const tmp=document.createElement('div');
+        prev.before(tmp);el.before(prev);tmp.replaceWith(el);
+      }
+      prev?.classList.remove('over');delete list.dataset.tap;
+    });
+  });
+}
+function checkTimeline(q){
+  if(state.answered)return;
+  state.answered=true;
+  const pts=pointsForTime();stopTimer();
+  const list=document.getElementById('tl');
+  const order=[...list.children].map(el=>parseInt(el.dataset.y));
+  const sorted=[...order].sort((a,b)=>a-b);
+  const ok=order.every((v,i)=>v===sorted[i]);
+  list.querySelectorAll('.tl-item').forEach((el,i)=>{
+    el.classList.add('revealed');
+    el.draggable=false;
+    el.classList.add(parseInt(el.dataset.y)===sorted[i]?'right':'wrong');
+  });
+  document.getElementById('tlbtn').disabled=true;
+  if(ok){state.score+=pts;showFeedback(true,`+${pts} Punkte! `+q.info)}
+  else showFeedback(false,q.info);
+  nextBtn();
+}
+
+/* ============ SHARED ============ */
+function showFeedback(ok,txt){
+  const fb=document.getElementById('fb');
+  fb.className='feedback show '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'✨ <b>Richtig!</b> ':'💡 <b>Knapp daneben.</b> ')+txt;
+}
+function nextBtn(){
+  const f=document.getElementById('qfoot');
+  const last=state.idx===state.questions.length-1;
+  f.innerHTML=`<button class="btn" id="nxt">${last?'Ergebnis sehen 🏆':'Weiter →'}</button>`;
+  document.getElementById('nxt').addEventListener('click',()=>{state.idx++;render()});
+}
+
+/* ============ FINAL ============ */
+function renderFinal(){
+  stopTimer();
+  const screen=document.getElementById('screen');
+  const total=state.questions.length;
+  const maxPossible=total*MAX_PTS;
+  const pct=Math.round(state.score/maxPossible*100);
+  let badge='Lehrling der Ahnenforschung',msg='Ein toller Anfang — komm wieder vorbei!';
+  if(pct>=40){badge='Geselle der Genealogie';msg='Stark! Du hast den Forschergeist im Blut.'}
+  if(pct>=65){badge='Meister:in der Matriken';msg='Beeindruckend! Du könntest morgen ins Archiv.'}
+  if(pct>=85){badge='Großmeister:in';msg='Perfekt! Vorchdorf braucht dich im Heimatverein!'}
+  screen.innerHTML=`
+    <div class="final">
+      <div class="qmeta">Dein Ergebnis</div>
+      <h2>${msg}</h2>
+      <div class="score-circle" style="--p:${pct}%">
+        <div class="score-inner">
+          <div class="score-num">${state.score}</div>
+          <div class="score-of">von ${maxPossible}</div>
+        </div>
+      </div>
+      <div class="badge">🏅 ${badge}</div>
+      <div id="nameForm" style="margin-top:24px">
+        <p style="font-size:14px;opacity:.85;margin-bottom:10px">Trag dich in die Highscore-Liste ein:</p>
+        <input id="pname" maxlength="20" placeholder="Dein Name" style="background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);color:#fff;padding:12px 16px;border-radius:12px;font-size:15px;font-family:inherit;text-align:center;width:220px;outline:none">
+        <div class="row"><button class="btn gold" id="savebtn">Eintragen 🏆</button></div>
+      </div>
+      <div id="hsBox"></div>
+    </div>`;
+  if(pct>=40)confetti();
+  document.getElementById('pname').focus();
+  document.getElementById('savebtn').addEventListener('click',saveScore);
+  document.getElementById('pname').addEventListener('keydown',e=>{if(e.key==='Enter')saveScore()});
+}
+function saveScore(){
+  const name=(document.getElementById('pname').value||'').trim().slice(0,20);
+  if(!name){document.getElementById('pname').focus();return}
+  const ageLabel={kid:'8–12',teen:'13–17',adult:'18+'}[state.age];
+  const entry={n:name,s:state.score,a:ageLabel,d:Date.now()};
+  let hs=[];try{hs=JSON.parse(localStorage.getItem('lnf_hs')||'[]')}catch(e){}
+  hs.push(entry);hs.sort((a,b)=>b.s-a.s);hs=hs.slice(0,10);
+  localStorage.setItem('lnf_hs',JSON.stringify(hs));
+  document.getElementById('nameForm').style.display='none';
+  showHighscore(entry);
+}
+function showHighscore(myEntry){
+  let hs=[];try{hs=JSON.parse(localStorage.getItem('lnf_hs')||'[]')}catch(e){}
+  let html='<h3 style="font-family:Georgia,serif;margin:24px 0 12px;color:var(--gold)">🏆 Top 10 Highscore</h3><div class="hs-list">';
+  hs.forEach((e,i)=>{
+    const me=myEntry&&e.d===myEntry.d&&e.n===myEntry.n;
+    const medal=['🥇','🥈','🥉'][i]||`<span class="hs-rank">${i+1}</span>`;
+    html+=`<div class="hs-row${me?' me':''}"><span class="hs-pos">${medal}</span><span class="hs-name">${escapeHtml(e.n)}</span><span class="hs-age">${e.a}</span><span class="hs-pts">${e.s}</span></div>`;
+  });
+  html+='</div>';
+  html+='<div class="row" style="margin-top:20px"><button class="btn gold" onclick="location.reload()">Nochmal spielen 🔁</button><button class="btn" id="clrhs">Liste löschen</button></div>';
+  html+='<p style="margin-top:20px;font-size:12px;opacity:.7">Probiere unsere <b>KI-Kurrent-Entzifferung</b> live am Stand aus!</p>';
+  document.getElementById('hsBox').innerHTML=html;
+  document.getElementById('clrhs').addEventListener('click',()=>{if(confirm('Highscore-Liste wirklich löschen?')){localStorage.removeItem('lnf_hs');location.reload()}});
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function confetti(){
+  const colors=['#e8c468','#ff6b9d','#a855f7','#34d399','#fff'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'%';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*1.5)+'s';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4500);
+  }
+}
+</script>
+</body>
+</html>
