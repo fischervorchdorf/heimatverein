@@ -285,6 +285,9 @@ function openExhibitionModal(data) {
     document.getElementById('ex-sort-order').value = data ? (data.sort_order || 0) : 0;
     document.getElementById('ex-modal-content').value = data ? (data.modal_content || '') : '';
 
+    // Datei-Auswahl zurücksetzen, damit kein Bild vom vorherigen Eintrag übernommen wird
+    document.getElementById('ex-image').value = '';
+
     // Image preview
     const preview = document.getElementById('ex-image-preview');
     if (data && data.image_url) {
@@ -309,6 +312,7 @@ function openExhibitionModal(data) {
 }
 
 function closeExhibitionModal() {
+    document.getElementById('ex-image').value = '';
     document.getElementById('exhibition-modal').classList.remove('open');
 }
 
